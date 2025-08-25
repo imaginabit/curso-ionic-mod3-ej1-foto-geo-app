@@ -14,7 +14,30 @@
   </ion-header>
 
   <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+    <!-- Botón para tomar foto --> 
+    <ion-button expand="full" (click)="tomarFoto()"> 
+      Tomar Foto 
+    </ion-button> 
+ 
+    <!-- Campo descripción --> 
+    <ion-item> 
+      <ion-label position="floating">Descripción</ion-label> 
+      <ion-textarea [(ngModel)]="descripcion"></ion-textarea> 
+    </ion-item> 
+ 
+    <!-- Vista previa de la foto --> 
+    <ion-img class="foto-preview" [src]="foto" *ngIf="foto"></ion-img> 
+ 
+    <!-- Botón guardar (por ahora solo console.log) --> 
+    <ion-button  
+      expand="full"  
+      color="success"  
+      (click)="guardarRegistro()" 
+      [disabled]="!foto || !descripcion"> 
+      Guardar Registro 
+    </ion-button> 
+ 
+
+
   </div>
 </ion-content>
