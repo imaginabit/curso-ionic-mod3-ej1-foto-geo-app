@@ -1,0 +1,7 @@
+{
+  "name": "foto-geo-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
