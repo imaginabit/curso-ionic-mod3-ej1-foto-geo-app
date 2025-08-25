@@ -3,14 +3,19 @@
 }
 
 .foto-preview {
-  height: 50vh;
-  margin: 15px 0;
-  border-radius: 8px;
-  border: 2px solid #ccc;
+  height: 40dvh;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  object-fit: contain;
+  background-color: hsla(0, 0%, 0%, 0.6);
 }
 
 ion-button {
   margin: 10px 0;
+
+  &[disabled] {
+    opacity: 0.5;
+  }
 }
 
 h3 {

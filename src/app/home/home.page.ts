@@ -1,6 +1,8 @@
-import { CommonModule } from '@angular/common'; 
-import { Component, OnInit } from '@angular/core'; 
+import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { PhotoService } from '../app/services/photo.service';
+
 
 import {
   IonContent,
@@ -20,7 +22,7 @@ import {
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   imports: [
-    CommonModule, 
+    CommonModule,
     FormsModule,
     IonContent,
     IonHeader,
@@ -36,20 +38,27 @@ import {
 export class HomePage {
   foto: string="";
   descripcion: string="";
+  private photoService = inject(PhotoService);
+
 
   constructor() { }
 
-  // Método que implementaremos en Parte 2 
-  async tomarFoto() { 
-    console.log('Función tomarFoto'); 
-    // Por ahora simular una foto 
-    this.foto = 'https://picsum.photos/300/200?random=' + Math.random(); 
-    console.log('foto', this.foto);
+  // Método que implementaremos en Parte 2
+  async tomarFoto() {
+    console.log('Función tomarFoto');
+    const photoResult = await this.photoService.takePicture();
+    if (photoResult) {
+      this.foto = photoResult.webviewPath;
+    }
   }
 
-  async guardarRegistro() { 
+  async guardarRegistro() {
     console.log('Función guardarRegistro');
-  } 
+  }
+
+  eliminarFoto() {
+    this.foto = '';
+  }
 
 
 }

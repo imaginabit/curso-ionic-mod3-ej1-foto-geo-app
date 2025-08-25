@@ -14,30 +14,32 @@
   </ion-header>
 
   <div id="container">
-    <!-- Botón para tomar foto --> 
-    <ion-button expand="full" (click)="tomarFoto()"> 
-      Tomar Foto 
-    </ion-button> 
- 
-    <!-- Campo descripción --> 
-    <ion-item> 
-      <ion-label position="floating">Descripción</ion-label> 
-      <ion-textarea [(ngModel)]="descripcion"></ion-textarea> 
-    </ion-item> 
- 
-    <!-- Vista previa de la foto --> 
-    <ion-img class="foto-preview" [src]="foto" *ngIf="foto"></ion-img> 
- 
-    <!-- Botón guardar (por ahora solo console.log) --> 
-    <ion-button  
-      expand="full"  
-      color="success"  
-      (click)="guardarRegistro()" 
-      [disabled]="!foto || !descripcion"> 
-      Guardar Registro 
-    </ion-button> 
- 
+    <!-- Botón para tomar foto -->
+    <ion-button expand="full" (click)="tomarFoto()">
+      Tomar Foto
+    </ion-button>
 
+    <!-- Campo descripción -->
+    <ion-item>
+      <ion-label position="floating">Descripción</ion-label>
+      <ion-textarea [(ngModel)]="descripcion"></ion-textarea>
+    </ion-item>
+
+    <!-- Vista previa de la foto -->
+    <ion-img class="foto-preview" [src]="foto" *ngIf="foto"></ion-img>
+
+    <!-- Botón guardar (por ahora solo console.log) -->
+    <ion-button
+      expand="full"
+      color="success"
+      (click)="guardarRegistro()"
+      [disabled]="!foto || !descripcion">
+      Guardar Registro
+    </ion-button>
+
+    <ion-button fill="clear" color="danger" *ngIf="foto" (click)="eliminarFoto()">
+      Eliminar Foto
+    </ion-button>
 
   </div>
 </ion-content>
