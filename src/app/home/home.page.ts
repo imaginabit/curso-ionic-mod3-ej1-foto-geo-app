@@ -20,6 +20,8 @@ import {
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   imports: [
+    CommonModule, 
+    FormsModule,
     IonContent,
     IonHeader,
     IonTitle,
@@ -32,5 +34,22 @@ import {
   ],
 })
 export class HomePage {
+  foto: string="";
+  descripcion: string="";
+
   constructor() { }
+
+  // Método que implementaremos en Parte 2 
+  async tomarFoto() { 
+    console.log('Función tomarFoto'); 
+    // Por ahora simular una foto 
+    this.foto = 'https://picsum.photos/300/200?random=' + Math.random(); 
+    console.log('foto', this.foto);
+  }
+
+  async guardarRegistro() { 
+    console.log('Función guardarRegistro');
+  } 
+
+
 }
