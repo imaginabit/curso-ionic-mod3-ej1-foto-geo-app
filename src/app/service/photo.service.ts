@@ -1,13 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Capacitor } from '@capacitor/core';
-import { Platform } from '@ionic/angular';
+import { PlatformService } from './platform.service';
+import { UserPhoto } from '../models/user-photo.model';
 
-export interface UserPhoto {
-  filepath: string;      // Ruta del archivo en el dispositivo
-  webviewPath: string;  // Ruta para mostrar la imagen en la app
-}
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +13,9 @@ export class PhotoService {
   private static readonly CAMERA_QUALITY = 90;
   private static readonly IMAGE_FORMAT = '.jpeg';
 
-  constructor(private platform: Platform) { }
+  private platform = inject(PlatformService);
+
+  constructor() { }
 
   async takePicture(): Promise<UserPhoto | null> {
 
@@ -31,7 +30,7 @@ export class PhotoService {
   }
 
   private async processCapturedPhoto(photo: Photo): Promise<UserPhoto> {
-    if (this.isNativePlatform()) {
+    if (this.platform.isNativePlatform()) {
       // Si es móvil, guarda la foto en el filesystem
       return this.savePhotoToFileSystem(photo);
     } else {
@@ -65,7 +64,7 @@ export class PhotoService {
   }
 
   private async convertPhotoToBase64(photo: Photo): Promise<string> {
-    if (this.isNativePlatform()) {
+    if (this.platform.isNativePlatform()) {
       // Lee el archivo desde el filesystem (móvil)
       const file = await Filesystem.readFile({
         path: photo.path!,
@@ -94,8 +93,5 @@ export class PhotoService {
   return Date.now() + PhotoService.IMAGE_FORMAT;
 }
 
-  private isNativePlatform(): boolean {
-    return this.platform.is('hybrid');
-  }
 
 }
