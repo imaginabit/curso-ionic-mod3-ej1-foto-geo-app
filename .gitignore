@@ -68,3 +68,6 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+android/capacitor.settings.gradle
+android/app/capacitor.build.gradle
+android/app/src/main/res/values/strings.xml
