@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Blank
+      {{titulo}}
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -9,7 +9,7 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
+      <ion-title size="large">{{titulo}}</ion-title>
     </ion-toolbar>
   </ion-header>
 
@@ -27,6 +27,11 @@
  
     <!-- Vista previa de la foto --> 
     <ion-img class="foto-preview" [src]="foto" *ngIf="foto"></ion-img> 
+      
+    <!-- Botón eliminar foto -->
+    <ion-button fill="clear" expand="full" color="danger" *ngIf="foto" (click)="eliminarFoto()">
+      Eliminar Foto
+    </ion-button>
  
     <!-- Botón guardar (por ahora solo console.log) --> 
     <ion-button  
@@ -36,8 +41,7 @@
       [disabled]="!foto || !descripcion"> 
       Guardar Registro 
     </ion-button> 
+
  
-
-
   </div>
 </ion-content>

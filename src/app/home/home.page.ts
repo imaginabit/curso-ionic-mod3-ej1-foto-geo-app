@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common'; 
-import { Component, OnInit } from '@angular/core'; 
+import { Component, OnInit, inject } from '@angular/core'; 
 import { FormsModule } from '@angular/forms';
+
+import { PhotoService } from '../service/photo.service';
 
 import {
   IonContent,
@@ -36,15 +38,21 @@ import {
 export class HomePage {
   foto: string="";
   descripcion: string="";
+  titulo: string="Mi app foto";
+  private photoService = inject(PhotoService);
 
   constructor() { }
 
   // Método que implementaremos en Parte 2 
-  async tomarFoto() { 
-    console.log('Función tomarFoto'); 
-    // Por ahora simular una foto 
-    this.foto = 'https://picsum.photos/300/200?random=' + Math.random(); 
-    console.log('foto', this.foto);
+  async tomarFoto() {
+    const photoResult = await this.photoService.takePicture();
+    if (photoResult) {
+      this.foto = photoResult.webviewPath;
+    }
+  }
+
+  eliminarFoto() {
+    this.foto = '';
   }
 
   async guardarRegistro() { 
