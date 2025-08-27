@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common'; 
 import { Component, OnInit, inject } from '@angular/core'; 
 import { FormsModule } from '@angular/forms';
+import { PhotoService } from '../app/services/photo.service';
 
-import { PhotoService } from '../service/photo.service';
 
 import {
   IonContent,
@@ -22,7 +22,7 @@ import {
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   imports: [
-    CommonModule, 
+    CommonModule,
     FormsModule,
     IonContent,
     IonHeader,
@@ -55,9 +55,9 @@ export class HomePage {
     this.foto = '';
   }
 
-  async guardarRegistro() { 
+  async guardarRegistro() {
     console.log('Función guardarRegistro');
-  } 
+  }
 
 
 }
