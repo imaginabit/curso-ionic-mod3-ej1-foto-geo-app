@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common'; 
+import { Component, OnInit, inject } from '@angular/core'; 
 import { FormsModule } from '@angular/forms';
 import { PhotoService } from '../app/services/photo.service';
 
@@ -38,26 +38,25 @@ import {
 export class HomePage {
   foto: string="";
   descripcion: string="";
+  titulo: string="Mi app foto";
   private photoService = inject(PhotoService);
-
 
   constructor() { }
 
-  // Método que implementaremos en Parte 2
+  // Método que implementaremos en Parte 2 
   async tomarFoto() {
-    console.log('Función tomarFoto');
     const photoResult = await this.photoService.takePicture();
     if (photoResult) {
       this.foto = photoResult.webviewPath;
     }
   }
 
-  async guardarRegistro() {
-    console.log('Función guardarRegistro');
-  }
-
   eliminarFoto() {
     this.foto = '';
+  }
+
+  async guardarRegistro() {
+    console.log('Función guardarRegistro');
   }
 
 

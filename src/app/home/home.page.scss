@@ -2,6 +2,11 @@
   padding: 20px;
 }
 
+h3 {
+  color: var(--ion-color-primary);
+  margin: 20px 0 10px 0;
+}
+
 .foto-preview {
   height: 40dvh;
   border-radius: 12px;
@@ -16,9 +21,4 @@ ion-button {
   &[disabled] {
     opacity: 0.5;
   }
-}
-
-h3 {
-  color: var(--ion-color-primary);
-  margin: 20px 0 10px 0;
 }
