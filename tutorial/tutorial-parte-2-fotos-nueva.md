@@ -1,3 +1,12 @@
+<script>
+function copyCode(btn) {
+  const codeBlock = btn.nextElementSibling;
+  navigator.clipboard.writeText(codeBlock.innerText);
+  btn.textContent = 'Copiado!';
+  setTimeout(() => btn.textContent = 'Copiar', 2000);
+}
+</script>
+
 # Tutorial Paso a Paso: Foto-Geo App (Parte 2)
 
 ## Objetivo
@@ -18,10 +27,14 @@ Agregar funcionalidad real de cámara y gestión de fotos usando un servicio en 
 
 Abre una terminal y ejecuta:
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```bash
 npm install @capacitor/camera @capacitor/filesystem
 npx cap sync
 ```
+</div>
 
 ---
 
@@ -33,9 +46,13 @@ src/app/services/photo.service.ts
 
 Abre la terminal y ejecuta:
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```bash
 npx ionic generate service app/services/photo.service
 ```
+</div>
 
 Esto creará dos archivos:
 - `src/app/services/photo.service.ts`
@@ -51,16 +68,23 @@ Un servicio en Angular permite centralizar lógica reutilizable, como la gestió
 
 Abre `src/app/services/photo.service.ts` y agrega al inicio:
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```typescript
 export interface UserPhoto {
   filepath: string;      // Ruta del archivo en el dispositivo
   webviewPath: string;  // Ruta para mostrar la imagen en la app
 }
 ```
+</div>
 
 ### d) Declara la clase del servicio
 
 Debajo de la interfaz, asegúrate de tener:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 import { Injectable } from '@angular/core';
@@ -71,6 +95,7 @@ export class PhotoService {
   // Métodos se implementarán en los siguientes pasos
 }
 ```
+</div>
 
 Así tendrás la base lista para agregar la lógica de cámara y archivos en los siguientes pasos.
 
@@ -82,18 +107,26 @@ Así tendrás la base lista para agregar la lógica de cámara y archivos en los
 
 Agrega los imports necesarios al inicio del archivo `photo.service.ts`:
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```typescript
 import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera';
 import { Filesystem, Directory } from '@capacitor/filesystem';
 import { Capacitor } from '@capacitor/core';
 import { Platform } from '@ionic/angular';
 ```
+</div>
 
 ### b) Inyecta Platform en el constructor
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 constructor(private platform: Platform) {}
 ```
+</div>
 
 La clase Platform de @ionic/angular sirve para detectar en qué plataforma se está ejecutando tu app (por ejemplo: web, Android, iOS, escritorio).
 
@@ -102,11 +135,15 @@ La clase Platform de @ionic/angular sirve para detectar en qué plataforma se es
 
 Agrega el método:
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```typescript
 async takePicture(): Promise<UserPhoto | null> {
   // Implementación en el siguiente paso
 }
 ```
+</div>
 
 ---
 
@@ -115,6 +152,9 @@ async takePicture(): Promise<UserPhoto | null> {
 ### a) Agrega métodos privados para procesar la foto
 
 Agrega los siguientes métodos vacíos en `PhotoService`:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 private async processCapturedPhoto(photo: Photo): Promise<UserPhoto> {
@@ -129,6 +169,7 @@ private processWebPhoto(photo: Photo): UserPhoto {
   // Implementación siguiente
 }
 ```
+</div>
 
 Todos estos metodos probablemente muestren un error ahora mismo por que no estan devolviendo el tipo de dato que le pedimos que devuelva, por ejemplo, processWebPhoto tiene deve devolver UserPhoto y no devuelve nada
 
@@ -143,16 +184,23 @@ Ahora vamos a implementar cada método del servicio paso a paso. Abre `src/app/s
 
 Al inicio de la clase `PhotoService`, justo después de la línea `export class PhotoService {`, agrega:
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```typescript
 // Constantes de configuración
 private static readonly CAMERA_QUALITY = 90;
 private static readonly IMAGE_FORMAT = '.jpeg';
 
 ```
+</div>
 
 #### 2. Método `takePicture`
 
 Este método abre la cámara y gestiona errores:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 async takePicture(): Promise<UserPhoto | null> {
@@ -171,10 +219,14 @@ async takePicture(): Promise<UserPhoto | null> {
   }
 }
 ```
+</div>
 
 #### 3. Método `processCapturedPhoto`
 
 Decide si guardar la foto en el filesystem (móvil) o solo mostrarla (web):
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 private async processCapturedPhoto(photo: Photo): Promise<UserPhoto> {
@@ -187,10 +239,14 @@ private async processCapturedPhoto(photo: Photo): Promise<UserPhoto> {
   }
 }
 ```
+</div>
 
 #### 4. Método `savePhotoToFileSystem`
 
 Convierte la foto a base64, la guarda y retorna la info:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 private async savePhotoToFileSystem(photo: Photo): Promise<UserPhoto> {
@@ -209,10 +265,14 @@ private async savePhotoToFileSystem(photo: Photo): Promise<UserPhoto> {
   };
 }
 ```
+</div>
 
 #### 5. Método `processWebPhoto`
 
 Prepara la foto para mostrar en la web:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 private processWebPhoto(photo: Photo): UserPhoto {
@@ -223,6 +283,7 @@ private processWebPhoto(photo: Photo): UserPhoto {
   };
 }
 ```
+</div>
 
 #### 6. Métodos auxiliares
 
@@ -231,6 +292,9 @@ Agrega estos métodos privados al final de la clase para completar la funcionali
 ##### 6.1. Método `convertPhotoToBase64`
 
 Convierte una foto a formato Base64, dependiendo de si la app se ejecuta en un dispositivo móvil o en la web:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 private async convertPhotoToBase64(photo: Photo): Promise<string> {
@@ -248,10 +312,14 @@ private async convertPhotoToBase64(photo: Photo): Promise<string> {
   }
 }
 ```
+</div>
 
 ##### 6.2. Método `convertBlobToBase64`
 
 Convierte un objeto Blob (datos binarios) a una cadena Base64:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 private convertBlobToBase64(blob: Blob): Promise<string> {
@@ -265,26 +333,35 @@ private convertBlobToBase64(blob: Blob): Promise<string> {
   });
 }
 ```
+</div>
 
 ##### 6.3. Método `generateFileName`
 
 Genera un nombre de archivo único basado en la marca de tiempo actual:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 private generateFileName(): string {
   return Date.now() + PhotoService.IMAGE_FORMAT;
 }
 ```
+</div>
 
 ##### 6.4. Método `isNativePlatform`
 
 Verifica si la aplicación se está ejecutando en una plataforma nativa (móvil) o en la web:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 private isNativePlatform(): boolean {
   return this.platform.is('hybrid');
 }
 ```
+</div>
 
 ---
 
@@ -296,9 +373,13 @@ Con esto, tu servicio `PhotoService` estará completo y funcional. Si copias y p
 
 ### a) Importa el servicio en `home.page.ts`
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```typescript
 import { PhotoService } from '../app/services/photo.service';
 ```
+</div>
 
 ### b) Inyecta el servicio usando `inject`
 
@@ -318,8 +399,12 @@ import { Component, inject } from '@angular/core';
 // dentro de class HomePage
 private photoService = inject(PhotoService);
 ```
+</div>
 
 ### c) Crea el método `tomarFoto` en HomePage
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 async tomarFoto() {
@@ -329,6 +414,7 @@ async tomarFoto() {
   }
 }
 ```
+</div>
 
 ---
 
@@ -338,26 +424,37 @@ async tomarFoto() {
 
 Edita `src/app/home/home.page.html` para agregar el botón eliminar:
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```html
 <!-- Botón eliminar foto -->
 <ion-button fill="clear" color="danger" *ngIf="foto" (click)="eliminarFoto()">
   Eliminar Foto
 </ion-button>
 ```
+</div>
 
 ### b) Agrega el método `eliminarFoto` en HomePage
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 eliminarFoto() {
   this.foto = '';
 }
 ```
+</div>
 
 ---
 
 ## 7. Mejora los estilos
 
 Edita `src/app/home/home.page.scss` para mejorar la vista previa y botones:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```scss
 .foto-preview {
@@ -376,6 +473,7 @@ ion-button {
   }
 }
 ```
+</div>
 
 ---
 
@@ -383,9 +481,13 @@ ion-button {
 
 ### a) En el navegador
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```bash
 ionic serve
 ```
+</div>
 
 - Verifica que el botón "Tomar Foto" abre la cámara del navegador.
 - La foto se muestra en la vista previa.
@@ -393,10 +495,14 @@ ionic serve
 
 ### b) En Android
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```bash
 npx cap sync android
 npx cap open android
 ```
+</div>
 
 - Prueba la cámara nativa y la vista previa.
 
