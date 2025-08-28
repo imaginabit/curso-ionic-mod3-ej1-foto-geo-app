@@ -355,14 +355,6 @@ code {
 </style>
 
 <script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
-<script>
-function copyCode(btn) {
-  const codeBlock = btn.nextElementSibling;
-  navigator.clipboard.writeText(codeBlock.innerText);
-  btn.textContent = 'Copiado!';
-  setTimeout(() => btn.textContent = 'Copiar', 2000);
-}
-</script>
 </head>
 <body>
   <script>
@@ -373,10 +365,76 @@ function copyCode(btn) {
           : 'default'
     });
   </script>
+<script>
+// Mejor versión del copyCode con fallback y accesibilidad
+function copyCode(btn) {
+  const codeBlock = btn.nextElementSibling;
+  const text = codeBlock ? codeBlock.innerText : '';
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copiado!';
+      setTimeout(() => btn.textContent = 'Copiar', 2000);
+    }).catch(() => fallbackCopy(text, btn));
+  } else {
+    fallbackCopy(text, btn);
+  }
+}
+
+function fallbackCopy(text, btn) {
+  try {
+    const el = document.createElement('textarea');
+    el.value = text;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    btn.textContent = 'Copiado!';
+    setTimeout(() => btn.textContent = 'Copiar', 2000);
+  } catch (err) {
+    if (btn && btn.nextElementSibling) {
+      const cb = btn.nextElementSibling;
+      const range = document.createRange();
+      range.selectNodeContents(cb);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      btn.textContent = 'Selecciona y copia (Ctrl+C)';
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('button[onclick^="copyCode"]').forEach(btn => {
+    if (!btn.getAttribute('aria-label')) btn.setAttribute('aria-label', 'Copiar código');
+    btn.setAttribute('type', 'button');
+  });
+});
+</script>
 <h1 id="tutorial-paso-a-paso-foto-geo-app-parte-2">Tutorial Paso a Paso: Foto-Geo App (Parte 2)</h1>
 <h2 id="objetivo">Objetivo</h2>
 <p>Agregar funcionalidad real de cámara y gestión de fotos usando un servicio en Ionic + Angular, manteniendo la estructura clara y guiada como en la Parte 1.</p>
 <hr>
+<hr>
+<h1 id="tutorial-paso-a-paso-foto-geo-app-parte-2">Tutorial Paso a Paso: Foto-Geo App (Parte 2)</h1>
+<h2 id="objetivo">Objetivo</h2>
+<ul>
+<li><input type="checkbox" id="checkbox0"><label for="checkbox0"></label><code>src/app/service/photo.service.ts</code> existe
+src/app/service/photo.service.ts</li>
+</ul>
+<h2 id="2-crea-el-servicio-de-fotos-paso-a-paso">2. Crea el servicio de fotos paso a paso</h2>
+<p>Abre <code>src/app/service/photo.service.ts</code> y agrega al inicio:</p>
+<p>-- <code>src/app/services/photo.service.ts</code>: Servicio de fotos</p>
+<ul>
+<li><code>src/app/service/photo.service.ts</code>: Servicio de fotos
+<ul>
+<li><input type="checkbox" id="checkbox1"><label for="checkbox1"></label><code>takePicture()</code> compila y maneja cancelación (retorna null)</li>
+</ul>
+</li>
+<li>Reto: Añade un método <code>getLastPhoto()</code> que retorne la última foto tomada o null.</li>
+</ul>
 <h2 id="prerrequisitos">Prerrequisitos</h2>
 <ul>
 <li>Haber completado la <strong>Parte 1</strong></li>
@@ -398,13 +456,13 @@ npx <span class="hljs-built_in">cap</span> sync
 </div></code></pre>
 </div>
 <hr>
-<p>src/app/services/photo.service.ts</p>
+<p>src/app/service/photo.service.ts</p>
 <h2 id="2-crea-el-servicio-de-fotos-paso-a-paso">2. Crea el servicio de fotos paso a paso</h2>
 <h3 id="a-crea-el-archivo-del-servicio-usando-ionic-cli">a) Crea el archivo del servicio usando Ionic CLI</h3>
 <p>Abre la terminal y ejecuta:</p>
 <div class="code-toolbar">
   <button onclick="copyCode(this)">Copiar</button>
-<pre class="hljs"><code><div>npx ionic generate service app/services/photo.service
+<pre class="hljs"><code><div>npx ionic generate service service/photo.service
 </div></code></pre>
 </div>
 <p>Esto creará dos archivos:</p>
@@ -641,8 +699,6 @@ Es una forma moderna y recomendada (desde Angular 14+) para inyectar servicios, 
 <p>es el equivalente a hacer
 constructor(private photoService: PhotoService) {}
 para injectar dependencias</p>
-<div class="code-toolbar">
-  <button onclick="copyCode(this)">Copiar</button>
 <pre class="hljs"><code><div><span class="hljs-comment">//importa inject </span>
 <span class="hljs-keyword">import</span> { Component, inject } <span class="hljs-keyword">from</span> <span class="hljs-string">'@angular/core'</span>;
 
@@ -666,21 +722,26 @@ para injectar dependencias</p>
 <h2 id="6-actualiza-la-interfaz-de-usuario">6. Actualiza la interfaz de usuario</h2>
 <h3 id="a-modifica-el-archivo-html">a) Modifica el archivo HTML</h3>
 <p>Edita <code>src/app/home/home.page.html</code> para agregar el botón eliminar:</p>
+<div class="code-toolbar">
   <button onclick="copyCode(this)">Copiar</button>
 <pre class="hljs"><code><div><span class="hljs-comment">&lt;!-- Botón eliminar foto --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">ion-button</span> <span class="hljs-attr">fill</span>=<span class="hljs-string">"clear"</span> <span class="hljs-attr">color</span>=<span class="hljs-string">"danger"</span> *<span class="hljs-attr">ngIf</span>=<span class="hljs-string">"foto"</span> (<span class="hljs-attr">click</span>)=<span class="hljs-string">"eliminarFoto()"</span>&gt;</span>
   Eliminar Foto
 <span class="hljs-tag">&lt;/<span class="hljs-name">ion-button</span>&gt;</span>
 </div></code></pre>
+</div>
 <h3 id="b-agrega-el-m%C3%A9todo-eliminarfoto-en-homepage">b) Agrega el método <code>eliminarFoto</code> en HomePage</h3>
+<div class="code-toolbar">
   <button onclick="copyCode(this)">Copiar</button>
 <pre class="hljs"><code><div>eliminarFoto() {
   <span class="hljs-keyword">this</span>.foto = <span class="hljs-string">''</span>;
 }
 </div></code></pre>
+</div>
 <hr>
 <h2 id="7-mejora-los-estilos">7. Mejora los estilos</h2>
 <p>Edita <code>src/app/home/home.page.scss</code> para mejorar la vista previa y botones:</p>
+<div class="code-toolbar">
   <button onclick="copyCode(this)">Copiar</button>
 <pre class="hljs"><code><div><span class="hljs-selector-class">.foto-preview</span> {
   <span class="hljs-attribute">height</span>: <span class="hljs-number">40</span>dvh;
@@ -698,20 +759,27 @@ ion-<span class="hljs-selector-tag">button</span> {
   }
 }
 </div></code></pre>
+</div>
 <hr>
 <h2 id="8-prueba-la-app">8. Prueba la app</h2>
 <h3 id="a-en-el-navegador">a) En el navegador</h3>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 <pre class="hljs"><code><div>ionic serve
 </div></code></pre>
+</div>
 <ul>
 <li>Verifica que el botón &quot;Tomar Foto&quot; abre la cámara del navegador.</li>
 <li>La foto se muestra en la vista previa.</li>
 <li>El botón eliminar funciona.</li>
 </ul>
 <h3 id="b-en-android">b) En Android</h3>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 <pre class="hljs"><code><div>npx <span class="hljs-built_in">cap</span> sync android
 npx <span class="hljs-built_in">cap</span> open android
 </div></code></pre>
+</div>
 <ul>
 <li>Prueba la cámara nativa y la vista previa.</li>
 </ul>
@@ -726,11 +794,11 @@ npx <span class="hljs-built_in">cap</span> open android
 <hr>
 <h2 id="checklist-final">Checklist final</h2>
 <ul>
-<li><input type="checkbox" id="checkbox0"><label for="checkbox0">Servicio de fotos creado</label></li>
-<li><input type="checkbox" id="checkbox1"><label for="checkbox1">Cámara funciona en web y Android</label></li>
-<li><input type="checkbox" id="checkbox2"><label for="checkbox2">Vista previa y eliminación de fotos</label></li>
-<li><input type="checkbox" id="checkbox3"><label for="checkbox3">UI mejorada</label></li>
-<li><input type="checkbox" id="checkbox4"><label for="checkbox4">Sin errores en consola</label></li>
+<li><input type="checkbox" id="checkbox2"><label for="checkbox2">Servicio de fotos creado</label></li>
+<li><input type="checkbox" id="checkbox3"><label for="checkbox3">Cámara funciona en web y Android</label></li>
+<li><input type="checkbox" id="checkbox4"><label for="checkbox4">Vista previa y eliminación de fotos</label></li>
+<li><input type="checkbox" id="checkbox5"><label for="checkbox5">UI mejorada</label></li>
+<li><input type="checkbox" id="checkbox6"><label for="checkbox6">Sin errores en consola</label></li>
 </ul>
 <hr>
 <p>¡Listo! Continúa con la Parte 3 para agregar geolocalización.</p>

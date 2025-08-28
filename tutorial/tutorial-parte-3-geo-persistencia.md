@@ -283,6 +283,23 @@ npx cap sync
 <a id="2-crea-el-modelo-de-datos"></a>
 ## 2. Crea el modelo de datos
 
+### Por qué lo hacemos
+Entender y definir el modelo de datos antes de implementar servicios y UI evita errores de integración. Al tener una interfaz clara (GeoPhotoRecord y Coordinates) sabes qué guardar, cómo formatearlo y qué mostrar en la lista.
+
+### Ejemplo de JSON de un registro
+Para que veas un ejemplo realista del objeto que guardaremos en `@capacitor/preferences`:
+
+```json
+{
+  "id": "record_1690000000000_ab12cd34",
+  "photo": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ...",
+  "description": "Atardecer en la playa",
+  "coordinates": { "latitude": -33.4489, "longitude": -70.6693 },
+  "date": "2025-08-28 21:15:03"
+}
+```
+
+
 ### a) Genera el archivo del modelo usando Ionic CLI
 
 Abre la terminal y ejecuta:
@@ -363,6 +380,10 @@ npx ionic generate service service/geolocation.service
 </div>
 
 Esto creará el archivo `src/app/service/geolocation.service.ts` directamente con el nombre correcto.
+
+### Comprobaciones rápidas / debugging
+- Si el `npx ionic generate service` no crea el archivo en `src/app/service`, revisa que estés en la carpeta raíz del proyecto y repite el comando.
+- Si durante importaciones recibes "module not found", verifica la ruta exacta (usamos `src/app/service/` en este tutorial) y que el archivo `.ts` existe.
 
 ### b) Agrega las importaciones necesarias
 
@@ -598,6 +619,10 @@ npx ionic generate service service/storage.service
 </div>
 
 Esto creará el archivo `src/app/service/storage.service.ts` directamente con el nombre correcto.
+### Comprobaciones rápidas / debugging (Storage)
+- Si `Preferences.get` retorna un valor no JSON o lanza un error, asegúrate de manejar JSON.parse dentro de un try/catch (el tutorial ya incluye este manejo).
+- Para comprobar que los registros se guardan: en la consola (web) ejecuta `await Preferences.get({ key: 'geo-photo-records' })` y valida que `result.value` sea un JSON parseable (o `null`/`[]`).
+
 
 ### b) Agrega las importaciones necesarias
 
