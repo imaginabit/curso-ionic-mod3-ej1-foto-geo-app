@@ -447,7 +447,9 @@ export class GeolocationService {
 
 ### a) Crea el método principal para obtener posición
 
-Agrega el método principal en `GeolocationService`:
+Agrega el método principal en `GeolocationService` 
+ y un return temporal para probar.
+
 
 <div class="code-toolbar">
   <button onclick="copyCode(this)">Copiar</button>
@@ -455,18 +457,13 @@ Agrega el método principal en `GeolocationService`:
 ```typescript
 async getCurrentPosition(): Promise<Coordinates | null> {
   // Implementación en el siguiente paso
+    // TODO: implementar; por ahora devuelve null para evitar errores en compilación
+  return null;
 }
 ```
 </div>
 
-Pequeño paso (micro-snippet): crea solo la firma y un return temporal para compilar y probar.
 
-```typescript
-async getCurrentPosition(): Promise<Coordinates | null> {
-  // TODO: implementar; por ahora devuelve null para evitar errores en compilación
-  return null;
-}
-```
 
 Comprueba rápido:
 
@@ -588,20 +585,6 @@ private async checkPermissions(): Promise<boolean> {
 }
 ```
 </div>
-
-Micro-checks para storage (antes de crear todos los métodos):
-
-- Crea y prueba `generateId()` simple:
-
-```typescript
-generateId(): string {
-  return 'r_' + Date.now();
-}
-```
-
-Comprueba rápido:
-
-- En consola, ejecuta `new StorageService().generateId()` (o añade un console.log) para comprobar el formato.
 
 ---
 
@@ -1339,7 +1322,8 @@ Dentro de `<ion-card-content>` del segundo card, agrega:
           <div class="registro-info">
             <h3>{{registro.description}}</h3>
             <p class="date">📅 {{registro.date}}</p>
-            <p class="coordenadas">📍 {{registro.coordinates?.latitude.toFixed(6)}}, {{registro.coordinates?.longitude.toFixed(6)}}</p>
+            <p class="coordenadas" *ngIf="registro.coordinates">📍 
+              {{registro.coordinates.latitude.toFixed(6)}}, {{registro.coordinates.longitude.toFixed(6)}}</p>
           </div>
         </ion-col>
         
