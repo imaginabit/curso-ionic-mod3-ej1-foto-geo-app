@@ -1,10 +1,50 @@
 <script>
+// Mejor versión del copyCode con fallback y accesibilidad
 function copyCode(btn) {
   const codeBlock = btn.nextElementSibling;
-  navigator.clipboard.writeText(codeBlock.innerText);
-  btn.textContent = 'Copiado!';
-  setTimeout(() => btn.textContent = 'Copiar', 2000);
+  const text = codeBlock ? codeBlock.innerText : '';
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copiado!';
+      setTimeout(() => btn.textContent = 'Copiar', 2000);
+    }).catch(() => fallbackCopy(text, btn));
+  } else {
+    fallbackCopy(text, btn);
+  }
 }
+
+function fallbackCopy(text, btn) {
+  try {
+    const el = document.createElement('textarea');
+    el.value = text;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    btn.textContent = 'Copiado!';
+    setTimeout(() => btn.textContent = 'Copiar', 2000);
+  } catch (err) {
+    if (btn && btn.nextElementSibling) {
+      const cb = btn.nextElementSibling;
+      const range = document.createRange();
+      range.selectNodeContents(cb);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      btn.textContent = 'Selecciona y copia (Ctrl+C)';
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('button[onclick^="copyCode"]').forEach(btn => {
+    if (!btn.getAttribute('aria-label')) btn.setAttribute('aria-label', 'Copiar código');
+    btn.setAttribute('type', 'button');
+  });
+});
 </script>
 
 # Tutorial Paso a Paso: Foto-Geo App (Parte 2)
@@ -13,6 +53,23 @@ function copyCode(btn) {
 Agregar funcionalidad real de cámara y gestión de fotos usando un servicio en Ionic + Angular, manteniendo la estructura clara y guiada como en la Parte 1.
 
 ---
+
+---
+
+# Tutorial Paso a Paso: Foto-Geo App (Parte 2)
+
+## Objetivo
+  - [ ] `src/app/service/photo.service.ts` existe
+src/app/service/photo.service.ts
+
+## 2. Crea el servicio de fotos paso a paso
+Abre `src/app/service/photo.service.ts` y agrega al inicio:
+
+-- `src/app/services/photo.service.ts`: Servicio de fotos
+- `src/app/service/photo.service.ts`: Servicio de fotos
+  - [ ] `takePicture()` compila y maneja cancelación (retorna null)
+- Reto: Añade un método `getLastPhoto()` que retorne la última foto tomada o null.
+
 
 ## Prerrequisitos
 - Haber completado la **Parte 1**
@@ -38,7 +95,7 @@ npx cap sync
 
 ---
 
-src/app/services/photo.service.ts
+src/app/service/photo.service.ts
 
 ## 2. Crea el servicio de fotos paso a paso
 
@@ -50,7 +107,7 @@ Abre la terminal y ejecuta:
   <button onclick="copyCode(this)">Copiar</button>
 
 ```bash
-npx ionic generate service app/services/photo.service
+npx ionic generate service service/photo.service
 ```
 </div>
 

@@ -6,6 +6,54 @@ function copyCode(btn) {
   setTimeout(() => btn.textContent = 'Copiar', 2000);
 }
 </script>
+<script>
+// Mejor versión del copyCode con fallback y accesibilidad
+function copyCode(btn) {
+  const codeBlock = btn.nextElementSibling;
+  const text = codeBlock ? codeBlock.innerText : '';
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copiado!';
+      setTimeout(() => btn.textContent = 'Copiar', 2000);
+    }).catch(() => fallbackCopy(text, btn));
+  } else {
+    fallbackCopy(text, btn);
+  }
+}
+
+function fallbackCopy(text, btn) {
+  try {
+    const el = document.createElement('textarea');
+    el.value = text;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    btn.textContent = 'Copiado!';
+    setTimeout(() => btn.textContent = 'Copiar', 2000);
+  } catch (err) {
+    if (btn && btn.nextElementSibling) {
+      const cb = btn.nextElementSibling;
+      const range = document.createRange();
+      range.selectNodeContents(cb);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      btn.textContent = 'Selecciona y copia (Ctrl+C)';
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('button[onclick^="copyCode"]').forEach(btn => {
+    if (!btn.getAttribute('aria-label')) btn.setAttribute('aria-label', 'Copiar código');
+    btn.setAttribute('type', 'button');
+  });
+});
+</script>
 
 # Tutorial: Creación de páginas y navegación en Ionic CLI
 
@@ -65,3 +113,15 @@ Este sistema hace que la navegación sea fluida, reactiva y fácil de mantener.
 - Para navegación programática, utiliza `this.router.navigate(['/ruta']);` en el componente TypeScript.
 
 ¡Con estos pasos, puedes empezar a construir la estructura de navegación de tu app Ionic!
+
+---
+
+## Mini reto: Páginas y navegación
+
+- Dado: Las páginas creadas deben declararse en las rutas y exportar el componente principal.
+- Comprueba:
+  - [ ] Ejecuta `ionic generate page perfil` y verifica que la carpeta se creó
+  - [ ] La ruta `/perfil` carga la página sin errores en la consola
+- Reto: Añade un botón en la página de inicio que navegue a `/perfil` y muestre un mensaje con `ion-toast`.
+
+

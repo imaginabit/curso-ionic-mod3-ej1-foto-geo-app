@@ -126,3 +126,14 @@ Este enfoque con clase nos permite encapsular comportamiento en el modelo, facil
 ## Resumen
 
 El modelo `Registro` es fundamental porque define la estructura de los datos que manejará nuestra app. Así, aseguramos que todos los registros tengan la misma información y sea fácil manipularlos en las siguientes partes del desarrollo.
+
+
+---
+
+## Mini reto: Modelos y tipos de datos
+
+- Dado: El modelo debe exportar una interfaz con los campos esperados (`id?`, `photo/foto`, `description/descripcion`, `coordinates/lat+lng`, `date/fecha`).
+- Comprueba:
+  - [ ] `src/app/models/registro.ts` o `geo-photo.model.ts` existe
+  - [ ] Las propiedades coinciden con los ejemplos de HomePage
+- Reto: Refactoriza el ejemplo para usar `GeoPhotoRecord` con `coordinates` como objeto en vez de `lat`/`lng` separados.
