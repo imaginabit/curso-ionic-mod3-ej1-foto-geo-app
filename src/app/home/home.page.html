@@ -13,35 +13,134 @@
     </ion-toolbar>
   </ion-header>
 
-  <div id="container">
-    <!-- Botón para tomar foto --> 
-    <ion-button expand="full" (click)="tomarFoto()"> 
-      Tomar Foto 
-    </ion-button> 
- 
-    <!-- Campo descripción --> 
-    <ion-item> 
-      <ion-label position="floating">Descripción</ion-label> 
-      <ion-textarea [(ngModel)]="descripcion"></ion-textarea> 
-    </ion-item> 
- 
-    <!-- Vista previa de la foto --> 
-    <ion-img class="foto-preview" [src]="foto" *ngIf="foto"></ion-img> 
+<div id="container">
+  <!-- Sección: Nuevo Registro -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Nuevo Registro</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
       
-    <!-- Botón eliminar foto -->
-    <ion-button fill="clear" expand="full" color="danger" *ngIf="foto" (click)="eliminarFoto()">
-      Eliminar Foto
-    </ion-button>
- 
-    <!-- Botón guardar (por ahora solo console.log) --> 
-    <ion-button  
-      expand="full"  
-      color="success"  
-      (click)="guardarRegistro()" 
-      [disabled]="!foto || !descripcion"> 
-      Guardar Registro 
-    </ion-button> 
+<!-- Botón para tomar foto -->
+<ion-button expand="full" (click)="tomarFoto()">
+  Tomar Foto
+</ion-button>
 
- 
-  </div>
+<!-- Campo descripción -->
+<ion-item>
+  <ion-label position="floating">Descripción</ion-label>
+  <ion-textarea [(ngModel)]="descripcion"></ion-textarea>
+</ion-item>
+
+<!-- Vista previa de la foto -->
+<ion-img class="foto-preview" [src]="foto" *ngIf="foto"></ion-img>
+
+<!-- Botón eliminar foto -->
+<ion-button 
+  fill="clear" 
+  color="danger" 
+  *ngIf="foto" 
+  (click)="eliminarFoto()">
+  Eliminar Foto
+</ion-button>
+
+<!-- Información de ubicación -->
+<div class="ubicacion-info" *ngIf="tieneUbicacion">
+  <ion-text color="success">
+    <h4>📍 Ubicación obtenida</h4>
+    <p>{{coordenadas!.latitude.toFixed(6)}}, {{coordenadas!.longitude.toFixed(6)}}</p>
+  </ion-text>
+</div>
+
+<div class="ubicacion-info" *ngIf="cargandoUbicacion">
+  <ion-text color="warning">
+    <p>🔍 Obteniendo ubicación...</p>
+  </ion-text>
+</div>
+
+<!-- Botón para obtener ubicación manualmente -->
+<ion-button 
+  expand="full" 
+  fill="outline" 
+  color="secondary"
+  (click)="obtenerUbicacion()"
+  [disabled]="cargandoUbicacion">
+  {{cargandoUbicacion ? 'Obteniendo ubicación...' : 'Obtener Ubicación GPS'}}
+</ion-button>
+
+      
+    </ion-card-content>
+  </ion-card>
+  
+  <!-- Otras secciones se agregarán en los siguientes pasos -->
+   <!-- Botón guardar -->
+<ion-button
+  expand="full"
+  color="success"
+  (click)="guardarRegistro()"
+  [disabled]="!formularioValido">
+  Guardar Registro
+</ion-button>
+
+<!-- Sección: Lista de Registros -->
+<ion-card *ngIf="registros.length > 0">
+  <ion-card-header>
+    <ion-card-title>Registros Guardados ({{registros.length}})</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-list>
+  <ion-item *ngFor="let registro of registros">
+    <ion-grid>
+      <ion-row>
+        <!-- Columna de imagen -->
+        <ion-col size="4">
+          <ion-img 
+            [src]="registro.photo" 
+            class="registro-imagen">
+          </ion-img>
+        </ion-col>
+        
+        <!-- Columna de información -->
+        <ion-col size="6">
+          <div class="registro-info">
+            <h3>{{registro.description}}</h3>
+            <p class="date">📅 {{registro.date}}</p>
+            <p class="coordenadas" *ngIf="registro.coordinates">📍 
+              {{registro.coordinates.latitude.toFixed(6)}}, {{registro.coordinates.longitude.toFixed(6)}}</p>
+          </div>
+        </ion-col>
+        
+        <!-- Columna de botón eliminar -->
+        <ion-col size="2" class="ion-text-center">
+          <ion-button 
+            fill="clear" 
+            color="danger" 
+            size="small"
+            (click)="eliminarRegistro(registro.id)">
+            🗑️
+          </ion-button>
+        </ion-col>
+        
+      </ion-row>
+    </ion-grid>
+  </ion-item>
+</ion-list>
+    
+  </ion-card-content>
+  <!-- Mensaje cuando no hay registros -->
+<ion-card *ngIf="registros.length === 0">
+  <ion-card-content class="ion-text-center">
+    <ion-text color="medium">
+      <h4>No hay registros guardados</h4>
+      <p>Toma tu primera foto con ubicación para comenzar</p>
+    </ion-text>
+  </ion-card-content>
+</ion-card>
+
+</ion-card>
+
+
+  
+</div>
+
 </ion-content>
