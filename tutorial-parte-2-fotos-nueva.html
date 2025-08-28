@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>tutorial-parte-2-fotos-nueva.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+<script>
+function copyCode(btn) {
+  const codeBlock = btn.nextElementSibling;
+  navigator.clipboard.writeText(codeBlock.innerText);
+  btn.textContent = 'Copiado!';
+  setTimeout(() => btn.textContent = 'Copiar', 2000);
+}
+</script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="tutorial-paso-a-paso-foto-geo-app-parte-2">Tutorial Paso a Paso: Foto-Geo App (Parte 2)</h1>
+<h2 id="objetivo">Objetivo</h2>
+<p>Agregar funcionalidad real de cámara y gestión de fotos usando un servicio en Ionic + Angular, manteniendo la estructura clara y guiada como en la Parte 1.</p>
+<hr>
+<h2 id="prerrequisitos">Prerrequisitos</h2>
+<ul>
+<li>Haber completado la <strong>Parte 1</strong></li>
+<li>Tener instalado:
+<ul>
+<li><code>@capacitor/camera</code></li>
+<li><code>@capacitor/filesystem</code></li>
+<li><code>@ionic/angular</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="1-instala-los-plugins-necesarios">1. Instala los plugins necesarios</h2>
+<p>Abre una terminal y ejecuta:</p>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div>npm install @capacitor/camera @capacitor/filesystem
+npx <span class="hljs-built_in">cap</span> sync
+</div></code></pre>
+</div>
+<hr>
+<p>src/app/services/photo.service.ts</p>
+<h2 id="2-crea-el-servicio-de-fotos-paso-a-paso">2. Crea el servicio de fotos paso a paso</h2>
+<h3 id="a-crea-el-archivo-del-servicio-usando-ionic-cli">a) Crea el archivo del servicio usando Ionic CLI</h3>
+<p>Abre la terminal y ejecuta:</p>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div>npx ionic generate service app/services/photo.service
+</div></code></pre>
+</div>
+<p>Esto creará dos archivos:</p>
+<ul>
+<li><code>src/app/services/photo.service.ts</code></li>
+<li><code>src/app/services/photo.service.spec.ts</code></li>
+</ul>
+<p>Trabajaremos solo en el archivo <code>.ts</code>.</p>
+<h3 id="b-explicaci%C3%B3n-%C2%BFqu%C3%A9-es-un-servicio">b) Explicación: ¿Qué es un servicio?</h3>
+<p>Un servicio en Angular permite centralizar lógica reutilizable, como la gestión de fotos, y se puede inyectar en cualquier componente.</p>
+<h3 id="c-define-la-interfaz-para-la-foto-de-usuario">c) Define la interfaz para la foto de usuario</h3>
+<p>Abre <code>src/app/services/photo.service.ts</code> y agrega al inicio:</p>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> UserPhoto {
+  filepath: <span class="hljs-built_in">string</span>;      <span class="hljs-comment">// Ruta del archivo en el dispositivo</span>
+  webviewPath: <span class="hljs-built_in">string</span>;  <span class="hljs-comment">// Ruta para mostrar la imagen en la app</span>
+}
+</div></code></pre>
+</div>
+<h3 id="d-declara-la-clase-del-servicio">d) Declara la clase del servicio</h3>
+<p>Debajo de la interfaz, asegúrate de tener:</p>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> { Injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">'@angular/core'</span>;
+
+<span class="hljs-meta">@Injectable</span>({ providedIn: <span class="hljs-string">'root'</span> })
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> PhotoService {
+  <span class="hljs-keyword">constructor</span>(<span class="hljs-params"></span>) {}
+  <span class="hljs-comment">// Métodos se implementarán en los siguientes pasos</span>
+}
+</div></code></pre>
+</div>
+<p>Así tendrás la base lista para agregar la lógica de cámara y archivos en los siguientes pasos.</p>
+<hr>
+<h2 id="3-implementa-la-l%C3%B3gica-de-tomar-foto">3. Implementa la lógica de tomar foto</h2>
+<h3 id="a-agrega-dependencias-de-capacitor">a) Agrega dependencias de Capacitor</h3>
+<p>Agrega los imports necesarios al inicio del archivo <code>photo.service.ts</code>:</p>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> { Camera, CameraResultType, CameraSource, Photo } <span class="hljs-keyword">from</span> <span class="hljs-string">'@capacitor/camera'</span>;
+<span class="hljs-keyword">import</span> { Filesystem, Directory } <span class="hljs-keyword">from</span> <span class="hljs-string">'@capacitor/filesystem'</span>;
+<span class="hljs-keyword">import</span> { Capacitor } <span class="hljs-keyword">from</span> <span class="hljs-string">'@capacitor/core'</span>;
+<span class="hljs-keyword">import</span> { Platform } <span class="hljs-keyword">from</span> <span class="hljs-string">'@ionic/angular'</span>;
+</div></code></pre>
+</div>
+<h3 id="b-inyecta-platform-en-el-constructor">b) Inyecta Platform en el constructor</h3>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">constructor</span>(<span class="hljs-params"><span class="hljs-keyword">private</span> platform: Platform</span>) {}
+</div></code></pre>
+</div>
+<p>La clase Platform de @ionic/angular sirve para detectar en qué plataforma se está ejecutando tu app (por ejemplo: web, Android, iOS, escritorio).</p>
+<h3 id="c-crea-el-m%C3%A9todo-para-tomar-foto">c) Crea el método para tomar foto</h3>
+<p>Agrega el método:</p>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">async</span> takePicture(): <span class="hljs-built_in">Promise</span>&lt;UserPhoto | <span class="hljs-literal">null</span>&gt; {
+  <span class="hljs-comment">// Implementación en el siguiente paso</span>
+}
+</div></code></pre>
+</div>
+<hr>
+<h2 id="4-procesa-y-guarda-la-foto">4. Procesa y guarda la foto</h2>
+<h3 id="a-agrega-m%C3%A9todos-privados-para-procesar-la-foto">a) Agrega métodos privados para procesar la foto</h3>
+<p>Agrega los siguientes métodos vacíos en <code>PhotoService</code>:</p>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">private</span> <span class="hljs-keyword">async</span> processCapturedPhoto(photo: Photo): <span class="hljs-built_in">Promise</span>&lt;UserPhoto&gt; {
+  <span class="hljs-comment">// Implementación siguiente</span>
+}
+
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">async</span> savePhotoToFileSystem(photo: Photo): <span class="hljs-built_in">Promise</span>&lt;UserPhoto&gt; {
+  <span class="hljs-comment">// Implementación siguiente</span>
+}
+
+<span class="hljs-keyword">private</span> processWebPhoto(photo: Photo): UserPhoto {
+  <span class="hljs-comment">// Implementación siguiente</span>
+}
+</div></code></pre>
+</div>
+<p>Todos estos metodos probablemente muestren un error ahora mismo por que no estan devolviendo el tipo de dato que le pedimos que devuelva, por ejemplo, processWebPhoto tiene deve devolver UserPhoto y no devuelve nada</p>
+<h3 id="b-implementa-la-l%C3%B3gica-en-cada-m%C3%A9todo-paso-a-paso">b) Implementa la lógica en cada método paso a paso</h3>
+<p>Ahora vamos a implementar cada método del servicio paso a paso. Abre <code>src/app/services/photo.service.ts</code> y sigue estas instrucciones:</p>
+<h4 id="1-agrega-las-constantes-a-la-clase">1. Agrega las constantes a la clase</h4>
+<p>Al inicio de la clase <code>PhotoService</code>, justo después de la línea <code>export class PhotoService {</code>, agrega:</p>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-comment">// Constantes de configuración</span>
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> readonly CAMERA_QUALITY = <span class="hljs-number">90</span>;
+<span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> readonly IMAGE_FORMAT = <span class="hljs-string">'.jpeg'</span>;
+
+</div></code></pre>
+</div>
+<h4 id="2-m%C3%A9todo-takepicture">2. Método <code>takePicture</code></h4>
+<p>Este método abre la cámara y gestiona errores:</p>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">async</span> takePicture(): <span class="hljs-built_in">Promise</span>&lt;UserPhoto | <span class="hljs-literal">null</span>&gt; {
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">const</span> capturedPhoto = <span class="hljs-keyword">await</span> Camera.getPhoto({
+      resultType: CameraResultType.Uri,
+      source: CameraSource.Camera,
+      quality: PhotoService.CAMERA_QUALITY,
+      allowEditing: <span class="hljs-literal">false</span>,
+    });
+    <span class="hljs-comment">// Procesa la foto capturada</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.processCapturedPhoto(capturedPhoto);
+  } <span class="hljs-keyword">catch</span> (error) {
+    <span class="hljs-comment">// Si el usuario cancela o hay error, retorna null</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+  }
+}
+</div></code></pre>
+</div>
+<h4 id="3-m%C3%A9todo-processcapturedphoto">3. Método <code>processCapturedPhoto</code></h4>
+<p>Decide si guardar la foto en el filesystem (móvil) o solo mostrarla (web):</p>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">private</span> <span class="hljs-keyword">async</span> processCapturedPhoto(photo: Photo): <span class="hljs-built_in">Promise</span>&lt;UserPhoto&gt; {
+  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.isNativePlatform()) {
+    <span class="hljs-comment">// Si es móvil, guarda la foto en el filesystem</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.savePhotoToFileSystem(photo);
+  } <span class="hljs-keyword">else</span> {
+    <span class="hljs-comment">// Si es web, solo prepara la foto para mostrar</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.processWebPhoto(photo);
+  }
+}
+</div></code></pre>
+</div>
+<h4 id="4-m%C3%A9todo-savephototofilesystem">4. Método <code>savePhotoToFileSystem</code></h4>
+<p>Convierte la foto a base64, la guarda y retorna la info:</p>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">private</span> <span class="hljs-keyword">async</span> savePhotoToFileSystem(photo: Photo): <span class="hljs-built_in">Promise</span>&lt;UserPhoto&gt; {
+  <span class="hljs-keyword">const</span> base64Data = <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.convertPhotoToBase64(photo);
+  <span class="hljs-keyword">const</span> fileName = <span class="hljs-keyword">this</span>.generateFileName();
+
+  <span class="hljs-keyword">const</span> savedFile = <span class="hljs-keyword">await</span> Filesystem.writeFile({
+    path: fileName,
+    data: base64Data,
+    directory: Directory.Data,
+  });
+
+  <span class="hljs-keyword">return</span> {
+    filepath: savedFile.uri,
+    webviewPath: Capacitor.convertFileSrc(savedFile.uri),
+  };
+}
+</div></code></pre>
+</div>
+<h4 id="5-m%C3%A9todo-processwebphoto">5. Método <code>processWebPhoto</code></h4>
+<p>Prepara la foto para mostrar en la web:</p>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">private</span> processWebPhoto(photo: Photo): UserPhoto {
+  <span class="hljs-keyword">const</span> fileName = <span class="hljs-keyword">this</span>.generateFileName();
+  <span class="hljs-keyword">return</span> {
+    filepath: fileName,
+    webviewPath: photo.webPath || <span class="hljs-string">''</span>,
+  };
+}
+</div></code></pre>
+</div>
+<h4 id="6-m%C3%A9todos-auxiliares">6. Métodos auxiliares</h4>
+<p>Agrega estos métodos privados al final de la clase para completar la funcionalidad:</p>
+<h5 id="61-m%C3%A9todo-convertphototobase64">6.1. Método <code>convertPhotoToBase64</code></h5>
+<p>Convierte una foto a formato Base64, dependiendo de si la app se ejecuta en un dispositivo móvil o en la web:</p>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">private</span> <span class="hljs-keyword">async</span> convertPhotoToBase64(photo: Photo): <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">string</span>&gt; {
+  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.isNativePlatform()) {
+    <span class="hljs-comment">// Lee el archivo desde el filesystem (móvil)</span>
+    <span class="hljs-keyword">const</span> file = <span class="hljs-keyword">await</span> Filesystem.readFile({
+      path: photo.path!,
+    });
+    <span class="hljs-keyword">return</span> file.data <span class="hljs-keyword">as</span> <span class="hljs-built_in">string</span>;
+  } <span class="hljs-keyword">else</span> {
+    <span class="hljs-comment">// Convierte la imagen web a base64</span>
+    <span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> fetch(photo.webPath!);
+    <span class="hljs-keyword">const</span> blob = <span class="hljs-keyword">await</span> response.blob();
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.convertBlobToBase64(blob);
+  }
+}
+</div></code></pre>
+</div>
+<h5 id="62-m%C3%A9todo-convertblobtobase64">6.2. Método <code>convertBlobToBase64</code></h5>
+<p>Convierte un objeto Blob (datos binarios) a una cadena Base64:</p>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">private</span> convertBlobToBase64(blob: Blob): <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">string</span>&gt; {
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function">(<span class="hljs-params">resolve, reject</span>) =&gt;</span> {
+    <span class="hljs-keyword">const</span> reader = <span class="hljs-keyword">new</span> FileReader();
+    reader.onerror = reject;
+    reader.onload = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      resolve(reader.result <span class="hljs-keyword">as</span> <span class="hljs-built_in">string</span>);
+    };
+    reader.readAsDataURL(blob);
+  });
+}
+</div></code></pre>
+</div>
+<h5 id="63-m%C3%A9todo-generatefilename">6.3. Método <code>generateFileName</code></h5>
+<p>Genera un nombre de archivo único basado en la marca de tiempo actual:</p>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">private</span> generateFileName(): <span class="hljs-built_in">string</span> {
+  <span class="hljs-keyword">return</span> <span class="hljs-built_in">Date</span>.now() + PhotoService.IMAGE_FORMAT;
+}
+</div></code></pre>
+</div>
+<h5 id="64-m%C3%A9todo-isnativeplatform">6.4. Método <code>isNativePlatform</code></h5>
+<p>Verifica si la aplicación se está ejecutando en una plataforma nativa (móvil) o en la web:</p>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">private</span> isNativePlatform(): <span class="hljs-built_in">boolean</span> {
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.platform.is(<span class="hljs-string">'hybrid'</span>);
+}
+</div></code></pre>
+</div>
+<hr>
+<p>Con esto, tu servicio <code>PhotoService</code> estará completo y funcional. Si copias y pegas cada bloque en el lugar indicado, tu archivo no debería mostrar errores y la cámara funcionará tanto en web como en móvil.</p>
+<hr>
+<h2 id="5-integra-el-servicio-en-homepage">5. Integra el servicio en HomePage</h2>
+<h3 id="a-importa-el-servicio-en-homepagets">a) Importa el servicio en <code>home.page.ts</code></h3>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> { PhotoService } <span class="hljs-keyword">from</span> <span class="hljs-string">'../app/services/photo.service'</span>;
+</div></code></pre>
+</div>
+<h3 id="b-inyecta-el-servicio-usando-inject">b) Inyecta el servicio usando <code>inject</code></h3>
+<p>La función inject de Angular permite obtener una instancia de un servicio o dependencia directamente dentro de una clase, sin necesidad de usar el constructor.
+Es una forma moderna y recomendada (desde Angular 14+) para inyectar servicios, especialmente en componentes standalone o cuando quieres evitar constructores largos.</p>
+<p>es el equivalente a hacer
+constructor(private photoService: PhotoService) {}
+para injectar dependencias</p>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-comment">//importa inject </span>
+<span class="hljs-keyword">import</span> { Component, inject } <span class="hljs-keyword">from</span> <span class="hljs-string">'@angular/core'</span>;
+
+
+<span class="hljs-comment">// dentro de class HomePage</span>
+<span class="hljs-keyword">private</span> photoService = inject(PhotoService);
+</div></code></pre>
+</div>
+<h3 id="c-crea-el-m%C3%A9todo-tomarfoto-en-homepage">c) Crea el método <code>tomarFoto</code> en HomePage</h3>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">async</span> tomarFoto() {
+  <span class="hljs-keyword">const</span> photoResult = <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.photoService.takePicture();
+  <span class="hljs-keyword">if</span> (photoResult) {
+    <span class="hljs-keyword">this</span>.foto = photoResult.webviewPath;
+  }
+}
+</div></code></pre>
+</div>
+<hr>
+<h2 id="6-actualiza-la-interfaz-de-usuario">6. Actualiza la interfaz de usuario</h2>
+<h3 id="a-modifica-el-archivo-html">a) Modifica el archivo HTML</h3>
+<p>Edita <code>src/app/home/home.page.html</code> para agregar el botón eliminar:</p>
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-comment">&lt;!-- Botón eliminar foto --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">ion-button</span> <span class="hljs-attr">fill</span>=<span class="hljs-string">"clear"</span> <span class="hljs-attr">color</span>=<span class="hljs-string">"danger"</span> *<span class="hljs-attr">ngIf</span>=<span class="hljs-string">"foto"</span> (<span class="hljs-attr">click</span>)=<span class="hljs-string">"eliminarFoto()"</span>&gt;</span>
+  Eliminar Foto
+<span class="hljs-tag">&lt;/<span class="hljs-name">ion-button</span>&gt;</span>
+</div></code></pre>
+<h3 id="b-agrega-el-m%C3%A9todo-eliminarfoto-en-homepage">b) Agrega el método <code>eliminarFoto</code> en HomePage</h3>
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div>eliminarFoto() {
+  <span class="hljs-keyword">this</span>.foto = <span class="hljs-string">''</span>;
+}
+</div></code></pre>
+<hr>
+<h2 id="7-mejora-los-estilos">7. Mejora los estilos</h2>
+<p>Edita <code>src/app/home/home.page.scss</code> para mejorar la vista previa y botones:</p>
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-selector-class">.foto-preview</span> {
+  <span class="hljs-attribute">height</span>: <span class="hljs-number">40</span>dvh;
+  <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">12px</span>;
+  <span class="hljs-attribute">box-shadow</span>: <span class="hljs-number">0</span> <span class="hljs-number">4px</span> <span class="hljs-number">8px</span> rgba(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.2</span>);
+  <span class="hljs-selector-tag">object</span>-fit: contain;
+  <span class="hljs-attribute">background-color</span>: hsla(<span class="hljs-number">0</span>, <span class="hljs-number">0%</span>, <span class="hljs-number">0%</span>, <span class="hljs-number">0.6</span>);
+}
+
+ion-<span class="hljs-selector-tag">button</span> {
+  <span class="hljs-attribute">margin</span>: <span class="hljs-number">10px</span> <span class="hljs-number">0</span>;
+
+  &amp;<span class="hljs-selector-attr">[disabled]</span> {
+    <span class="hljs-attribute">opacity</span>: <span class="hljs-number">0.5</span>;
+  }
+}
+</div></code></pre>
+<hr>
+<h2 id="8-prueba-la-app">8. Prueba la app</h2>
+<h3 id="a-en-el-navegador">a) En el navegador</h3>
+<pre class="hljs"><code><div>ionic serve
+</div></code></pre>
+<ul>
+<li>Verifica que el botón &quot;Tomar Foto&quot; abre la cámara del navegador.</li>
+<li>La foto se muestra en la vista previa.</li>
+<li>El botón eliminar funciona.</li>
+</ul>
+<h3 id="b-en-android">b) En Android</h3>
+<pre class="hljs"><code><div>npx <span class="hljs-built_in">cap</span> sync android
+npx <span class="hljs-built_in">cap</span> open android
+</div></code></pre>
+<ul>
+<li>Prueba la cámara nativa y la vista previa.</li>
+</ul>
+<hr>
+<h2 id="9-archivos-relacionados">9. Archivos relacionados</h2>
+<ul>
+<li><code>src/app/services/photo.service.ts</code>: Servicio de fotos</li>
+<li><code>src/app/home/home.page.ts</code>: Lógica de integración</li>
+<li><code>src/app/home/home.page.html</code>: Interfaz de usuario</li>
+<li><code>src/app/home/home.page.scss</code>: Estilos</li>
+</ul>
+<hr>
+<h2 id="checklist-final">Checklist final</h2>
+<ul>
+<li><input type="checkbox" id="checkbox0"><label for="checkbox0">Servicio de fotos creado</label></li>
+<li><input type="checkbox" id="checkbox1"><label for="checkbox1">Cámara funciona en web y Android</label></li>
+<li><input type="checkbox" id="checkbox2"><label for="checkbox2">Vista previa y eliminación de fotos</label></li>
+<li><input type="checkbox" id="checkbox3"><label for="checkbox3">UI mejorada</label></li>
+<li><input type="checkbox" id="checkbox4"><label for="checkbox4">Sin errores en consola</label></li>
+</ul>
+<hr>
+<p>¡Listo! Continúa con la Parte 3 para agregar geolocalización.</p>
+
+</body>
+</html>

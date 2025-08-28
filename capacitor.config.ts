@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'foto-geo-app',
+  appId: 'com.tuempresa.fotogeoapp',
+  appName: 'Foto Geo App',
   webDir: 'www'
 };
 
