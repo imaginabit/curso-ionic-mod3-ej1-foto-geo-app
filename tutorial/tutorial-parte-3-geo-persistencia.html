@@ -1,473 +1,379 @@
 <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <title>Tutorial Paso a Paso&colon; Foto-Geo App &lpar;Parte 3&rpar;</title>
-            <style>
-/* From extension vscode.github */
+<html>
+<head>
+<title>tutorial-parte-3-geo-persistencia.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-.vscode-dark img[src$=\#gh-light-mode-only],
-.vscode-light img[src$=\#gh-dark-mode-only],
-.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
-.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
-	display: none;
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
 }
 
-/* From extension foam.foam-vscode */
-.foam-placeholder-link {
-  color: var(--vscode-editorWarning-foreground);
-  cursor: default;
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
 }
 
-.foam-note-link,
-.foam-attachment-link {
-  color: var(--vscode-textLink-foreground);
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
 }
 
-.foam-tag {
-  color: var(--vscode-editorLineNumber-foreground);
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
 }
 
-.foam-cyclic-link-warning {
-  border: 1px solid var(--vscode-editorWarning-foreground);
-  background-color: var(--vscode-editorError-background);
-  color: var(--vscode-editorError-foreground);
-  padding: 0.5em;
+body.showEditorSelection .code-line {
+	position: relative;
 }
 
-.foam-cyclic-link-warning__stack {
-  color: var(--vscode-editorWarning-foreground);
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
 }
 
-.foam-embed-not-supported-warning {
-  border: 1px solid var(--vscode-editorWarning-foreground);
-  background-color: var(--vscode-editorError-background);
-  color: var(--vscode-editorWarning-foreground);
-  padding: 0.5em;
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
 }
 
-.embed-container-note {
-  padding: 0.5em;
-  margin: 1.5em 0;
-  border: 1px solid var(--vscode-editorLineNumber-foreground);
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
 }
 
-.embed-container-attachment {
-  padding: 0.25em;
-  margin: 1.5em 0;
-  text-align: center;
-  border: 1px solid var(--vscode-editorLineNumber-foreground);
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
 }
 
-.embed-container-image {
-  margin: auto;
-  padding: 0.25em;
-  text-align: center;
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
 }
 
-/* From extension jebbs.markdown-extended */
-@font-face {
-  font-family: "Material Icons";
-  font-style: normal;
-  font-weight: 400;
-  src: local("Material Icons"), local("MaterialIcons-Regular"), url("data:application/x-font-woff;charset=utf-8;base64,d09GRgABAAAAAAfIAAsAAAAADDAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAABHU1VCAAABCAAAADMAAABCsP6z7U9TLzIAAAE8AAAARAAAAFZW7kosY21hcAAAAYAAAADTAAACjtP6ytBnbHlmAAACVAAAAxgAAAQ4zRtvlGhlYWQAAAVsAAAALwAAADYRwZsnaGhlYQAABZwAAAAcAAAAJAeKAzxobXR4AAAFuAAAABIAAAA8OGQAAGxvY2EAAAXMAAAAIAAAACAG5AfwbWF4cAAABewAAAAfAAAAIAEfAERuYW1lAAAGDAAAAVcAAAKFkAhoC3Bvc3QAAAdkAAAAYgAAAK2vz7wkeJxjYGRgYOBikGPQYWB0cfMJYeBgYGGAAJAMY05meiJQDMoDyrGAaQ4gZoOIAgCKIwNPAHicY2BkPsQ4gYGVgYOpk+kMAwNDP4RmfM1gxMjBwMDEwMrMgBUEpLmmMDgwVLy4xKzzX4chhrmK4QpQmBEkBwAZygyweJzFkr0NwjAQhZ+TEP6CRUfHBEwRUWaQTICyQbpMwRCskA5RUIONxG0RnnNpKAIV4qzPku/8c353ACYAYrIjCWCuMAh2ptf0/hiL3p/gyPUWa3osqlt0L1zu9r71z8dGrJRykFoauXQd932Lj5vhG+MjxGeYI8MKETObMpslf5EyP8tg+vHun5r539PvlvXzaVhRFVQDTPEWKVQR90KhnnC5Ek67vUKN4VuFasM/ldARj43CCkCsEjpJSoVVgRyU0GVSK6wUpFFCx8lFgX0BiXpRPQB4nE2TTWjcRhTH3xttpDhxN7uxPlp3u/FK7moRPixafRijNosxSw/LUsIwNcaEHPZggo/FmEKMCKWU4kNOOftQSlhE8alnH0Ix9BqWnHooPRrTQ0+mnu2bXTu2pPdGM9LM/6c3fwECTM4gBBMYQNqxzLrZAjqYSlqu2TAHZQA0/DQJH6FtzqGDnvbt4Ggwvzw/nL8EfH8kW0fsuRqhgWXZnY7M1picaUL7Du5BHeDzMIl83dAt016wH1qmvtSMo5R6YRJHTR//FXsff/nj/tc/5K9P5d+nP22+fFK5u7v3K39SW3y+OtDKO3L85vD09PD9z5X17a2N1g4tqk01RlqX7gyoEmnsWQtVr4rtZMmukEaFBZxzefkCn11cyKMLZgshRwgTYNoLNXCBz2ja7HvZG7hDpPSNfoo5vs0knK/9hb+rNpu+8kHPgk/Ao4kK3tWtTpSEtvkA9c+wE6UaUdwieNkaHg55tBEtRiEPw1s0+FtrtTcc9two2lhMknV7PZF/cs6+uUFTmpTGbEx7sQCPSLOttHS3GRltqp7SNzVSKzl6aWnZT/CX5k6/v9N3Hh8fHBwffJVjhrC6OgH5dkIt/tPsq+d/PD5Qz7G7efzq1THFjdZVPe/N6ulQ3JnDWSE5junsFsVIiFwL/htf1S5gJ3BfOcUxfHKLnzqpFpyfZ9cX+/5WB6a+Y0pHpzkNrYNVDwMsikK+y7WuLCRg/oFHkA8VT3rDg5ZnU6ktzzINymV0m74Xd5pfIGXyFeVEQSShkzqG7TBBa2OxVRKitLXv7h3uuftXnXq7lz2tZ/WnWa9dx9dCjDhHzmuVQATlmljr9dZErUydSo2Hbi/b1vXtrOeGCk2/8s3ZlO8+ueJT8BVlw5pGw2oYccdSiHHqx0RlabHqdNR9jAETl6PreJcPBnnfpTLnOQ8C3OV8AmQGzouV1iZdeb5SSIoVc8W8/kcDtksUH5FrU6/aqBqNWcMEzxG4DAQ14qRQhi9mWU0rzepKezbjfgCwQKxVYq5ajRgpRqy45CqwkJydcEkbTkvRz8P5/2ZpDTN4nGNgZGBgAOKb6v+/xvPbfGXgZmEAgeuB2kkI+v8bFgbmKiCXg4EJJAoAPyAKhQB4nGNgZGBg1vmvwxDDwgACQJKRARXwAwAzZQHQeJxjYQCCFAYGFgbSMQAcWACdAAAAAAAAAAwALgBgAIQAmADSAQgBIgE8AVABoAHeAfwCHHicY2BkYGDgZ7BgYGMAASYg5gJCBob/YD4DAA/hAWQAeJxlkbtuwkAURMc88gApQomUJoq0TdIQzEOpUDokKCNR0BuzBiO/tF6QSJcPyHflE9Klyyekz2CuG8cr7547M3d9JQO4xjccnJ57vid2cMHqxDWc40G4Tv1JuEF+Fm6ijRfhM+oz4Ra6eBVu4wZvvMFpXLIa40PYQQefwjVc4Uu4Tv1HuEH+FW7i1mkKn6Hj3Am3sHC6wm08Ou8tpSZGe1av1PKggjSxPd8zJtSGTuinyVGa6/Uu8kxZludCmzxMEzV0B6U004k25W35fj2yNlCBSWM1paujKFWZSbfat+7G2mzc7weiu34aczzFNYGBhgfLfcV6iQP3ACkSaj349AxXSN9IT0j16JepOb01doiKbNWt1ovippz6sVYYwsXgX2rGVFIkq7Pl2PNrI6qW6eOshj0xaSq9mpNEZIWs8LZUfOouNkVXxp/d5woqebeYIf4D2J1ywQB4nG3LOw6AIBAE0B384B+PAkgEa+QwNnYmHt+EpXSal5lkSBBnoP8oCFSo0aCFRIceA0ZMmLFAYSW88rmvtMUjG3RiQ9HvpfusM6zWNmtc5H/iPewha50tOt5PS/QBx2IeSwAA") format("woff");
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
 }
 
-.admonition {
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12), 0 3px 1px -2px rgba(0, 0, 0, .2);
-  position: relative;
-  margin: 1.5625em 0;
-  padding: 0 1.2rem;
-  border-left: .4rem solid rgba(68, 138, 255, .8);
-  border-radius: .2rem;
-  background-color: rgba(255, 255, 255, 0.05);
-  overflow: auto;
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
 }
 
-.admonition>p {
-  margin-top: .8rem;
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
 }
 
-.admonition>.admonition-title {
-  margin: 0 -1.2rem;
-  padding: .8rem 1.2rem .8rem 3.6rem;
-  border-bottom: 1px solid rgba(68, 138, 255, .2);
-  background-color: rgba(68, 138, 255, .1);
-  font-weight: 700;
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
 }
 
-.admonition>.admonition-title:before {
-  position: absolute;
-  left: 1.2rem;
-  font-size: 1.5rem;
-  color: rgba(68, 138, 255, .8);
-  content: "\E3C9";
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
 }
 
-.admonition>.admonition-title:before {
-  font-family: Material Icons;
-  font-style: normal;
-  font-variant: normal;
-  font-weight: 400;
-  line-height: 2rem;
-  text-transform: none;
-  white-space: nowrap;
-  speak: none;
-  word-wrap: normal;
-  direction: ltr;
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
 }
 
-.admonition.summary,
-.admonition.abstract,
-.admonition.tldr {
-  border-left-color: rgba(0, 176, 255, .8);
+img {
+	max-width: 100%;
+	max-height: 100%;
 }
 
-.admonition.summary>.admonition-title,
-.admonition.abstract>.admonition-title,
-.admonition.tldr>.admonition-title {
-  background-color: rgba(0, 176, 255, .1);
-  border-bottom-color: rgba(0, 176, 255, .2);
+a {
+	text-decoration: none;
 }
 
-.admonition.summary>.admonition-title:before,
-.admonition.abstract>.admonition-title:before,
-.admonition.tldr>.admonition-title:before {
-  color: rgba(0, 176, 255, 1);
-  ;
-  content: "\E8D2";
+a:hover {
+	text-decoration: underline;
 }
 
-.admonition.hint,
-.admonition.tip {
-  border-left-color: rgba(0, 191, 165, .8);
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
 }
 
-.admonition.hint>.admonition-title,
-.admonition.tip>.admonition-title {
-  background-color: rgba(0, 191, 165, .1);
-  border-bottom-color: rgba(0, 191, 165, .2);
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
 }
 
-.admonition.hint>.admonition-title:before,
-.admonition.tip>.admonition-title:before {
-  color: rgba(0, 191, 165, 1);
-  content: "\E80E";
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
 }
 
-.admonition.info,
-.admonition.todo {
-  border-left-color: rgba(0, 184, 212, .8);
+h1, h2, h3 {
+	font-weight: normal;
 }
 
-.admonition.info>.admonition-title,
-.admonition.todo>.admonition-title {
-  background-color: rgba(0, 184, 212, .1);
-  border-bottom-color: rgba(0, 184, 212, .2);
+table {
+	border-collapse: collapse;
 }
 
-.admonition.info>.admonition-title:before,
-.admonition.todo>.admonition-title:before {
-  color: rgba(0, 184, 212, 1);
-  ;
-  content: "\E88E";
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
 }
 
-.admonition.success,
-.admonition.check,
-.admonition.done {
-  border-left-color: rgba(0, 200, 83, .8);
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
 }
 
-.admonition.success>.admonition-title,
-.admonition.check>.admonition-title,
-.admonition.done>.admonition-title {
-  background-color: rgba(0, 200, 83, .1);
-  border-bottom-color: rgba(0, 200, 83, .2);
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
 }
 
-.admonition.success>.admonition-title:before,
-.admonition.check>.admonition-title:before,
-.admonition.done>.admonition-title:before {
-  color: rgba(0, 200, 83, 1);
-  ;
-  content: "\E876";
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
 }
 
-.admonition.question,
-.admonition.help,
-.admonition.faq {
-  border-left-color: rgba(100, 221, 23, .8);
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
 }
 
-.admonition.question>.admonition-title,
-.admonition.help>.admonition-title,
-.admonition.faq>.admonition-title {
-  background-color: rgba(100, 221, 23, .1);
-  border-bottom-color: rgba(100, 221, 23, .2);
+body.wordWrap pre {
+	white-space: pre-wrap;
 }
 
-.admonition.question>.admonition-title:before,
-.admonition.help>.admonition-title:before,
-.admonition.faq>.admonition-title:before {
-  color: rgba(100, 221, 23, 1);
-  ;
-  content: "\E887";
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
 }
 
-.admonition.warning,
-.admonition.attention,
-.admonition.caution {
-  border-left-color: rgba(255, 145, 0, .8);
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
 }
 
-.admonition.warning>.admonition-title,
-.admonition.attention>.admonition-title,
-.admonition.caution>.admonition-title {
-  background-color: rgba(255, 145, 0, .1);
-  border-bottom-color: rgba(255, 145, 0, .2);
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
 }
 
-.admonition.attention>.admonition-title:before {
-  color: rgba(255, 145, 0, 1);
-  content: "\E417";
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
 }
 
-.admonition.warning>.admonition-title:before,
-.admonition.caution>.admonition-title:before {
-  color: rgba(255, 145, 0, 1);
-  content: "\E002";
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
 }
 
-.admonition.failure,
-.admonition.fail,
-.admonition.missing {
-  border-left-color: rgba(255, 82, 82, .8);
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
 }
 
-.admonition.failure>.admonition-title,
-.admonition.fail>.admonition-title,
-.admonition.missing>.admonition-title {
-  background-color: rgba(255, 82, 82, .1);
-  border-bottom-color: rgba(255, 82, 82, .2);
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
 }
 
-.admonition.failure>.admonition-title:before,
-.admonition.fail>.admonition-title:before,
-.admonition.missing>.admonition-title:before {
-  color: rgba(255, 82, 82, 1);
-  ;
-  content: "\E14C";
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
 }
 
-.admonition.danger,
-.admonition.error,
-.admonition.bug {
-  border-left-color: rgba(255, 23, 68, .8);
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
 }
 
-.admonition.danger>.admonition-title,
-.admonition.error>.admonition-title,
-.admonition.bug>.admonition-title {
-  background-color: rgba(255, 23, 68, .1);
-  border-bottom-color: rgba(255, 23, 68, .2);
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
 }
 
-.admonition.danger>.admonition-title:before {
-  color: rgba(255, 23, 68, 1);
-  content: "\E3E7";
-}
-
-.admonition.error>.admonition-title:before {
-  color: rgba(255, 23, 68, 1);
-  content: "\E14C";
-}
-
-.admonition.bug>.admonition-title:before {
-  color: rgba(255, 23, 68, 1);
-  content: "\E868";
-}
-
-.admonition.example,
-.admonition.snippet {
-  border-left-color: rgba(0, 184, 212, .8);
-}
-
-.admonition.example>.admonition-title,
-.admonition.snippet>.admonition-title {
-  background-color: rgba(0, 184, 212, .1);
-  border-bottom-color: rgba(0, 184, 212, .2);
-}
-
-.admonition.example>.admonition-title:before,
-.admonition.snippet>.admonition-title:before {
-  color: rgba(0, 184, 212, 1);
-  ;
-  content: "\E242";
-}
-
-.admonition.quote,
-.admonition.cite {
-  border-left-color: rgba(158, 158, 158, .8);
-}
-
-.admonition.quote>.admonition-title,
-.admonition.cite>.admonition-title {
-  background-color: rgba(158, 158, 158, .1);
-  border-bottom-color: rgba(158, 158, 158, .2);
-}
-
-.admonition.quote>.admonition-title:before,
-.admonition.cite>.admonition-title:before {
-  color: rgba(158, 158, 158, 1);
-  ;
-  content: "\E244";
-}
-.vscode-light kbd,
-.vscode-dark kbd,
-.vscode-high-contrast kbd {
-  display: inline-block;
-  padding: 3px 5px;
-  font: 11px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
-  line-height: 10px;
-  vertical-align: middle;
-  border: solid 1px #d1d5da;
-  border-bottom-color: #c6cbd1;
-  border-radius: 3px;
-  box-shadow: inset 0 -1px 0 #c6cbd1;
-}
-
-.vscode-light kbd {
-  color: #444d56;
-  background-color: #fafbfc;
-}
 </style>
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
-<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+
 <style>
-            body {
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
-                font-size: 14px;
-                line-height: 1.6;
-            }
-        </style>
-        <style>
-.task-list-item {
-    list-style-type: none;
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
 }
 
-.task-list-item-checkbox {
-    margin-left: -20px;
-    vertical-align: middle;
-    pointer-events: none;
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
 }
 </style>
+
 <style>
-:root {
-  --color-note: #0969da;
-  --color-tip: #1a7f37;
-  --color-warning: #9a6700;
-  --color-severe: #bc4c00;
-  --color-caution: #d1242f;
-  --color-important: #8250df;
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
 }
 
 </style>
-<style>
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-note: #2f81f7;
-    --color-tip: #3fb950;
-    --color-warning: #d29922;
-    --color-severe: #db6d28;
-    --color-caution: #f85149;
-    --color-important: #a371f7;
-  }
-}
 
-</style>
-<style>
-.markdown-alert {
-  padding: 0.5rem 1rem;
-  margin-bottom: 16px;
-  color: inherit;
-  border-left: .25em solid #888;
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<script>
+function copyCode(btn) {
+  const codeBlock = btn.nextElementSibling;
+  navigator.clipboard.writeText(codeBlock.innerText);
+  btn.textContent = 'Copiado!';
+  setTimeout(() => btn.textContent = 'Copiar', 2000);
 }
-
-.markdown-alert>:first-child {
-  margin-top: 0
-}
-
-.markdown-alert>:last-child {
-  margin-bottom: 0
-}
-
-.markdown-alert .markdown-alert-title {
-  display: flex;
-  font-weight: 500;
-  align-items: center;
-  line-height: 1
-}
-
-.markdown-alert .markdown-alert-title .octicon {
-  margin-right: 0.5rem;
-  display: inline-block;
-  overflow: visible !important;
-  vertical-align: text-bottom;
-  fill: currentColor;
-}
-
-.markdown-alert.markdown-alert-note {
-  border-left-color: var(--color-note);
-}
-
-.markdown-alert.markdown-alert-note .markdown-alert-title {
-  color: var(--color-note);
-}
-
-.markdown-alert.markdown-alert-important {
-  border-left-color: var(--color-important);
-}
-
-.markdown-alert.markdown-alert-important .markdown-alert-title {
-  color: var(--color-important);
-}
-
-.markdown-alert.markdown-alert-warning {
-  border-left-color: var(--color-warning);
-}
-
-.markdown-alert.markdown-alert-warning .markdown-alert-title {
-  color: var(--color-warning);
-}
-
-.markdown-alert.markdown-alert-tip {
-  border-left-color: var(--color-tip);
-}
-
-.markdown-alert.markdown-alert-tip .markdown-alert-title {
-  color: var(--color-tip);
-}
-
-.markdown-alert.markdown-alert-caution {
-  border-left-color: var(--color-caution);
-}
-
-.markdown-alert.markdown-alert-caution .markdown-alert-title {
-  color: var(--color-caution);
-}
-
-</style>
-        
-        </head>
-        <body class="vscode-body vscode-light">
-            <h1 id="tutorial-paso-a-paso-foto-geo-app-parte-3">Tutorial Paso a Paso: Foto-Geo App (Parte 3)</h1>
+</script>
+<h1 id="tutorial-paso-a-paso-foto-geo-app-parte-3">Tutorial Paso a Paso: Foto-Geo App (Parte 3)</h1>
 <h2 id="objetivo">Objetivo</h2>
 <p>Agregar geolocalización para capturar coordenadas GPS y persistencia de datos para guardar y mostrar una lista de registros, completando la funcionalidad de la aplicación Foto-Geo.</p>
 <hr>
@@ -485,9 +391,12 @@
 <hr>
 <h2 id="1-instala-los-plugins-necesarios">1. Instala los plugins necesarios</h2>
 <p>Abre una terminal y ejecuta:</p>
-<pre><code class="language-bash">npm install @capacitor/geolocation @capacitor/preferences
-npx <span class="hljs-built_in">cap</span> <span class="hljs-built_in">sync</span>
-</code></pre>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div>npm install @capacitor/geolocation @capacitor/preferences
+npx <span class="hljs-built_in">cap</span> sync
+</div></code></pre>
+</div>
 <p><strong>Explicación:</strong></p>
 <ul>
 <li><code>@capacitor/geolocation</code>: Para obtener la ubicación GPS del dispositivo</li>
@@ -497,436 +406,540 @@ npx <span class="hljs-built_in">cap</span> <span class="hljs-built_in">sync</spa
 <h2 id="2-crea-el-modelo-de-datos-paso-a-paso">2. Crea el modelo de datos paso a paso</h2>
 <h3 id="a-genera-el-archivo-del-modelo-usando-ionic-cli">a) Genera el archivo del modelo usando Ionic CLI</h3>
 <p>Abre la terminal y ejecuta:</p>
-<pre><code class="language-bash">npx ionic generate interface models/geo-photo.model
-</code></pre>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div>npx ionic generate interface models/geo-photo.model
+</div></code></pre>
+</div>
 <p>Esto creará el archivo <code>src/app/models/geo-photo.model.ts</code> directamente con el nombre correcto.</p>
 <h3 id="b-agrega-la-interfaz-para-el-registro-completo">b) Agrega la interfaz para el registro completo</h3>
 <p>Abre el archivo <code>src/app/models/geo-photo.model.ts</code> y reemplaza el contenido generado por:</p>
 <h3 id="c-agrega-la-interfaz-para-el-registro-completo">c) Agrega la interfaz para el registro completo</h3>
 <p>Abre el archivo <code>src/app/models/geo-photo.model.ts</code> y reemplaza el contenido generado por:</p>
-<pre><code class="language-typescript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">GeoPhotoRecord</span> {
-  <span class="hljs-attr">id</span>: <span class="hljs-built_in">string</span>;
-  <span class="hljs-attr">foto</span>: <span class="hljs-built_in">string</span>;           <span class="hljs-comment">// Base64 o ruta de la imagen</span>
-  <span class="hljs-attr">descripcion</span>: <span class="hljs-built_in">string</span>;    <span class="hljs-comment">// Descripción del usuario</span>
-  <span class="hljs-attr">latitud</span>: <span class="hljs-built_in">number</span>;        <span class="hljs-comment">// Coordenada de latitud</span>
-  <span class="hljs-attr">longitud</span>: <span class="hljs-built_in">number</span>;       <span class="hljs-comment">// Coordenada de longitud</span>
-  <span class="hljs-attr">fecha</span>: <span class="hljs-built_in">string</span>;          <span class="hljs-comment">// Fecha y hora de creación</span>
-  direccion?: <span class="hljs-built_in">string</span>;     <span class="hljs-comment">// Dirección legible (opcional)</span>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> GeoPhotoRecord {
+  id: <span class="hljs-built_in">string</span>;
+  photo: <span class="hljs-built_in">string</span>;           <span class="hljs-comment">// Base64 o ruta de la imagen</span>
+  description: <span class="hljs-built_in">string</span>;     <span class="hljs-comment">// Descripción del usuario</span>
+  coordinates?: Coordinates; <span class="hljs-comment">// Coordenadas (latitude, longitude)</span>
+  date: <span class="hljs-built_in">string</span>;            <span class="hljs-comment">// Fecha y hora de creación</span>
 }
-</code></pre>
+</div></code></pre>
+</div>
 <h3 id="c-agrega-la-interfaz-para-coordenadas">c) Agrega la interfaz para coordenadas</h3>
 <p>En el mismo archivo <code>src/app/models/geo-photo.model.ts</code>, agrega debajo de la interfaz anterior:</p>
-<pre><code class="language-typescript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">Coordinates</span> {
-  <span class="hljs-attr">latitude</span>: <span class="hljs-built_in">number</span>;
-  <span class="hljs-attr">longitude</span>: <span class="hljs-built_in">number</span>;
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> Coordinates {
+  latitude: <span class="hljs-built_in">number</span>;
+  longitude: <span class="hljs-built_in">number</span>;
 }
-</code></pre>
+</div></code></pre>
+</div>
 <p><strong>Explicación:</strong>
 Un modelo define la estructura de datos que usará tu aplicación. Es como un &quot;contrato&quot; que especifica qué campos debe tener cada registro. Ionic CLI nos ayuda a mantener la estructura organizada del proyecto.</p>
 <hr>
-<h2 id="3-crea-el-servicio-de-geolocalización-paso-a-paso">3. Crea el servicio de geolocalización paso a paso</h2>
+<h2 id="3-crea-el-servicio-de-geolocalizaci%C3%B3n-paso-a-paso">3. Crea el servicio de geolocalización paso a paso</h2>
 <h3 id="a-genera-el-servicio-usando-ionic-cli">a) Genera el servicio usando Ionic CLI</h3>
 <p>Abre la terminal y ejecuta:</p>
-<pre><code class="language-bash">npx ionic generate service services/geolocation.service
-</code></pre>
-<p>Esto creará el archivo <code>src/app/services/geolocation.service.ts</code> directamente con el nombre correcto.</p>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div>npx ionic generate service services/geolocation.service
+</div></code></pre>
+</div>
+<p>Esto creará el archivo <code>src/app/service/geolocation.service.ts</code> directamente con el nombre correcto.</p>
 <h3 id="b-agrega-las-importaciones-necesarias">b) Agrega las importaciones necesarias</h3>
-<p>Abre <code>src/app/services/geolocation.service.ts</code> y reemplaza las importaciones por:</p>
-<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Injectable</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@angular/core&#x27;</span>;
-<span class="hljs-keyword">import</span> { <span class="hljs-title class_">Geolocation</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@capacitor/geolocation&#x27;</span>;
-<span class="hljs-keyword">import</span> { <span class="hljs-title class_">Coordinates</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;../models/geo-photo.model&#x27;</span>;
-</code></pre>
+<p>Abre <code>src/app/service/geolocation.service.ts</code> y reemplaza las importaciones por:</p>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> { Injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">'@angular/core'</span>;
+<span class="hljs-keyword">import</span> { Geolocation } <span class="hljs-keyword">from</span> <span class="hljs-string">'@capacitor/geolocation'</span>;
+<span class="hljs-keyword">import</span> { Coordinates } <span class="hljs-keyword">from</span> <span class="hljs-string">'../models/coordinates.model'</span>;
+</div></code></pre>
+</div>
 <h3 id="c-declara-la-clase-del-servicio">c) Declara la clase del servicio</h3>
 <p>Asegúrate de que la clase tenga esta estructura básica:</p>
-<pre><code class="language-typescript"><span class="hljs-meta">@Injectable</span>({
-  <span class="hljs-attr">providedIn</span>: <span class="hljs-string">&#x27;root&#x27;</span>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-meta">@Injectable</span>({
+  providedIn: <span class="hljs-string">'root'</span>
 })
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">GeolocationService</span> {
-  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"></span>) {}
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> GeolocationService {
+  <span class="hljs-keyword">constructor</span>(<span class="hljs-params"></span>) {}
   
   <span class="hljs-comment">// Métodos se implementarán en los siguientes pasos</span>
 }
-</code></pre>
+</div></code></pre>
+</div>
 <hr>
-<h2 id="4-implementa-la-lógica-de-geolocalización-paso-a-paso">4. Implementa la lógica de geolocalización paso a paso</h2>
-<h3 id="a-crea-el-método-principal-para-obtener-posición">a) Crea el método principal para obtener posición</h3>
+<h2 id="4-implementa-la-l%C3%B3gica-de-geolocalizaci%C3%B3n-paso-a-paso">4. Implementa la lógica de geolocalización paso a paso</h2>
+<h3 id="a-crea-el-m%C3%A9todo-principal-para-obtener-posici%C3%B3n">a) Crea el método principal para obtener posición</h3>
 <p>Agrega el método principal en <code>GeolocationService</code>:</p>
-<pre><code class="language-typescript"><span class="hljs-keyword">async</span> <span class="hljs-title function_">getCurrentPosition</span>(): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Coordinates</span> | <span class="hljs-literal">null</span>&gt; {
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">async</span> getCurrentPosition(): <span class="hljs-built_in">Promise</span>&lt;Coordinates | <span class="hljs-literal">null</span>&gt; {
   <span class="hljs-comment">// Implementación en el siguiente paso</span>
 }
-</code></pre>
-<h3 id="b-implementa-la-verificación-de-permisos">b) Implementa la verificación de permisos</h3>
+</div></code></pre>
+</div>
+<h3 id="b-implementa-la-verificaci%C3%B3n-de-permisos">b) Implementa la verificación de permisos</h3>
 <p>Agrega este método privado en <code>GeolocationService</code>:</p>
-<pre><code class="language-typescript"><span class="hljs-keyword">private</span> <span class="hljs-keyword">async</span> <span class="hljs-title function_">checkPermissions</span>(): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">boolean</span>&gt; {
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">private</span> <span class="hljs-keyword">async</span> checkPermissions(): <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">boolean</span>&gt; {
   <span class="hljs-comment">// Implementación en el siguiente paso</span>
 }
-</code></pre>
-<h3 id="c-agrega-método-utilitario-para-formatear-coordenadas">c) Agrega método utilitario para formatear coordenadas</h3>
+</div></code></pre>
+</div>
+<h3 id="c-agrega-m%C3%A9todo-utilitario-para-formatear-coordenadas">c) Agrega método utilitario para formatear coordenadas</h3>
 <p>Agrega este método público en <code>GeolocationService</code>:</p>
-<pre><code class="language-typescript"><span class="hljs-title function_">formatCoordinates</span>(<span class="hljs-attr">lat</span>: <span class="hljs-built_in">number</span>, <span class="hljs-attr">lng</span>: <span class="hljs-built_in">number</span>): <span class="hljs-built_in">string</span> {
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div>formatCoordinates(lat: <span class="hljs-built_in">number</span>, lng: <span class="hljs-built_in">number</span>): <span class="hljs-built_in">string</span> {
   <span class="hljs-keyword">return</span> <span class="hljs-string">`<span class="hljs-subst">${lat.toFixed(<span class="hljs-number">6</span>)}</span>, <span class="hljs-subst">${lng.toFixed(<span class="hljs-number">6</span>)}</span>`</span>;
 }
-</code></pre>
+</div></code></pre>
+</div>
 <hr>
-<h2 id="5-completa-la-implementación-de-los-métodos-de-geolocalización">5. Completa la implementación de los métodos de geolocalización</h2>
+<h2 id="5-completa-la-implementaci%C3%B3n-de-los-m%C3%A9todos-de-geolocalizaci%C3%B3n">5. Completa la implementación de los métodos de geolocalización</h2>
 <h3 id="a-implementa-getcurrentposition">a) Implementa <code>getCurrentPosition</code></h3>
 <p>Reemplaza el método vacío por esta implementación completa:</p>
-<pre><code class="language-typescript"><span class="hljs-keyword">async</span> <span class="hljs-title function_">getCurrentPosition</span>(): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">Coordinates</span> | <span class="hljs-literal">null</span>&gt; {
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">async</span> getCurrentPosition(): <span class="hljs-built_in">Promise</span>&lt;Coordinates | <span class="hljs-literal">null</span>&gt; {
   <span class="hljs-keyword">try</span> {
     <span class="hljs-comment">// Verificar permisos</span>
-    <span class="hljs-keyword">const</span> hasPermission = <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">checkPermissions</span>();
+    <span class="hljs-keyword">const</span> hasPermission = <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.checkPermissions();
     <span class="hljs-keyword">if</span> (!hasPermission) {
       <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
     }
 
     <span class="hljs-comment">// Obtener posición actual</span>
-    <span class="hljs-keyword">const</span> position = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Geolocation</span>.<span class="hljs-title function_">getCurrentPosition</span>({
-      <span class="hljs-attr">enableHighAccuracy</span>: <span class="hljs-literal">true</span>,
-      <span class="hljs-attr">timeout</span>: <span class="hljs-number">10000</span>
+    <span class="hljs-keyword">const</span> position = <span class="hljs-keyword">await</span> Geolocation.getCurrentPosition({
+      enableHighAccuracy: <span class="hljs-literal">true</span>,
+      timeout: <span class="hljs-number">10000</span>
     });
 
     <span class="hljs-keyword">return</span> {
-      <span class="hljs-attr">latitude</span>: position.<span class="hljs-property">coords</span>.<span class="hljs-property">latitude</span>,
-      <span class="hljs-attr">longitude</span>: position.<span class="hljs-property">coords</span>.<span class="hljs-property">longitude</span>
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude
     };
   } <span class="hljs-keyword">catch</span> (error) {
-    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(<span class="hljs-string">&#x27;Error obteniendo ubicación:&#x27;</span>, error);
+    <span class="hljs-built_in">console</span>.error(<span class="hljs-string">'Error obteniendo ubicación:'</span>, error);
     <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
   }
 }
-</code></pre>
+</div></code></pre>
+</div>
 <h3 id="b-implementa-checkpermissions">b) Implementa <code>checkPermissions</code></h3>
 <p>Reemplaza el método vacío por esta implementación:</p>
-<pre><code class="language-typescript"><span class="hljs-keyword">private</span> <span class="hljs-keyword">async</span> <span class="hljs-title function_">checkPermissions</span>(): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">boolean</span>&gt; {
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">private</span> <span class="hljs-keyword">async</span> checkPermissions(): <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">boolean</span>&gt; {
   <span class="hljs-keyword">try</span> {
     <span class="hljs-comment">// Verificar permisos actuales</span>
-    <span class="hljs-keyword">const</span> permission = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Geolocation</span>.<span class="hljs-title function_">checkPermissions</span>();
+    <span class="hljs-keyword">const</span> permission = <span class="hljs-keyword">await</span> Geolocation.checkPermissions();
     
-    <span class="hljs-keyword">if</span> (permission.<span class="hljs-property">location</span> === <span class="hljs-string">&#x27;granted&#x27;</span>) {
+    <span class="hljs-keyword">if</span> (permission.location === <span class="hljs-string">'granted'</span>) {
       <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
     }
 
     <span class="hljs-comment">// Solicitar permisos si no están concedidos</span>
-    <span class="hljs-keyword">if</span> (permission.<span class="hljs-property">location</span> === <span class="hljs-string">&#x27;prompt&#x27;</span>) {
-      <span class="hljs-keyword">const</span> requestResult = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Geolocation</span>.<span class="hljs-title function_">requestPermissions</span>();
-      <span class="hljs-keyword">return</span> requestResult.<span class="hljs-property">location</span> === <span class="hljs-string">&#x27;granted&#x27;</span>;
+    <span class="hljs-keyword">if</span> (permission.location === <span class="hljs-string">'prompt'</span>) {
+      <span class="hljs-keyword">const</span> requestResult = <span class="hljs-keyword">await</span> Geolocation.requestPermissions();
+      <span class="hljs-keyword">return</span> requestResult.location === <span class="hljs-string">'granted'</span>;
     }
 
     <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
   } <span class="hljs-keyword">catch</span> (error) {
-    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(<span class="hljs-string">&#x27;Error verificando permisos:&#x27;</span>, error);
+    <span class="hljs-built_in">console</span>.error(<span class="hljs-string">'Error verificando permisos:'</span>, error);
     <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
   }
 }
-</code></pre>
+</div></code></pre>
+</div>
 <hr>
 <h2 id="6-crea-el-servicio-de-almacenamiento-paso-a-paso">6. Crea el servicio de almacenamiento paso a paso</h2>
 <h3 id="a-genera-el-servicio-de-almacenamiento">a) Genera el servicio de almacenamiento</h3>
-<pre><code class="language-bash">npx ionic generate service services/storage.service
-</code></pre>
-<p>Esto creará el archivo <code>src/app/services/storage.service.ts</code> directamente con el nombre correcto.</p>
-<h3 id="b-agrega-las-importaciones-necesarias-1">b) Agrega las importaciones necesarias</h3>
-<p>Abre <code>src/app/services/storage.service.ts</code> y reemplaza las importaciones por:</p>
-<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">Injectable</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@angular/core&#x27;</span>;
-<span class="hljs-keyword">import</span> { <span class="hljs-title class_">Preferences</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@capacitor/preferences&#x27;</span>;
-<span class="hljs-keyword">import</span> { <span class="hljs-title class_">GeoPhotoRecord</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;../models/geo-photo.model&#x27;</span>;
-</code></pre>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div>npx ionic generate service services/storage.service
+</div></code></pre>
+</div>
+<p>Esto creará el archivo <code>src/app/service/storage.service.ts</code> directamente con el nombre correcto.</p>
+<h3 id="b-agrega-las-importaciones-necesarias">b) Agrega las importaciones necesarias</h3>
+<p>Abre <code>src/app/service/storage.service.ts</code> y reemplaza las importaciones por:</p>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> { Injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">'@angular/core'</span>;
+<span class="hljs-keyword">import</span> { Preferences } <span class="hljs-keyword">from</span> <span class="hljs-string">'@capacitor/preferences'</span>;
+<span class="hljs-keyword">import</span> { GeoPhotoRecord } <span class="hljs-keyword">from</span> <span class="hljs-string">'../models/geo-photo.model'</span>;
+</div></code></pre>
+</div>
 <h3 id="c-declara-la-constante-para-la-clave-de-almacenamiento">c) Declara la constante para la clave de almacenamiento</h3>
 <p>En la clase <code>StorageService</code>, agrega justo después de la declaración de clase:</p>
-<pre><code class="language-typescript"><span class="hljs-meta">@Injectable</span>({
-  <span class="hljs-attr">providedIn</span>: <span class="hljs-string">&#x27;root&#x27;</span>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-meta">@Injectable</span>({
+  providedIn: <span class="hljs-string">'root'</span>
 })
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">StorageService</span> {
-  <span class="hljs-keyword">private</span> <span class="hljs-keyword">readonly</span> <span class="hljs-variable constant_">RECORDS_KEY</span> = <span class="hljs-string">&#x27;geo-photo-records&#x27;</span>;
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> StorageService {
+  <span class="hljs-keyword">private</span> readonly RECORDS_KEY = <span class="hljs-string">'geo-photo-records'</span>;
 
-  <span class="hljs-title function_">constructor</span>(<span class="hljs-params"></span>) {}
+  <span class="hljs-keyword">constructor</span>(<span class="hljs-params"></span>) {}
   
   <span class="hljs-comment">// Métodos se implementarán en los siguientes pasos</span>
 }
-</code></pre>
+</div></code></pre>
+</div>
 <hr>
-<h2 id="7-implementa-los-métodos-del-servicio-de-almacenamiento-paso-a-paso">7. Implementa los métodos del servicio de almacenamiento paso a paso</h2>
-<h3 id="a-crea-los-métodos-esqueleto">a) Crea los métodos esqueleto</h3>
+<h2 id="7-implementa-los-m%C3%A9todos-del-servicio-de-almacenamiento-paso-a-paso">7. Implementa los métodos del servicio de almacenamiento paso a paso</h2>
+<h3 id="a-crea-los-m%C3%A9todos-esqueleto">a) Crea los métodos esqueleto</h3>
 <p>Agrega estos métodos vacíos en <code>StorageService</code>:</p>
-<pre><code class="language-typescript"><span class="hljs-keyword">async</span> <span class="hljs-title function_">saveRecord</span>(<span class="hljs-attr">record</span>: <span class="hljs-title class_">GeoPhotoRecord</span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">void</span>&gt; {
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">async</span> saveRecord(record: GeoPhotoRecord): <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">void</span>&gt; {
   <span class="hljs-comment">// Implementación en el siguiente paso</span>
 }
 
-<span class="hljs-keyword">async</span> <span class="hljs-title function_">getAllRecords</span>(): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">GeoPhotoRecord</span>[]&gt; {
+<span class="hljs-keyword">async</span> getAllRecords(): <span class="hljs-built_in">Promise</span>&lt;GeoPhotoRecord[]&gt; {
   <span class="hljs-comment">// Implementación en el siguiente paso</span>
 }
 
-<span class="hljs-keyword">async</span> <span class="hljs-title function_">deleteRecord</span>(<span class="hljs-attr">id</span>: <span class="hljs-built_in">string</span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">void</span>&gt; {
+<span class="hljs-keyword">async</span> deleteRecord(id: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">void</span>&gt; {
   <span class="hljs-comment">// Implementación en el siguiente paso</span>
 }
 
-<span class="hljs-title function_">generateId</span>(): <span class="hljs-built_in">string</span> {
+generateId(): <span class="hljs-built_in">string</span> {
   <span class="hljs-comment">// Implementación en el siguiente paso</span>
 }
-</code></pre>
+</div></code></pre>
+</div>
 <h3 id="b-implementa-generateid">b) Implementa <code>generateId</code></h3>
 <p>Reemplaza el método vacío por:</p>
-<pre><code class="language-typescript"><span class="hljs-title function_">generateId</span>(): <span class="hljs-built_in">string</span> {
-  <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;record_&#x27;</span> + <span class="hljs-title class_">Date</span>.<span class="hljs-title function_">now</span>() + <span class="hljs-string">&#x27;_&#x27;</span> + <span class="hljs-title class_">Math</span>.<span class="hljs-title function_">random</span>().<span class="hljs-title function_">toString</span>(<span class="hljs-number">36</span>).<span class="hljs-title function_">substr</span>(<span class="hljs-number">2</span>, <span class="hljs-number">9</span>);
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div>generateId(): <span class="hljs-built_in">string</span> {
+  <span class="hljs-keyword">return</span> <span class="hljs-string">'record_'</span> + <span class="hljs-built_in">Date</span>.now() + <span class="hljs-string">'_'</span> + <span class="hljs-built_in">Math</span>.random().toString(<span class="hljs-number">36</span>).substr(<span class="hljs-number">2</span>, <span class="hljs-number">9</span>);
 }
-</code></pre>
+</div></code></pre>
+</div>
 <h3 id="c-implementa-getallrecords">c) Implementa <code>getAllRecords</code></h3>
 <p>Reemplaza el método vacío por:</p>
-<pre><code class="language-typescript"><span class="hljs-keyword">async</span> <span class="hljs-title function_">getAllRecords</span>(): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-title class_">GeoPhotoRecord</span>[]&gt; {
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">async</span> getAllRecords(): <span class="hljs-built_in">Promise</span>&lt;GeoPhotoRecord[]&gt; {
   <span class="hljs-keyword">try</span> {
-    <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> <span class="hljs-title class_">Preferences</span>.<span class="hljs-title function_">get</span>({ <span class="hljs-attr">key</span>: <span class="hljs-variable language_">this</span>.<span class="hljs-property">RECORDS_KEY</span> });
-    <span class="hljs-keyword">return</span> result.<span class="hljs-property">value</span> ? <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">parse</span>(result.<span class="hljs-property">value</span>) : [];
+    <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> Preferences.get({ key: <span class="hljs-keyword">this</span>.RECORDS_KEY });
+    <span class="hljs-keyword">return</span> result.value ? <span class="hljs-built_in">JSON</span>.parse(result.value) : [];
   } <span class="hljs-keyword">catch</span> (error) {
-    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(<span class="hljs-string">&#x27;Error obteniendo registros:&#x27;</span>, error);
+    <span class="hljs-built_in">console</span>.error(<span class="hljs-string">'Error obteniendo registros:'</span>, error);
     <span class="hljs-keyword">return</span> [];
   }
 }
-</code></pre>
+</div></code></pre>
+</div>
 <h3 id="d-implementa-saverecord">d) Implementa <code>saveRecord</code></h3>
 <p>Reemplaza el método vacío por:</p>
-<pre><code class="language-typescript"><span class="hljs-keyword">async</span> <span class="hljs-title function_">saveRecord</span>(<span class="hljs-attr">record</span>: <span class="hljs-title class_">GeoPhotoRecord</span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">void</span>&gt; {
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">async</span> saveRecord(record: GeoPhotoRecord): <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">void</span>&gt; {
   <span class="hljs-keyword">try</span> {
-    <span class="hljs-keyword">const</span> records = <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">getAllRecords</span>();
-    records.<span class="hljs-title function_">push</span>(record);
+    <span class="hljs-keyword">const</span> records = <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.getAllRecords();
+    records.push(record);
     
-    <span class="hljs-keyword">await</span> <span class="hljs-title class_">Preferences</span>.<span class="hljs-title function_">set</span>({
-      <span class="hljs-attr">key</span>: <span class="hljs-variable language_">this</span>.<span class="hljs-property">RECORDS_KEY</span>,
-      <span class="hljs-attr">value</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(records)
+    <span class="hljs-keyword">await</span> Preferences.set({
+      key: <span class="hljs-keyword">this</span>.RECORDS_KEY,
+      value: <span class="hljs-built_in">JSON</span>.stringify(records)
     });
   } <span class="hljs-keyword">catch</span> (error) {
-    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(<span class="hljs-string">&#x27;Error guardando registro:&#x27;</span>, error);
+    <span class="hljs-built_in">console</span>.error(<span class="hljs-string">'Error guardando registro:'</span>, error);
     <span class="hljs-keyword">throw</span> error;
   }
 }
-</code></pre>
+</div></code></pre>
+</div>
 <h3 id="e-implementa-deleterecord">e) Implementa <code>deleteRecord</code></h3>
 <p>Reemplaza el método vacío por:</p>
-<pre><code class="language-typescript"><span class="hljs-keyword">async</span> <span class="hljs-title function_">deleteRecord</span>(<span class="hljs-attr">id</span>: <span class="hljs-built_in">string</span>): <span class="hljs-title class_">Promise</span>&lt;<span class="hljs-built_in">void</span>&gt; {
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">async</span> deleteRecord(id: <span class="hljs-built_in">string</span>): <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">void</span>&gt; {
   <span class="hljs-keyword">try</span> {
-    <span class="hljs-keyword">const</span> records = <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">getAllRecords</span>();
-    <span class="hljs-keyword">const</span> filteredRecords = records.<span class="hljs-title function_">filter</span>(<span class="hljs-function"><span class="hljs-params">record</span> =&gt;</span> record.<span class="hljs-property">id</span> !== id);
+    <span class="hljs-keyword">const</span> records = <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.getAllRecords();
+    <span class="hljs-keyword">const</span> filteredRecords = records.filter(<span class="hljs-function"><span class="hljs-params">record</span> =&gt;</span> record.id !== id);
     
-    <span class="hljs-keyword">await</span> <span class="hljs-title class_">Preferences</span>.<span class="hljs-title function_">set</span>({
-      <span class="hljs-attr">key</span>: <span class="hljs-variable language_">this</span>.<span class="hljs-property">RECORDS_KEY</span>,
-      <span class="hljs-attr">value</span>: <span class="hljs-title class_">JSON</span>.<span class="hljs-title function_">stringify</span>(filteredRecords)
+    <span class="hljs-keyword">await</span> Preferences.set({
+      key: <span class="hljs-keyword">this</span>.RECORDS_KEY,
+      value: <span class="hljs-built_in">JSON</span>.stringify(filteredRecords)
     });
   } <span class="hljs-keyword">catch</span> (error) {
-    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(<span class="hljs-string">&#x27;Error eliminando registro:&#x27;</span>, error);
+    <span class="hljs-built_in">console</span>.error(<span class="hljs-string">'Error eliminando registro:'</span>, error);
     <span class="hljs-keyword">throw</span> error;
   }
 }
-</code></pre>
+</div></code></pre>
+</div>
 <hr>
 <h2 id="8-actualiza-el-componente-homepage-paso-a-paso">8. Actualiza el componente HomePage paso a paso</h2>
 <h3 id="a-agrega-las-nuevas-importaciones-al-inicio-del-archivo">a) Agrega las nuevas importaciones al inicio del archivo</h3>
 <p>Abre <code>src/app/home/home.page.ts</code> y agrega estas importaciones después de las existentes:</p>
-<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { <span class="hljs-title class_">GeolocationService</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;../services/geolocation.service&#x27;</span>;
-<span class="hljs-keyword">import</span> { <span class="hljs-title class_">StorageService</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;../services/storage.service&#x27;</span>;
-<span class="hljs-keyword">import</span> { <span class="hljs-title class_">GeoPhotoRecord</span>, <span class="hljs-title class_">Coordinates</span> } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;../models/geo-photo.model&#x27;</span>;
-</code></pre>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> { GeolocationService } <span class="hljs-keyword">from</span> <span class="hljs-string">'../service/geolocation.service'</span>;
+<span class="hljs-keyword">import</span> { StorageService } <span class="hljs-keyword">from</span> <span class="hljs-string">'../service/storage.service'</span>;
+<span class="hljs-keyword">import</span> { GeoPhotoRecord } <span class="hljs-keyword">from</span> <span class="hljs-string">'../models/geo-photo.model'</span>;
+<span class="hljs-keyword">import</span> { Coordinates } <span class="hljs-keyword">from</span> <span class="hljs-string">'../models/coordinates.model'</span>;
+</div></code></pre>
+</div>
 <h3 id="b-agrega-los-nuevos-componentes-de-ionic-a-las-importaciones">b) Agrega los nuevos componentes de Ionic a las importaciones</h3>
 <p>En el mismo archivo, encuentra la sección de importaciones de componentes y agrega estos nuevos:</p>
-<pre><code class="language-typescript"><span class="hljs-keyword">import</span> {
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> {
   <span class="hljs-comment">// ...importaciones existentes...</span>
-  <span class="hljs-title class_">IonCard</span>,
-  <span class="hljs-title class_">IonCardContent</span>,
-  <span class="hljs-title class_">IonCardHeader</span>,
-  <span class="hljs-title class_">IonCardTitle</span>,
-  <span class="hljs-title class_">IonList</span>,
-  <span class="hljs-title class_">IonIcon</span>,
-  <span class="hljs-title class_">IonText</span>,
-  <span class="hljs-title class_">IonGrid</span>,
-  <span class="hljs-title class_">IonRow</span>,
-  <span class="hljs-title class_">IonCol</span>
-} <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;@ionic/angular/standalone&#x27;</span>;
-</code></pre>
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
+  IonList,
+  IonIcon,
+  IonText,
+  IonGrid,
+  IonRow,
+  IonCol
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'@ionic/angular/standalone'</span>;
+</div></code></pre>
+</div>
 <h3 id="c-actualiza-el-array-imports-en-el-decorador-component">c) Actualiza el array <code>imports</code> en el decorador @Component</h3>
 <p>Encuentra el decorador <code>@Component</code> y agrega los nuevos componentes al array <code>imports</code>:</p>
-<pre><code class="language-typescript"><span class="hljs-meta">@Component</span>({
-  <span class="hljs-attr">selector</span>: <span class="hljs-string">&#x27;app-home&#x27;</span>,
-  <span class="hljs-attr">templateUrl</span>: <span class="hljs-string">&#x27;home.page.html&#x27;</span>,
-  <span class="hljs-attr">styleUrls</span>: [<span class="hljs-string">&#x27;home.page.scss&#x27;</span>],
-  <span class="hljs-attr">imports</span>: [
-    <span class="hljs-title class_">CommonModule</span>,
-    <span class="hljs-title class_">FormsModule</span>,
-    <span class="hljs-title class_">IonContent</span>,
-    <span class="hljs-title class_">IonHeader</span>,
-    <span class="hljs-title class_">IonTitle</span>,
-    <span class="hljs-title class_">IonToolbar</span>,
-    <span class="hljs-title class_">IonButton</span>,
-    <span class="hljs-title class_">IonItem</span>,
-    <span class="hljs-title class_">IonLabel</span>,
-    <span class="hljs-title class_">IonTextarea</span>,
-    <span class="hljs-title class_">IonImg</span>,
-    <span class="hljs-title class_">IonCard</span>,
-    <span class="hljs-title class_">IonCardContent</span>,
-    <span class="hljs-title class_">IonCardHeader</span>,
-    <span class="hljs-title class_">IonCardTitle</span>,
-    <span class="hljs-title class_">IonList</span>,
-    <span class="hljs-title class_">IonIcon</span>,
-    <span class="hljs-title class_">IonText</span>,
-    <span class="hljs-title class_">IonGrid</span>,
-    <span class="hljs-title class_">IonRow</span>,
-    <span class="hljs-title class_">IonCol</span>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-meta">@Component</span>({
+  selector: <span class="hljs-string">'app-home'</span>,
+  templateUrl: <span class="hljs-string">'home.page.html'</span>,
+  styleUrls: [<span class="hljs-string">'home.page.scss'</span>],
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonButton,
+    IonItem,
+    IonLabel,
+    IonTextarea,
+    IonImg,
+    IonCard,
+    IonCardContent,
+    IonCardHeader,
+    IonCardTitle,
+    IonList,
+    IonIcon,
+    IonText,
+    IonGrid,
+    IonRow,
+    IonCol
   ],
 })
-</code></pre>
+</div></code></pre>
+</div>
 <hr>
 <h2 id="9-actualiza-las-variables-del-componente-homepage">9. Actualiza las variables del componente HomePage</h2>
-<h3 id="a-agrega-nuevas-variables-después-de-las-existentes">a) Agrega nuevas variables después de las existentes</h3>
+<h3 id="a-agrega-nuevas-variables-despu%C3%A9s-de-las-existentes">a) Agrega nuevas variables después de las existentes</h3>
 <p>En la clase <code>HomePage</code>, después de las variables existentes <code>foto</code> y <code>descripcion</code>, agrega:</p>
-<pre><code class="language-typescript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HomePage</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">OnInit</span> {
-  <span class="hljs-attr">foto</span>: <span class="hljs-built_in">string</span> = <span class="hljs-string">&quot;&quot;</span>;
-  <span class="hljs-attr">descripcion</span>: <span class="hljs-built_in">string</span> = <span class="hljs-string">&quot;&quot;</span>;
-  <span class="hljs-attr">coordenadas</span>: <span class="hljs-title class_">Coordinates</span> | <span class="hljs-literal">null</span> = <span class="hljs-literal">null</span>;
-  <span class="hljs-attr">registros</span>: <span class="hljs-title class_">GeoPhotoRecord</span>[] = [];
-  <span class="hljs-attr">cargandoUbicacion</span>: <span class="hljs-built_in">boolean</span> = <span class="hljs-literal">false</span>;
-</code></pre>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> HomePage <span class="hljs-keyword">implements</span> OnInit {
+  foto: <span class="hljs-built_in">string</span> = <span class="hljs-string">""</span>;
+  descripcion: <span class="hljs-built_in">string</span> = <span class="hljs-string">""</span>;
+  coordenadas: Coordinates | <span class="hljs-literal">null</span> = <span class="hljs-literal">null</span>;
+  registros: GeoPhotoRecord[] = [];
+  cargandoUbicacion: <span class="hljs-built_in">boolean</span> = <span class="hljs-literal">false</span>;
+</div></code></pre>
+</div>
 <h3 id="b-inyecta-los-nuevos-servicios">b) Inyecta los nuevos servicios</h3>
 <p>Después de la inyección existente del <code>PhotoService</code>, agrega:</p>
-<pre><code class="language-typescript"><span class="hljs-keyword">private</span> photoService = <span class="hljs-title function_">inject</span>(<span class="hljs-title class_">PhotoService</span>);
-<span class="hljs-keyword">private</span> geoService = <span class="hljs-title function_">inject</span>(<span class="hljs-title class_">GeolocationService</span>);
-<span class="hljs-keyword">private</span> storageService = <span class="hljs-title function_">inject</span>(<span class="hljs-title class_">StorageService</span>);
-</code></pre>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">private</span> photoService = inject(PhotoService);
+<span class="hljs-keyword">private</span> geoService = inject(GeolocationService);
+<span class="hljs-keyword">private</span> storageService = inject(StorageService);
+</div></code></pre>
+</div>
 <h3 id="c-implementa-oninit">c) Implementa OnInit</h3>
 <p>Cambia la declaración de clase para implementar <code>OnInit</code>:</p>
-<pre><code class="language-typescript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HomePage</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">OnInit</span> {
-</code></pre>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> HomePage <span class="hljs-keyword">implements</span> OnInit {
+</div></code></pre>
+</div>
 <p>Y agrega el método <code>ngOnInit</code> después del constructor:</p>
-<pre><code class="language-typescript"><span class="hljs-title function_">constructor</span>(<span class="hljs-params"></span>) { }
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">constructor</span>(<span class="hljs-params"></span>) { }
 
-<span class="hljs-keyword">async</span> <span class="hljs-title function_">ngOnInit</span>(<span class="hljs-params"></span>) {
-  <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">cargarRegistros</span>();
+<span class="hljs-keyword">async</span> ngOnInit() {
+  <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.cargarRegistros();
 }
-</code></pre>
+</div></code></pre>
+</div>
 <hr>
-<h2 id="10-actualiza-los-métodos-existentes-del-homepage">10. Actualiza los métodos existentes del HomePage</h2>
-<h3 id="a-modifica-el-método-tomarfoto-existente">a) Modifica el método <code>tomarFoto</code> existente</h3>
+<h2 id="10-actualiza-los-m%C3%A9todos-existentes-del-homepage">10. Actualiza los métodos existentes del HomePage</h2>
+<h3 id="a-modifica-el-m%C3%A9todo-tomarfoto-existente">a) Modifica el método <code>tomarFoto</code> existente</h3>
 <p>Encuentra el método existente <code>tomarFoto</code> y reemplázalo por esta versión que incluye geolocalización automática:</p>
-<pre><code class="language-typescript"><span class="hljs-keyword">async</span> <span class="hljs-title function_">tomarFoto</span>(<span class="hljs-params"></span>) {
-  <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;Función tomarFoto&#x27;</span>);
-  <span class="hljs-keyword">const</span> photoResult = <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">photoService</span>.<span class="hljs-title function_">takePicture</span>();
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">async</span> tomarFoto() {
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Función tomarFoto'</span>);
+  <span class="hljs-keyword">const</span> photoResult = <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.photoService.takePicture();
   <span class="hljs-keyword">if</span> (photoResult) {
-    <span class="hljs-variable language_">this</span>.<span class="hljs-property">foto</span> = photoResult.<span class="hljs-property">webviewPath</span>;
+    <span class="hljs-keyword">this</span>.foto = photoResult.webviewPath;
     <span class="hljs-comment">// Obtener ubicación automáticamente al tomar foto</span>
-    <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">obtenerUbicacion</span>();
+    <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.obtenerUbicacion();
   }
 }
-</code></pre>
-<h3 id="b-modifica-el-método-guardarregistro-existente">b) Modifica el método <code>guardarRegistro</code> existente</h3>
+</div></code></pre>
+</div>
+<h3 id="b-modifica-el-m%C3%A9todo-guardarregistro-existente">b) Modifica el método <code>guardarRegistro</code> existente</h3>
 <p>Encuentra el método existente <code>guardarRegistro</code> y reemplázalo por esta versión completa:</p>
-<pre><code class="language-typescript"><span class="hljs-keyword">async</span> <span class="hljs-title function_">guardarRegistro</span>(<span class="hljs-params"></span>) {
-  <span class="hljs-keyword">if</span> (!<span class="hljs-variable language_">this</span>.<span class="hljs-property">foto</span> || !<span class="hljs-variable language_">this</span>.<span class="hljs-property">descripcion</span>) {
-    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">warn</span>(<span class="hljs-string">&#x27;Faltan datos para guardar&#x27;</span>);
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-keyword">async</span> guardarRegistro() {
+  <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.foto || !<span class="hljs-keyword">this</span>.descripcion) {
+    <span class="hljs-built_in">console</span>.warn(<span class="hljs-string">'Faltan datos para guardar'</span>);
     <span class="hljs-keyword">return</span>;
   }
 
   <span class="hljs-keyword">try</span> {
-    <span class="hljs-keyword">const</span> <span class="hljs-attr">registro</span>: <span class="hljs-title class_">GeoPhotoRecord</span> = {
-      <span class="hljs-attr">id</span>: <span class="hljs-variable language_">this</span>.<span class="hljs-property">storageService</span>.<span class="hljs-title function_">generateId</span>(),
-      <span class="hljs-attr">foto</span>: <span class="hljs-variable language_">this</span>.<span class="hljs-property">foto</span>,
-      <span class="hljs-attr">descripcion</span>: <span class="hljs-variable language_">this</span>.<span class="hljs-property">descripcion</span>,
-      <span class="hljs-attr">latitud</span>: <span class="hljs-variable language_">this</span>.<span class="hljs-property">coordenadas</span>?.<span class="hljs-property">latitude</span> || <span class="hljs-number">0</span>,
-      <span class="hljs-attr">longitud</span>: <span class="hljs-variable language_">this</span>.<span class="hljs-property">coordenadas</span>?.<span class="hljs-property">longitude</span> || <span class="hljs-number">0</span>,
-      <span class="hljs-attr">fecha</span>: <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>().<span class="hljs-title function_">toLocaleString</span>(),
-      <span class="hljs-attr">direccion</span>: <span class="hljs-variable language_">this</span>.<span class="hljs-property">coordenadas</span> 
-        ? <span class="hljs-variable language_">this</span>.<span class="hljs-property">geoService</span>.<span class="hljs-title function_">formatCoordinates</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">coordenadas</span>.<span class="hljs-property">latitude</span>, <span class="hljs-variable language_">this</span>.<span class="hljs-property">coordenadas</span>.<span class="hljs-property">longitude</span>)
-        : <span class="hljs-string">&#x27;Ubicación no disponible&#x27;</span>
+    <span class="hljs-keyword">const</span> registro: GeoPhotoRecord = {
+      id: <span class="hljs-keyword">this</span>.storageService.generateId(),
+      photo: <span class="hljs-keyword">this</span>.foto,
+      description: <span class="hljs-keyword">this</span>.descripcion,
+      coordinates: <span class="hljs-keyword">this</span>.coordenadas ?? <span class="hljs-literal">undefined</span>,
+      date: <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().toLocaleString(),
     };
 
-    <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">storageService</span>.<span class="hljs-title function_">saveRecord</span>(registro);
-    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;Registro guardado:&#x27;</span>, registro);
+    <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.storageService.saveRecord(registro);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Registro guardado:'</span>, registro);
     
     <span class="hljs-comment">// Limpiar formulario y recargar lista</span>
-    <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">limpiarFormulario</span>();
-    <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">cargarRegistros</span>();
+    <span class="hljs-keyword">this</span>.limpiarFormulario();
+    <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.cargarRegistros();
   } <span class="hljs-keyword">catch</span> (error) {
-    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(<span class="hljs-string">&#x27;Error guardando registro:&#x27;</span>, error);
+    <span class="hljs-built_in">console</span>.error(<span class="hljs-string">'Error guardando registro:'</span>, error);
   }
 }
-</code></pre>
-<h3 id="c-modifica-el-método-eliminarfoto-existente">c) Modifica el método <code>eliminarFoto</code> existente</h3>
+</div></code></pre>
+</div>
+<h3 id="c-modifica-el-m%C3%A9todo-eliminarfoto-existente">c) Modifica el método <code>eliminarFoto</code> existente</h3>
 <p>Encuentra el método existente <code>eliminarFoto</code> y reemplázalo por:</p>
-<pre><code class="language-typescript"><span class="hljs-title function_">eliminarFoto</span>(<span class="hljs-params"></span>) {
-  <span class="hljs-variable language_">this</span>.<span class="hljs-property">foto</span> = <span class="hljs-string">&#x27;&#x27;</span>;
-  <span class="hljs-variable language_">this</span>.<span class="hljs-property">coordenadas</span> = <span class="hljs-literal">null</span>;
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div>eliminarFoto() {
+  <span class="hljs-keyword">this</span>.foto = <span class="hljs-string">''</span>;
+  <span class="hljs-keyword">this</span>.coordenadas = <span class="hljs-literal">null</span>;
 }
-</code></pre>
+</div></code></pre>
+</div>
 <hr>
-<h2 id="11-agrega-los-nuevos-métodos-al-homepage">11. Agrega los nuevos métodos al HomePage</h2>
-<h3 id="a-agrega-el-método-para-obtener-ubicación">a) Agrega el método para obtener ubicación</h3>
+<h2 id="11-agrega-los-nuevos-m%C3%A9todos-al-homepage">11. Agrega los nuevos métodos al HomePage</h2>
+<h3 id="a-agrega-el-m%C3%A9todo-para-obtener-ubicaci%C3%B3n">a) Agrega el método para obtener ubicación</h3>
 <p>Después de los métodos existentes, agrega:</p>
-<pre><code class="language-typescript"><span class="hljs-keyword">async</span> <span class="hljs-title function_">obtenerUbicacion</span>(<span class="hljs-params"></span>) {
-  <span class="hljs-variable language_">this</span>.<span class="hljs-property">cargandoUbicacion</span> = <span class="hljs-literal">true</span>;
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div>
+<span class="hljs-keyword">async</span> obtenerUbicacion() {
+  <span class="hljs-keyword">this</span>.cargandoUbicacion = <span class="hljs-literal">true</span>;
   <span class="hljs-keyword">try</span> {
-    <span class="hljs-variable language_">this</span>.<span class="hljs-property">coordenadas</span> = <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">geoService</span>.<span class="hljs-title function_">getCurrentPosition</span>();
-    <span class="hljs-keyword">if</span> (!<span class="hljs-variable language_">this</span>.<span class="hljs-property">coordenadas</span>) {
-      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">warn</span>(<span class="hljs-string">&#x27;No se pudo obtener la ubicación&#x27;</span>);
+    <span class="hljs-keyword">this</span>.coordenadas = <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.geoService.getCurrentPosition();
+    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>.coordenadas) {
+      <span class="hljs-built_in">console</span>.warn(<span class="hljs-string">'No se pudo obtener la ubicación'</span>);
     }
   } <span class="hljs-keyword">finally</span> {
-    <span class="hljs-variable language_">this</span>.<span class="hljs-property">cargandoUbicacion</span> = <span class="hljs-literal">false</span>;
+    <span class="hljs-keyword">this</span>.cargandoUbicacion = <span class="hljs-literal">false</span>;
   }
 }
-</code></pre>
-<h3 id="b-agrega-el-método-para-cargar-registros">b) Agrega el método para cargar registros</h3>
-<pre><code class="language-typescript"><span class="hljs-keyword">async</span> <span class="hljs-title function_">cargarRegistros</span>(<span class="hljs-params"></span>) {
+</div></code></pre>
+</div>
+<h3 id="b-agrega-el-m%C3%A9todo-para-cargar-registros">b) Agrega el método para cargar registros</h3>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div>
+<span class="hljs-keyword">async</span> cargarRegistros() {
   <span class="hljs-keyword">try</span> {
-    <span class="hljs-variable language_">this</span>.<span class="hljs-property">registros</span> = <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">storageService</span>.<span class="hljs-title function_">getAllRecords</span>();
+    <span class="hljs-keyword">this</span>.registros = <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.storageService.getAllRecords();
     <span class="hljs-comment">// Ordenar por fecha más reciente primero</span>
-    <span class="hljs-variable language_">this</span>.<span class="hljs-property">registros</span>.<span class="hljs-title function_">sort</span>(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(b.<span class="hljs-property">fecha</span>).<span class="hljs-title function_">getTime</span>() - <span class="hljs-keyword">new</span> <span class="hljs-title class_">Date</span>(a.<span class="hljs-property">fecha</span>).<span class="hljs-title function_">getTime</span>());
+  <span class="hljs-keyword">this</span>.registros.sort(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(b.date).getTime() - <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(a.date).getTime());
   } <span class="hljs-keyword">catch</span> (error) {
-    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(<span class="hljs-string">&#x27;Error cargando registros:&#x27;</span>, error);
+    <span class="hljs-built_in">console</span>.error(<span class="hljs-string">'Error cargando registros:'</span>, error);
   }
 }
-</code></pre>
-<h3 id="c-agrega-el-método-para-eliminar-registros">c) Agrega el método para eliminar registros</h3>
-<pre><code class="language-typescript"><span class="hljs-keyword">async</span> <span class="hljs-title function_">eliminarRegistro</span>(<span class="hljs-params">id: <span class="hljs-built_in">string</span></span>) {
+</div></code></pre>
+</div>
+<h3 id="c-agrega-el-m%C3%A9todo-para-eliminar-registros">c) Agrega el método para eliminar registros</h3>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div>
+<span class="hljs-keyword">async</span> eliminarRegistro(id: <span class="hljs-built_in">string</span>) {
   <span class="hljs-keyword">try</span> {
-    <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">storageService</span>.<span class="hljs-title function_">deleteRecord</span>(id);
-    <span class="hljs-keyword">await</span> <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">cargarRegistros</span>();
+    <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.storageService.deleteRecord(id);
+    <span class="hljs-keyword">await</span> <span class="hljs-keyword">this</span>.cargarRegistros();
   } <span class="hljs-keyword">catch</span> (error) {
-    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">error</span>(<span class="hljs-string">&#x27;Error eliminando registro:&#x27;</span>, error);
+    <span class="hljs-built_in">console</span>.error(<span class="hljs-string">'Error eliminando registro:'</span>, error);
   }
 }
-</code></pre>
-<h3 id="d-agrega-el-método-privado-para-limpiar-formulario">d) Agrega el método privado para limpiar formulario</h3>
-<pre><code class="language-typescript"><span class="hljs-keyword">private</span> <span class="hljs-title function_">limpiarFormulario</span>(<span class="hljs-params"></span>) {
-  <span class="hljs-variable language_">this</span>.<span class="hljs-property">foto</span> = <span class="hljs-string">&#x27;&#x27;</span>;
-  <span class="hljs-variable language_">this</span>.<span class="hljs-property">descripcion</span> = <span class="hljs-string">&#x27;&#x27;</span>;
-  <span class="hljs-variable language_">this</span>.<span class="hljs-property">coordenadas</span> = <span class="hljs-literal">null</span>;
+</div></code></pre>
+</div>
+<h3 id="d-agrega-el-m%C3%A9todo-privado-para-limpiar-formulario">d) Agrega el método privado para limpiar formulario</h3>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div>
+<span class="hljs-keyword">private</span> limpiarFormulario() {
+  <span class="hljs-keyword">this</span>.foto = <span class="hljs-string">''</span>;
+  <span class="hljs-keyword">this</span>.descripcion = <span class="hljs-string">''</span>;
+  <span class="hljs-keyword">this</span>.coordenadas = <span class="hljs-literal">null</span>;
 }
-</code></pre>
+</div></code></pre>
+</div>
 <hr>
-<h2 id="12-agrega-métodos-utilitarios-al-homepage">12. Agrega métodos utilitarios al HomePage</h2>
-<h3 id="a-agrega-getter-para-verificar-si-hay-ubicación">a) Agrega getter para verificar si hay ubicación</h3>
-<pre><code class="language-typescript"><span class="hljs-keyword">get</span> <span class="hljs-title function_">tieneUbicacion</span>(): <span class="hljs-built_in">boolean</span> {
-  <span class="hljs-keyword">return</span> <span class="hljs-variable language_">this</span>.<span class="hljs-property">coordenadas</span> !== <span class="hljs-literal">null</span>;
+<h2 id="12-agrega-m%C3%A9todos-utilitarios-al-homepage">12. Agrega métodos utilitarios al HomePage</h2>
+<h3 id="a-agrega-getter-para-verificar-si-hay-ubicaci%C3%B3n">a) Agrega getter para verificar si hay ubicación</h3>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div>
+<span class="hljs-keyword">get</span> tieneUbicacion(): <span class="hljs-built_in">boolean</span> {
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.coordenadas !== <span class="hljs-literal">null</span>;
 }
-</code></pre>
+</div></code></pre>
+</div>
 <h3 id="b-agrega-getter-para-validar-formulario">b) Agrega getter para validar formulario</h3>
-<pre><code class="language-typescript"><span class="hljs-keyword">get</span> <span class="hljs-title function_">formularioValido</span>(): <span class="hljs-built_in">boolean</span> {
-  <span class="hljs-keyword">return</span> !!(<span class="hljs-variable language_">this</span>.<span class="hljs-property">foto</span> &amp;&amp; <span class="hljs-variable language_">this</span>.<span class="hljs-property">descripcion</span>);
-}
-</code></pre>
-<pre><code>
----
-
-## 13. Actualiza la interfaz HTML paso a paso
-
-### a) Cambia el título de la aplicación
-
-Abre `src/app/home/home.page.html` y cambia el título en el header:
-
-```html
-&lt;ion-header [translucent]=&quot;true&quot;&gt;
-  &lt;ion-toolbar&gt;
-    &lt;ion-title&gt;Foto-Geo App&lt;/ion-title&gt;
-  &lt;/ion-toolbar&gt;
-&lt;/ion-header&gt;
-</code></pre>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<p>get formularioValido(): boolean {
+return !!(this.foto &amp;&amp; this.descripcion);
+}</p>
+<pre class="hljs"><code><div></div></code></pre>
+</div>
+<hr>
+<h2 id="13-actualiza-la-interfaz-html-paso-a-paso">13. Actualiza la interfaz HTML paso a paso</h2>
+<h3 id="a-cambia-el-t%C3%ADtulo-de-la-aplicaci%C3%B3n">a) Cambia el título de la aplicación</h3>
+<p>Abre <code>src/app/home/home.page.html</code> y cambia el título en el header:</p>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">ion-header</span> [<span class="hljs-attr">translucent</span>]=<span class="hljs-string">"true"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">ion-toolbar</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">ion-title</span>&gt;</span>Foto-Geo App<span class="hljs-tag">&lt;/<span class="hljs-name">ion-title</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-name">ion-toolbar</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">ion-header</span>&gt;</span>
+</div></code></pre>
+</div>
 <h3 id="b-reemplaza-el-contenido-del-container-por-una-estructura-de-cards">b) Reemplaza el contenido del container por una estructura de cards</h3>
 <p>Encuentra el <code>&lt;div id=&quot;container&quot;&gt;</code> y reemplaza todo su contenido por:</p>
-<pre><code class="language-html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;container&quot;</span>&gt;</span>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">"container"</span>&gt;</span>
   <span class="hljs-comment">&lt;!-- Sección: Nuevo Registro --&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">ion-card</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">ion-card-header</span>&gt;</span>
@@ -942,77 +955,92 @@ Abre `src/app/home/home.page.html` y cambia el título en el header:
   <span class="hljs-comment">&lt;!-- Otras secciones se agregarán en los siguientes pasos --&gt;</span>
   
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-</code></pre>
+</div></code></pre>
+</div>
 <h3 id="c-agrega-el-formulario-dentro-del-primer-card">c) Agrega el formulario dentro del primer card</h3>
 <p>Dentro de <code>&lt;ion-card-content&gt;</code> del primer card, agrega el formulario existente con algunos cambios:</p>
-<pre><code class="language-html"><span class="hljs-comment">&lt;!-- Botón para tomar foto --&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">ion-button</span> <span class="hljs-attr">expand</span>=<span class="hljs-string">&quot;full&quot;</span> (<span class="hljs-attr">click</span>)=<span class="hljs-string">&quot;tomarFoto()&quot;</span>&gt;</span>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-comment">&lt;!-- Botón para tomar foto --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">ion-button</span> <span class="hljs-attr">expand</span>=<span class="hljs-string">"full"</span> (<span class="hljs-attr">click</span>)=<span class="hljs-string">"tomarFoto()"</span>&gt;</span>
   Tomar Foto
 <span class="hljs-tag">&lt;/<span class="hljs-name">ion-button</span>&gt;</span>
 
 <span class="hljs-comment">&lt;!-- Campo descripción --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">ion-item</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">ion-label</span> <span class="hljs-attr">position</span>=<span class="hljs-string">&quot;floating&quot;</span>&gt;</span>Descripción<span class="hljs-tag">&lt;/<span class="hljs-name">ion-label</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">ion-textarea</span> [(<span class="hljs-attr">ngModel</span>)]=<span class="hljs-string">&quot;descripcion&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">ion-textarea</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">ion-label</span> <span class="hljs-attr">position</span>=<span class="hljs-string">"floating"</span>&gt;</span>Descripción<span class="hljs-tag">&lt;/<span class="hljs-name">ion-label</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">ion-textarea</span> [(<span class="hljs-attr">ngModel</span>)]=<span class="hljs-string">"descripcion"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">ion-textarea</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">ion-item</span>&gt;</span>
 
 <span class="hljs-comment">&lt;!-- Vista previa de la foto --&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">ion-img</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;foto-preview&quot;</span> [<span class="hljs-attr">src</span>]=<span class="hljs-string">&quot;foto&quot;</span> *<span class="hljs-attr">ngIf</span>=<span class="hljs-string">&quot;foto&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">ion-img</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">ion-img</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"foto-preview"</span> [<span class="hljs-attr">src</span>]=<span class="hljs-string">"foto"</span> *<span class="hljs-attr">ngIf</span>=<span class="hljs-string">"foto"</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">ion-img</span>&gt;</span>
 
 <span class="hljs-comment">&lt;!-- Botón eliminar foto --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">ion-button</span> 
-  <span class="hljs-attr">fill</span>=<span class="hljs-string">&quot;clear&quot;</span> 
-  <span class="hljs-attr">color</span>=<span class="hljs-string">&quot;danger&quot;</span> 
-  *<span class="hljs-attr">ngIf</span>=<span class="hljs-string">&quot;foto&quot;</span> 
-  (<span class="hljs-attr">click</span>)=<span class="hljs-string">&quot;eliminarFoto()&quot;</span>&gt;</span>
+  <span class="hljs-attr">fill</span>=<span class="hljs-string">"clear"</span> 
+  <span class="hljs-attr">color</span>=<span class="hljs-string">"danger"</span> 
+  *<span class="hljs-attr">ngIf</span>=<span class="hljs-string">"foto"</span> 
+  (<span class="hljs-attr">click</span>)=<span class="hljs-string">"eliminarFoto()"</span>&gt;</span>
   Eliminar Foto
 <span class="hljs-tag">&lt;/<span class="hljs-name">ion-button</span>&gt;</span>
-</code></pre>
-<h3 id="d-agrega-la-información-de-ubicación-después-del-botón-eliminar">d) Agrega la información de ubicación después del botón eliminar</h3>
+</div></code></pre>
+</div>
+<h3 id="d-agrega-la-informaci%C3%B3n-de-ubicaci%C3%B3n-despu%C3%A9s-del-bot%C3%B3n-eliminar">d) Agrega la información de ubicación después del botón eliminar</h3>
 <p>Después del botón &quot;Eliminar Foto&quot;, agrega:</p>
-<pre><code class="language-html"><span class="hljs-comment">&lt;!-- Información de ubicación --&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;ubicacion-info&quot;</span> *<span class="hljs-attr">ngIf</span>=<span class="hljs-string">&quot;tieneUbicacion&quot;</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">ion-text</span> <span class="hljs-attr">color</span>=<span class="hljs-string">&quot;success&quot;</span>&gt;</span>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-comment">&lt;!-- Información de ubicación --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ubicacion-info"</span> *<span class="hljs-attr">ngIf</span>=<span class="hljs-string">"tieneUbicacion"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">ion-text</span> <span class="hljs-attr">color</span>=<span class="hljs-string">"success"</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">h4</span>&gt;</span>📍 Ubicación obtenida<span class="hljs-tag">&lt;/<span class="hljs-name">h4</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>{{coordenadas!.latitude.toFixed(6)}}, {{coordenadas!.longitude.toFixed(6)}}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-name">ion-text</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
 
-<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;ubicacion-info&quot;</span> *<span class="hljs-attr">ngIf</span>=<span class="hljs-string">&quot;cargandoUbicacion&quot;</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">ion-text</span> <span class="hljs-attr">color</span>=<span class="hljs-string">&quot;warning&quot;</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ubicacion-info"</span> *<span class="hljs-attr">ngIf</span>=<span class="hljs-string">"cargandoUbicacion"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">ion-text</span> <span class="hljs-attr">color</span>=<span class="hljs-string">"warning"</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>🔍 Obteniendo ubicación...<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-name">ion-text</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-</code></pre>
-<h3 id="e-agrega-el-botón-para-obtener-ubicación-manualmente">e) Agrega el botón para obtener ubicación manualmente</h3>
+</div></code></pre>
+</div>
+<h3 id="e-agrega-el-bot%C3%B3n-para-obtener-ubicaci%C3%B3n-manualmente">e) Agrega el botón para obtener ubicación manualmente</h3>
 <p>Después de la información de ubicación:</p>
-<pre><code class="language-html"><span class="hljs-comment">&lt;!-- Botón para obtener ubicación manualmente --&gt;</span>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-comment">&lt;!-- Botón para obtener ubicación manualmente --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">ion-button</span> 
-  <span class="hljs-attr">expand</span>=<span class="hljs-string">&quot;full&quot;</span> 
-  <span class="hljs-attr">fill</span>=<span class="hljs-string">&quot;outline&quot;</span> 
-  <span class="hljs-attr">color</span>=<span class="hljs-string">&quot;secondary&quot;</span>
-  (<span class="hljs-attr">click</span>)=<span class="hljs-string">&quot;obtenerUbicacion()&quot;</span>
-  [<span class="hljs-attr">disabled</span>]=<span class="hljs-string">&quot;cargandoUbicacion&quot;</span>&gt;</span>
-  {{cargandoUbicacion ? &#x27;Obteniendo ubicación...&#x27; : &#x27;Obtener Ubicación GPS&#x27;}}
+  <span class="hljs-attr">expand</span>=<span class="hljs-string">"full"</span> 
+  <span class="hljs-attr">fill</span>=<span class="hljs-string">"outline"</span> 
+  <span class="hljs-attr">color</span>=<span class="hljs-string">"secondary"</span>
+  (<span class="hljs-attr">click</span>)=<span class="hljs-string">"obtenerUbicacion()"</span>
+  [<span class="hljs-attr">disabled</span>]=<span class="hljs-string">"cargandoUbicacion"</span>&gt;</span>
+  {{cargandoUbicacion ? 'Obteniendo ubicación...' : 'Obtener Ubicación GPS'}}
 <span class="hljs-tag">&lt;/<span class="hljs-name">ion-button</span>&gt;</span>
-</code></pre>
-<h3 id="f-actualiza-el-botón-guardar-con-la-nueva-validación">f) Actualiza el botón guardar con la nueva validación</h3>
+</div></code></pre>
+</div>
+<h3 id="f-actualiza-el-bot%C3%B3n-guardar-con-la-nueva-validaci%C3%B3n">f) Actualiza el botón guardar con la nueva validación</h3>
 <p>Reemplaza el botón &quot;Guardar Registro&quot; existente por:</p>
-<pre><code class="language-html"><span class="hljs-comment">&lt;!-- Botón guardar --&gt;</span>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-comment">&lt;!-- Botón guardar --&gt;</span>
 <span class="hljs-tag">&lt;<span class="hljs-name">ion-button</span>
-  <span class="hljs-attr">expand</span>=<span class="hljs-string">&quot;full&quot;</span>
-  <span class="hljs-attr">color</span>=<span class="hljs-string">&quot;success&quot;</span>
-  (<span class="hljs-attr">click</span>)=<span class="hljs-string">&quot;guardarRegistro()&quot;</span>
-  [<span class="hljs-attr">disabled</span>]=<span class="hljs-string">&quot;!formularioValido&quot;</span>&gt;</span>
+  <span class="hljs-attr">expand</span>=<span class="hljs-string">"full"</span>
+  <span class="hljs-attr">color</span>=<span class="hljs-string">"success"</span>
+  (<span class="hljs-attr">click</span>)=<span class="hljs-string">"guardarRegistro()"</span>
+  [<span class="hljs-attr">disabled</span>]=<span class="hljs-string">"!formularioValido"</span>&gt;</span>
   Guardar Registro
 <span class="hljs-tag">&lt;/<span class="hljs-name">ion-button</span>&gt;</span>
-</code></pre>
+</div></code></pre>
+</div>
 <hr>
-<h2 id="14-agrega-la-sección-de-lista-de-registros-al-html">14. Agrega la sección de lista de registros al HTML</h2>
+<h2 id="14-agrega-la-secci%C3%B3n-de-lista-de-registros-al-html">14. Agrega la sección de lista de registros al HTML</h2>
 <h3 id="a-agrega-el-card-para-mostrar-registros-guardados">a) Agrega el card para mostrar registros guardados</h3>
 <p>Después del primer card (Nuevo Registro), pero antes del cierre de <code>&lt;/div&gt;</code>, agrega:</p>
-<pre><code class="language-html"><span class="hljs-comment">&lt;!-- Sección: Lista de Registros --&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">ion-card</span> *<span class="hljs-attr">ngIf</span>=<span class="hljs-string">&quot;registros.length &gt; 0&quot;</span>&gt;</span>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-comment">&lt;!-- Sección: Lista de Registros --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">ion-card</span> *<span class="hljs-attr">ngIf</span>=<span class="hljs-string">"registros.length &gt; 0"</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">ion-card-header</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">ion-card-title</span>&gt;</span>Registros Guardados ({{registros.length}})<span class="hljs-tag">&lt;/<span class="hljs-name">ion-card-title</span>&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-name">ion-card-header</span>&gt;</span>
@@ -1022,37 +1050,40 @@ Abre `src/app/home/home.page.html` y cambia el título en el header:
     
   <span class="hljs-tag">&lt;/<span class="hljs-name">ion-card-content</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">ion-card</span>&gt;</span>
-</code></pre>
+</div></code></pre>
+</div>
 <h3 id="b-agrega-la-lista-de-registros-dentro-del-segundo-card">b) Agrega la lista de registros dentro del segundo card</h3>
 <p>Dentro de <code>&lt;ion-card-content&gt;</code> del segundo card, agrega:</p>
-<pre><code class="language-html"><span class="hljs-tag">&lt;<span class="hljs-name">ion-list</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">ion-item</span> *<span class="hljs-attr">ngFor</span>=<span class="hljs-string">&quot;let registro of registros&quot;</span>&gt;</span>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">ion-list</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">ion-item</span> *<span class="hljs-attr">ngFor</span>=<span class="hljs-string">"let registro of registros"</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">ion-grid</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">ion-row</span>&gt;</span>
         <span class="hljs-comment">&lt;!-- Columna de imagen --&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">ion-col</span> <span class="hljs-attr">size</span>=<span class="hljs-string">&quot;4&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">ion-col</span> <span class="hljs-attr">size</span>=<span class="hljs-string">"4"</span>&gt;</span>
           <span class="hljs-tag">&lt;<span class="hljs-name">ion-img</span> 
-            [<span class="hljs-attr">src</span>]=<span class="hljs-string">&quot;registro.foto&quot;</span> 
-            <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;registro-imagen&quot;</span>&gt;</span>
+            [<span class="hljs-attr">src</span>]=<span class="hljs-string">"registro.photo"</span> 
+            <span class="hljs-attr">class</span>=<span class="hljs-string">"registro-imagen"</span>&gt;</span>
           <span class="hljs-tag">&lt;/<span class="hljs-name">ion-img</span>&gt;</span>
         <span class="hljs-tag">&lt;/<span class="hljs-name">ion-col</span>&gt;</span>
         
         <span class="hljs-comment">&lt;!-- Columna de información --&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">ion-col</span> <span class="hljs-attr">size</span>=<span class="hljs-string">&quot;6&quot;</span>&gt;</span>
-          <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;registro-info&quot;</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">h3</span>&gt;</span>{{registro.descripcion}}<span class="hljs-tag">&lt;/<span class="hljs-name">h3</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;fecha&quot;</span>&gt;</span>📅 {{registro.fecha}}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
-            <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;coordenadas&quot;</span>&gt;</span>📍 {{registro.direccion}}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">ion-col</span> <span class="hljs-attr">size</span>=<span class="hljs-string">"6"</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"registro-info"</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">h3</span>&gt;</span>{{registro.description}}<span class="hljs-tag">&lt;/<span class="hljs-name">h3</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"date"</span>&gt;</span>📅 {{registro.date}}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"coordenadas"</span>&gt;</span>📍 {{registro.coordinates?.latitude.toFixed(6)}}, {{registro.coordinates?.longitude.toFixed(6)}}<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
           <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
         <span class="hljs-tag">&lt;/<span class="hljs-name">ion-col</span>&gt;</span>
         
         <span class="hljs-comment">&lt;!-- Columna de botón eliminar --&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">ion-col</span> <span class="hljs-attr">size</span>=<span class="hljs-string">&quot;2&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;ion-text-center&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">ion-col</span> <span class="hljs-attr">size</span>=<span class="hljs-string">"2"</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ion-text-center"</span>&gt;</span>
           <span class="hljs-tag">&lt;<span class="hljs-name">ion-button</span> 
-            <span class="hljs-attr">fill</span>=<span class="hljs-string">&quot;clear&quot;</span> 
-            <span class="hljs-attr">color</span>=<span class="hljs-string">&quot;danger&quot;</span> 
-            <span class="hljs-attr">size</span>=<span class="hljs-string">&quot;small&quot;</span>
-            (<span class="hljs-attr">click</span>)=<span class="hljs-string">&quot;eliminarRegistro(registro.id)&quot;</span>&gt;</span>
+            <span class="hljs-attr">fill</span>=<span class="hljs-string">"clear"</span> 
+            <span class="hljs-attr">color</span>=<span class="hljs-string">"danger"</span> 
+            <span class="hljs-attr">size</span>=<span class="hljs-string">"small"</span>
+            (<span class="hljs-attr">click</span>)=<span class="hljs-string">"eliminarRegistro(registro.id)"</span>&gt;</span>
             🗑️
           <span class="hljs-tag">&lt;/<span class="hljs-name">ion-button</span>&gt;</span>
         <span class="hljs-tag">&lt;/<span class="hljs-name">ion-col</span>&gt;</span>
@@ -1061,30 +1092,39 @@ Abre `src/app/home/home.page.html` y cambia el título en el header:
     <span class="hljs-tag">&lt;/<span class="hljs-name">ion-grid</span>&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-name">ion-item</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">ion-list</span>&gt;</span>
-</code></pre>
+</div></code></pre>
+</div>
 <h3 id="c-agrega-el-mensaje-cuando-no-hay-registros">c) Agrega el mensaje cuando no hay registros</h3>
 <p>Después del segundo card, agrega:</p>
-<pre><code class="language-html"><span class="hljs-comment">&lt;!-- Mensaje cuando no hay registros --&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">ion-card</span> *<span class="hljs-attr">ngIf</span>=<span class="hljs-string">&quot;registros.length === 0&quot;</span>&gt;</span>
-  <span class="hljs-tag">&lt;<span class="hljs-name">ion-card-content</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;ion-text-center&quot;</span>&gt;</span>
-    <span class="hljs-tag">&lt;<span class="hljs-name">ion-text</span> <span class="hljs-attr">color</span>=<span class="hljs-string">&quot;medium&quot;</span>&gt;</span>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-comment">&lt;!-- Mensaje cuando no hay registros --&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">ion-card</span> *<span class="hljs-attr">ngIf</span>=<span class="hljs-string">"registros.length === 0"</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-name">ion-card-content</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"ion-text-center"</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">ion-text</span> <span class="hljs-attr">color</span>=<span class="hljs-string">"medium"</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">h4</span>&gt;</span>No hay registros guardados<span class="hljs-tag">&lt;/<span class="hljs-name">h4</span>&gt;</span>
       <span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>Toma tu primera foto con ubicación para comenzar<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span>
     <span class="hljs-tag">&lt;/<span class="hljs-name">ion-text</span>&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-name">ion-card-content</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">ion-card</span>&gt;</span>
-</code></pre>
+</div></code></pre>
+</div>
 <hr>
 <h2 id="15-actualiza-los-estilos-paso-a-paso">15. Actualiza los estilos paso a paso</h2>
 <h3 id="a-actualiza-los-estilos-base-del-container">a) Actualiza los estilos base del container</h3>
 <p>Abre <code>src/app/home/home.page.scss</code> y reemplaza el estilo del container:</p>
-<pre><code class="language-scss"><span class="hljs-selector-id">#container</span> {
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-selector-id">#container</span> {
   <span class="hljs-attribute">padding</span>: <span class="hljs-number">16px</span>;
 }
-</code></pre>
+</div></code></pre>
+</div>
 <h3 id="b-mejora-los-estilos-de-vista-previa-de-foto">b) Mejora los estilos de vista previa de foto</h3>
 <p>Encuentra la clase <code>.foto-preview</code> y reemplaza por:</p>
-<pre><code class="language-scss"><span class="hljs-selector-class">.foto-preview</span> {
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-selector-class">.foto-preview</span> {
   <span class="hljs-attribute">height</span>: <span class="hljs-number">40</span>dvh;
   <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">12px</span>;
   <span class="hljs-attribute">box-shadow</span>: <span class="hljs-number">0</span> <span class="hljs-number">4px</span> <span class="hljs-number">8px</span> rgba(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0.2</span>);
@@ -1092,19 +1132,25 @@ Abre `src/app/home/home.page.html` y cambia el título en el header:
   <span class="hljs-attribute">background-color</span>: hsla(<span class="hljs-number">0</span>, <span class="hljs-number">0%</span>, <span class="hljs-number">0%</span>, <span class="hljs-number">0.1</span>);
   <span class="hljs-attribute">margin</span>: <span class="hljs-number">16px</span> <span class="hljs-number">0</span>;
 }
-</code></pre>
-<h3 id="c-agrega-estilos-para-las-imágenes-de-registros">c) Agrega estilos para las imágenes de registros</h3>
+</div></code></pre>
+</div>
+<h3 id="c-agrega-estilos-para-las-im%C3%A1genes-de-registros">c) Agrega estilos para las imágenes de registros</h3>
 <p>Después de los estilos existentes, agrega:</p>
-<pre><code class="language-scss"><span class="hljs-selector-class">.registro-imagen</span> {
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-selector-class">.registro-imagen</span> {
   <span class="hljs-attribute">height</span>: <span class="hljs-number">80px</span>;
   <span class="hljs-attribute">width</span>: <span class="hljs-number">100%</span>;
   <span class="hljs-selector-tag">object</span>-fit: cover;
   <span class="hljs-attribute">border-radius</span>: <span class="hljs-number">8px</span>;
   <span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> solid <span class="hljs-number">#ddd</span>;
 }
-</code></pre>
-<h3 id="d-agrega-estilos-para-la-información-de-registros">d) Agrega estilos para la información de registros</h3>
-<pre><code class="language-scss"><span class="hljs-selector-class">.registro-info</span> {
+</div></code></pre>
+</div>
+<h3 id="d-agrega-estilos-para-la-informaci%C3%B3n-de-registros">d) Agrega estilos para la información de registros</h3>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-selector-class">.registro-info</span> {
   <span class="hljs-selector-tag">h3</span> {
     <span class="hljs-attribute">margin</span>: <span class="hljs-number">0</span> <span class="hljs-number">0</span> <span class="hljs-number">8px</span> <span class="hljs-number">0</span>;
     <span class="hljs-attribute">font-size</span>: <span class="hljs-number">16px</span>;
@@ -1127,9 +1173,12 @@ Abre `src/app/home/home.page.html` y cambia el título en el header:
     }
   }
 }
-</code></pre>
-<h3 id="e-agrega-estilos-para-la-información-de-ubicación">e) Agrega estilos para la información de ubicación</h3>
-<pre><code class="language-scss"><span class="hljs-selector-class">.ubicacion-info</span> {
+</div></code></pre>
+</div>
+<h3 id="e-agrega-estilos-para-la-informaci%C3%B3n-de-ubicaci%C3%B3n">e) Agrega estilos para la información de ubicación</h3>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-selector-class">.ubicacion-info</span> {
   <span class="hljs-attribute">margin</span>: <span class="hljs-number">16px</span> <span class="hljs-number">0</span>;
   <span class="hljs-attribute">padding</span>: <span class="hljs-number">12px</span>;
   <span class="hljs-attribute">background-color</span>: var(--ion-color-light);
@@ -1147,13 +1196,16 @@ Abre `src/app/home/home.page.html` y cambia el título en el header:
     <span class="hljs-attribute">font-size</span>: <span class="hljs-number">14px</span>;
   }
 }
-</code></pre>
+</div></code></pre>
+</div>
 <h3 id="f-mejora-los-estilos-de-cards-y-botones">f) Mejora los estilos de cards y botones</h3>
-<pre><code class="language-scss"><span class="hljs-comment">// Estilos para cards</span>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-comment">// Estilos para cards</span>
 ion-card {
   <span class="hljs-attribute">margin</span>: <span class="hljs-number">16px</span> <span class="hljs-number">0</span>;
   
-  ion-card-title {
+  ion-card-<span class="hljs-selector-tag">title</span> {
     <span class="hljs-attribute">color</span>: var(--ion-color-primary);
     <span class="hljs-attribute">font-size</span>: <span class="hljs-number">18px</span>;
   }
@@ -1167,10 +1219,13 @@ ion-<span class="hljs-selector-tag">button</span> {
     <span class="hljs-attribute">opacity</span>: <span class="hljs-number">0.5</span>;
   }
 }
-</code></pre>
+</div></code></pre>
+</div>
 <h3 id="g-agrega-estilos-responsive">g) Agrega estilos responsive</h3>
-<pre><code class="language-scss"><span class="hljs-comment">// Responsive adjustments</span>
-<span class="hljs-keyword">@media</span> (<span class="hljs-attribute">max-width</span>: <span class="hljs-number">768px</span>) {
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-comment">// Responsive adjustments</span>
+<span class="hljs-keyword">@media</span> (max-width: <span class="hljs-number">768px</span>) {
   <span class="hljs-selector-class">.registro-info</span> <span class="hljs-selector-tag">h3</span> {
     <span class="hljs-attribute">font-size</span>: <span class="hljs-number">14px</span>;
   }
@@ -1179,17 +1234,21 @@ ion-<span class="hljs-selector-tag">button</span> {
     <span class="hljs-attribute">font-size</span>: <span class="hljs-number">12px</span>;
   }
 }
-</code></pre>
+</div></code></pre>
+</div>
 <hr>
 <h2 id="16-configura-permisos-para-android">16. Configura permisos para Android</h2>
 <h3 id="a-localiza-el-archivo-androidmanifestxml">a) Localiza el archivo AndroidManifest.xml</h3>
 <p>Navega hasta <code>android/app/src/main/AndroidManifest.xml</code> en tu proyecto.</p>
-<h3 id="b-agrega-los-permisos-de-ubicación">b) Agrega los permisos de ubicación</h3>
+<h3 id="b-agrega-los-permisos-de-ubicaci%C3%B3n">b) Agrega los permisos de ubicación</h3>
 <p>Dentro del tag <code>&lt;manifest&gt;</code> y antes del tag <code>&lt;application&gt;</code>, agrega estos permisos:</p>
-<pre><code class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.permission.ACCESS_COARSE_LOCATION&quot;</span> /&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.permission.ACCESS_FINE_LOCATION&quot;</span> /&gt;</span>
-<span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.permission.ACCESS_BACKGROUND_LOCATION&quot;</span> /&gt;</span>
-</code></pre>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">"android.permission.ACCESS_COARSE_LOCATION"</span> /&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">"android.permission.ACCESS_FINE_LOCATION"</span> /&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">"android.permission.ACCESS_BACKGROUND_LOCATION"</span> /&gt;</span>
+</div></code></pre>
+</div>
 <p><strong>Explicación de cada permiso:</strong></p>
 <ul>
 <li><code>ACCESS_COARSE_LOCATION</code>: Ubicación aproximada basada en torres de telefonía</li>
@@ -1197,11 +1256,14 @@ ion-<span class="hljs-selector-tag">button</span> {
 <li><code>ACCESS_BACKGROUND_LOCATION</code>: Para ubicación cuando la app está en segundo plano</li>
 </ul>
 <hr>
-<h2 id="17-prueba-la-aplicación-paso-a-paso">17. Prueba la aplicación paso a paso</h2>
+<h2 id="17-prueba-la-aplicaci%C3%B3n-paso-a-paso">17. Prueba la aplicación paso a paso</h2>
 <h3 id="a-prueba-en-el-navegador">a) Prueba en el navegador</h3>
 <p>Ejecuta el comando:</p>
-<pre><code class="language-bash">ionic serve
-</code></pre>
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div>ionic serve
+</div></code></pre>
+</div>
 <p><strong>Verifica estas funcionalidades:</strong></p>
 <ol>
 <li>El botón &quot;Tomar Foto&quot; funciona y solicita ubicación automáticamente</li>
@@ -1213,9 +1275,12 @@ ion-<span class="hljs-selector-tag">button</span> {
 </ol>
 <h3 id="b-prueba-en-android">b) Prueba en Android</h3>
 <p>Ejecuta los comandos:</p>
-<pre><code class="language-bash">npx <span class="hljs-built_in">cap</span> <span class="hljs-built_in">sync</span> android
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div>npx <span class="hljs-built_in">cap</span> sync android
 npx <span class="hljs-built_in">cap</span> open android
-</code></pre>
+</div></code></pre>
+</div>
 <p><strong>Verifica en el dispositivo móvil:</strong></p>
 <ol>
 <li>Solicita permisos de ubicación al usar GPS por primera vez</li>
@@ -1225,7 +1290,7 @@ npx <span class="hljs-built_in">cap</span> open android
 </ol>
 <hr>
 <h2 id="18-resumen-de-funcionalidades-implementadas">18. Resumen de funcionalidades implementadas</h2>
-<h3 id="a-geolocalización-completada">a) Geolocalización completada</h3>
+<h3 id="a-geolocalizaci%C3%B3n-completada">a) Geolocalización completada</h3>
 <ul>
 <li>✅ Obtener coordenadas GPS automáticamente al tomar foto</li>
 <li>✅ Botón manual para obtener ubicación</li>
@@ -1254,74 +1319,21 @@ npx <span class="hljs-built_in">cap</span> open android
 <p>Al completar este tutorial, habrás trabajado con estos archivos:</p>
 <ul>
 <li><code>src/app/models/geo-photo.model.ts</code>: Modelos de datos y interfaces</li>
-<li><code>src/app/services/geolocation.service.ts</code>: Servicio de geolocalización</li>
-<li><code>src/app/services/storage.service.ts</code>: Servicio de almacenamiento</li>
+<li><code>src/app/service/geolocation.service.ts</code>: Servicio de geolocalización</li>
+<li><code>src/app/service/storage.service.ts</code>: Servicio de almacenamiento</li>
+<li><code>src/app/service/geolocation.service.ts</code>: Servicio de geolocalización</li>
+<li><code>src/app/service/storage.service.ts</code>: Servicio de almacenamiento</li>
 <li><code>src/app/home/home.page.ts</code>: Lógica completa del componente</li>
 <li><code>src/app/home/home.page.html</code>: Interfaz con lista de registros</li>
 <li><code>src/app/home/home.page.scss</code>: Estilos mejorados</li>
 <li><code>android/app/src/main/AndroidManifest.xml</code>: Permisos de ubicación</li>
 </ul>
 <hr>
-<h2 id="20-checklist-final">20. Checklist final</h2>
-<h3 id="servicios-y-modelos">Servicios y modelos</h3>
-<ul class="contains-task-list">
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Modelo <code>GeoPhotoRecord</code> creado con todos los campos</li>
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Servicio <code>GeolocationService</code> implementado con gestión de permisos</li>
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Servicio <code>StorageService</code> implementado con CRUD completo</li>
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Plugins de geolocalización y almacenamiento instalados</li>
-</ul>
-<h3 id="componente-homepage">Componente HomePage</h3>
-<ul class="contains-task-list">
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Nuevas importaciones agregadas correctamente</li>
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Variables del estado actualizadas</li>
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Servicios inyectados usando <code>inject()</code></li>
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Método <code>ngOnInit</code> implementado</li>
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Métodos existentes actualizados (tomarFoto, guardarRegistro, eliminarFoto)</li>
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Nuevos métodos agregados (obtenerUbicacion, cargarRegistros, eliminarRegistro)</li>
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Getters utilitarios implementados</li>
-</ul>
-<h3 id="interfaz-html">Interfaz HTML</h3>
-<ul class="contains-task-list">
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Título actualizado a &quot;Foto-Geo App&quot;</li>
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Estructura de cards implementada</li>
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Formulario movido al primer card</li>
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Información de ubicación agregada</li>
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Botón manual de ubicación agregado</li>
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Lista de registros implementada</li>
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Mensaje para lista vacía agregado</li>
-</ul>
-<h3 id="estilos">Estilos</h3>
-<ul class="contains-task-list">
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Estilos base actualizados</li>
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Estilos de vista previa mejorados</li>
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Estilos para registros agregados</li>
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Estilos de ubicación agregados</li>
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Estilos responsive implementados</li>
-</ul>
-<h3 id="android">Android</h3>
-<ul class="contains-task-list">
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Permisos de ubicación configurados</li>
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> App funciona en navegador y móvil</li>
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Geolocalización funciona correctamente</li>
-<li class="task-list-item enabled"><input class="task-list-item-checkbox"type="checkbox"> Persistencia de datos funciona correctamente</li>
-</ul>
-<hr>
-<h2 id="21-posibles-mejoras-futuras">21. Posibles mejoras futuras</h2>
-<p>Una vez completado este tutorial, podrías considerar estas mejoras:</p>
-<ul>
-<li>🔄 <strong>Sincronización en la nube</strong>: Usar Firebase o similar</li>
-<li>📍 <strong>Geocodificación inversa</strong>: Convertir coordenadas a direcciones reales</li>
-<li>🗺️ <strong>Mapa interactivo</strong>: Mostrar ubicaciones en un mapa</li>
-<li>📤 <strong>Compartir registros</strong>: Exportar fotos con metadatos</li>
-<li>🔍 <strong>Búsqueda y filtros</strong>: Buscar por descripción o fecha</li>
-<li>📊 <strong>Estadísticas</strong>: Mostrar métricas de uso</li>
-</ul>
-<hr>
 <p>¡Felicidades! Has completado una aplicación móvil completa con Ionic + Angular que combina fotografía, geolocalización y persistencia de datos. La app ahora puede capturar fotos, obtener coordenadas GPS y guardar registros que se mantienen entre sesiones de la aplicación.</p>
 <hr>
-<h2 id="-qué-sigue-parte-4---base-de-datos-sqlite">📚 ¿Qué sigue? Parte 4 - Base de datos SQLite</h2>
+<h2 id="%F0%9F%93%9A-%C2%BFqu%C3%A9-sigue-parte-4---base-de-datos-sqlite">📚 ¿Qué sigue? Parte 4 - Base de datos SQLite</h2>
 <p>En la <strong>Parte 4</strong> del tutorial, mejoraremos significativamente el almacenamiento de datos:</p>
-<h3 id="migración-a-sqlite"><strong>Migración a SQLite:</strong></h3>
+<h3 id="migraci%C3%B3n-a-sqlite"><strong>Migración a SQLite:</strong></h3>
 <ul>
 <li>Reemplazar <code>@capacitor/preferences</code> por una base de datos SQLite real</li>
 <li>Crear tablas estructuradas para registros y fotos</li>
@@ -1344,8 +1356,16 @@ npx <span class="hljs-built_in">cap</span> open android
 <li><strong>Flexibilidad</strong>: Consultas complejas y reportes</li>
 </ul>
 <p><strong>¡Prepárate para llevar tu app al siguiente nivel con una base de datos profesional!</strong></p>
+<h2 id="posibles-mejoras-futuras">Posibles mejoras futuras</h2>
+<p>Una vez completado este tutorial, podrías considerar estas mejoras:</p>
+<ul>
+<li><strong>Sincronización en la nube</strong>: Usar Firebase o similar</li>
+<li><strong>Geocodificación inversa</strong>: Convertir coordenadas a direcciones reales</li>
+<li><strong>Mapa interactivo</strong>: Mostrar ubicaciones en un mapa</li>
+<li><strong>Compartir registros</strong>: Exportar fotos con metadatos</li>
+<li><strong>Búsqueda y filtros</strong>: Buscar por descripción o fecha</li>
+<li><strong>Estadísticas</strong>: Mostrar métricas de uso</li>
+</ul>
 
-            <script async src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
-            
-        </body>
-        </html>
+</body>
+</html>

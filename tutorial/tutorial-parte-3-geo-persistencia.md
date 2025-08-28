@@ -1,3 +1,12 @@
+<script>
+function copyCode(btn) {
+  const codeBlock = btn.nextElementSibling;
+  navigator.clipboard.writeText(codeBlock.innerText);
+  btn.textContent = 'Copiado!';
+  setTimeout(() => btn.textContent = 'Copiar', 2000);
+}
+</script>
+
 # Tutorial Paso a Paso: Foto-Geo App (Parte 3)
 
 ## Objetivo
@@ -18,10 +27,15 @@ Agregar geolocalización para capturar coordenadas GPS y persistencia de datos p
 
 Abre una terminal y ejecuta:
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```bash
 npm install @capacitor/geolocation @capacitor/preferences
 npx cap sync
 ```
+</div>
+
 
 **Explicación:**
 - `@capacitor/geolocation`: Para obtener la ubicación GPS del dispositivo
@@ -35,9 +49,13 @@ npx cap sync
 
 Abre la terminal y ejecuta:
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```bash
 npx ionic generate interface models/geo-photo.model
 ```
+</div>
 
 Esto creará el archivo `src/app/models/geo-photo.model.ts` directamente con el nombre correcto.
 
@@ -49,21 +67,26 @@ Abre el archivo `src/app/models/geo-photo.model.ts` y reemplaza el contenido gen
 
 Abre el archivo `src/app/models/geo-photo.model.ts` y reemplaza el contenido generado por:
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```typescript
 export interface GeoPhotoRecord {
   id: string;
-  foto: string;           // Base64 o ruta de la imagen
-  descripcion: string;    // Descripción del usuario
-  latitud: number;        // Coordenada de latitud
-  longitud: number;       // Coordenada de longitud
-  fecha: string;          // Fecha y hora de creación
-  direccion?: string;     // Dirección legible (opcional)
+  photo: string;           // Base64 o ruta de la imagen
+  description: string;     // Descripción del usuario
+  coordinates?: Coordinates; // Coordenadas (latitude, longitude)
+  date: string;            // Fecha y hora de creación
 }
 ```
+</div>
 
 ### c) Agrega la interfaz para coordenadas
 
 En el mismo archivo `src/app/models/geo-photo.model.ts`, agrega debajo de la interfaz anterior:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 export interface Coordinates {
@@ -71,6 +94,7 @@ export interface Coordinates {
   longitude: number;
 }
 ```
+</div>
 
 **Explicación:**
 Un modelo define la estructura de datos que usará tu aplicación. Es como un "contrato" que especifica qué campos debe tener cada registro. Ionic CLI nos ayuda a mantener la estructura organizada del proyecto.
@@ -83,25 +107,36 @@ Un modelo define la estructura de datos que usará tu aplicación. Es como un "c
 
 Abre la terminal y ejecuta:
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```bash
 npx ionic generate service services/geolocation.service
 ```
+</div>
 
-Esto creará el archivo `src/app/services/geolocation.service.ts` directamente con el nombre correcto.
+Esto creará el archivo `src/app/service/geolocation.service.ts` directamente con el nombre correcto.
 
 ### b) Agrega las importaciones necesarias
 
-Abre `src/app/services/geolocation.service.ts` y reemplaza las importaciones por:
+Abre `src/app/service/geolocation.service.ts` y reemplaza las importaciones por:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 import { Injectable } from '@angular/core';
 import { Geolocation } from '@capacitor/geolocation';
-import { Coordinates } from '../models/geo-photo.model';
+import { Coordinates } from '../models/coordinates.model';
 ```
+</div>
 
 ### c) Declara la clase del servicio
 
 Asegúrate de que la clase tenga esta estructura básica:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 @Injectable({
@@ -113,6 +148,7 @@ export class GeolocationService {
   // Métodos se implementarán en los siguientes pasos
 }
 ```
+</div>
 
 ---
 
@@ -122,31 +158,43 @@ export class GeolocationService {
 
 Agrega el método principal en `GeolocationService`:
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```typescript
 async getCurrentPosition(): Promise<Coordinates | null> {
   // Implementación en el siguiente paso
 }
 ```
+</div>
 
 ### b) Implementa la verificación de permisos
 
 Agrega este método privado en `GeolocationService`:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 private async checkPermissions(): Promise<boolean> {
   // Implementación en el siguiente paso
 }
 ```
+</div>
 
 ### c) Agrega método utilitario para formatear coordenadas
 
 Agrega este método público en `GeolocationService`:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 formatCoordinates(lat: number, lng: number): string {
   return `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
 }
 ```
+</div>
 
 ---
 
@@ -155,6 +203,9 @@ formatCoordinates(lat: number, lng: number): string {
 ### a) Implementa `getCurrentPosition`
 
 Reemplaza el método vacío por esta implementación completa:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 async getCurrentPosition(): Promise<Coordinates | null> {
@@ -181,10 +232,14 @@ async getCurrentPosition(): Promise<Coordinates | null> {
   }
 }
 ```
+</div>
 
 ### b) Implementa `checkPermissions`
 
 Reemplaza el método vacío por esta implementación:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 private async checkPermissions(): Promise<boolean> {
@@ -209,6 +264,7 @@ private async checkPermissions(): Promise<boolean> {
   }
 }
 ```
+</div>
 
 ---
 
@@ -216,25 +272,36 @@ private async checkPermissions(): Promise<boolean> {
 
 ### a) Genera el servicio de almacenamiento
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```bash
 npx ionic generate service services/storage.service
 ```
+</div>
 
-Esto creará el archivo `src/app/services/storage.service.ts` directamente con el nombre correcto.
+Esto creará el archivo `src/app/service/storage.service.ts` directamente con el nombre correcto.
 
 ### b) Agrega las importaciones necesarias
 
-Abre `src/app/services/storage.service.ts` y reemplaza las importaciones por:
+Abre `src/app/service/storage.service.ts` y reemplaza las importaciones por:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 import { Injectable } from '@angular/core';
 import { Preferences } from '@capacitor/preferences';
 import { GeoPhotoRecord } from '../models/geo-photo.model';
 ```
+</div>
 
 ### c) Declara la constante para la clave de almacenamiento
 
 En la clase `StorageService`, agrega justo después de la declaración de clase:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 @Injectable({
@@ -248,6 +315,7 @@ export class StorageService {
   // Métodos se implementarán en los siguientes pasos
 }
 ```
+</div>
 
 ---
 
@@ -256,6 +324,9 @@ export class StorageService {
 ### a) Crea los métodos esqueleto
 
 Agrega estos métodos vacíos en `StorageService`:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 async saveRecord(record: GeoPhotoRecord): Promise<void> {
@@ -274,20 +345,28 @@ generateId(): string {
   // Implementación en el siguiente paso
 }
 ```
+</div>
 
 ### b) Implementa `generateId`
 
 Reemplaza el método vacío por:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 generateId(): string {
   return 'record_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
 }
 ```
+</div>
 
 ### c) Implementa `getAllRecords`
 
 Reemplaza el método vacío por:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 async getAllRecords(): Promise<GeoPhotoRecord[]> {
@@ -300,10 +379,14 @@ async getAllRecords(): Promise<GeoPhotoRecord[]> {
   }
 }
 ```
+</div>
 
 ### d) Implementa `saveRecord`
 
 Reemplaza el método vacío por:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 async saveRecord(record: GeoPhotoRecord): Promise<void> {
@@ -321,10 +404,14 @@ async saveRecord(record: GeoPhotoRecord): Promise<void> {
   }
 }
 ```
+</div>
 
 ### e) Implementa `deleteRecord`
 
 Reemplaza el método vacío por:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 async deleteRecord(id: string): Promise<void> {
@@ -342,6 +429,7 @@ async deleteRecord(id: string): Promise<void> {
   }
 }
 ```
+</div>
 
 ---
 
@@ -351,15 +439,23 @@ async deleteRecord(id: string): Promise<void> {
 
 Abre `src/app/home/home.page.ts` y agrega estas importaciones después de las existentes:
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```typescript
-import { GeolocationService } from '../services/geolocation.service';
-import { StorageService } from '../services/storage.service';
-import { GeoPhotoRecord, Coordinates } from '../models/geo-photo.model';
+import { GeolocationService } from '../service/geolocation.service';
+import { StorageService } from '../service/storage.service';
+import { GeoPhotoRecord } from '../models/geo-photo.model';
+import { Coordinates } from '../models/coordinates.model';
 ```
+</div>
 
 ### b) Agrega los nuevos componentes de Ionic a las importaciones
 
 En el mismo archivo, encuentra la sección de importaciones de componentes y agrega estos nuevos:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 import {
@@ -376,10 +472,14 @@ import {
   IonCol
 } from '@ionic/angular/standalone';
 ```
+</div>
 
 ### c) Actualiza el array `imports` en el decorador @Component
 
 Encuentra el decorador `@Component` y agrega los nuevos componentes al array `imports`:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 @Component({
@@ -411,6 +511,7 @@ Encuentra el decorador `@Component` y agrega los nuevos componentes al array `im
   ],
 })
 ```
+</div>
 
 ---
 
@@ -420,6 +521,9 @@ Encuentra el decorador `@Component` y agrega los nuevos componentes al array `im
 
 En la clase `HomePage`, después de las variables existentes `foto` y `descripcion`, agrega:
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```typescript
 export class HomePage implements OnInit {
   foto: string = "";
@@ -428,26 +532,38 @@ export class HomePage implements OnInit {
   registros: GeoPhotoRecord[] = [];
   cargandoUbicacion: boolean = false;
 ```
+</div>
 
 ### b) Inyecta los nuevos servicios
 
 Después de la inyección existente del `PhotoService`, agrega:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 private photoService = inject(PhotoService);
 private geoService = inject(GeolocationService);
 private storageService = inject(StorageService);
 ```
+</div>
 
 ### c) Implementa OnInit
 
 Cambia la declaración de clase para implementar `OnInit`:
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```typescript
 export class HomePage implements OnInit {
 ```
+</div>
 
 Y agrega el método `ngOnInit` después del constructor:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 constructor() { }
@@ -456,6 +572,7 @@ async ngOnInit() {
   await this.cargarRegistros();
 }
 ```
+</div>
 
 ---
 
@@ -464,6 +581,8 @@ async ngOnInit() {
 ### a) Modifica el método `tomarFoto` existente
 
 Encuentra el método existente `tomarFoto` y reemplázalo por esta versión que incluye geolocalización automática:
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 async tomarFoto() {
@@ -476,10 +595,13 @@ async tomarFoto() {
   }
 }
 ```
+</div>
 
 ### b) Modifica el método `guardarRegistro` existente
 
 Encuentra el método existente `guardarRegistro` y reemplázalo por esta versión completa:
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 async guardarRegistro() {
@@ -491,14 +613,10 @@ async guardarRegistro() {
   try {
     const registro: GeoPhotoRecord = {
       id: this.storageService.generateId(),
-      foto: this.foto,
-      descripcion: this.descripcion,
-      latitud: this.coordenadas?.latitude || 0,
-      longitud: this.coordenadas?.longitude || 0,
-      fecha: new Date().toLocaleString(),
-      direccion: this.coordenadas 
-        ? this.geoService.formatCoordinates(this.coordenadas.latitude, this.coordenadas.longitude)
-        : 'Ubicación no disponible'
+      photo: this.foto,
+      description: this.descripcion,
+      coordinates: this.coordenadas ?? undefined,
+      date: new Date().toLocaleString(),
     };
 
     await this.storageService.saveRecord(registro);
@@ -512,10 +630,13 @@ async guardarRegistro() {
   }
 }
 ```
+</div>
 
 ### c) Modifica el método `eliminarFoto` existente
 
 Encuentra el método existente `eliminarFoto` y reemplázalo por:
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
 eliminarFoto() {
@@ -523,6 +644,7 @@ eliminarFoto() {
   this.coordenadas = null;
 }
 ```
+</div>
 
 ---
 
@@ -531,8 +653,11 @@ eliminarFoto() {
 ### a) Agrega el método para obtener ubicación
 
 Después de los métodos existentes, agrega:
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
+
 async obtenerUbicacion() {
   this.cargandoUbicacion = true;
   try {
@@ -545,24 +670,32 @@ async obtenerUbicacion() {
   }
 }
 ```
+</div>
 
 ### b) Agrega el método para cargar registros
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
+
 async cargarRegistros() {
   try {
     this.registros = await this.storageService.getAllRecords();
     // Ordenar por fecha más reciente primero
-    this.registros.sort((a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime());
+  this.registros.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   } catch (error) {
     console.error('Error cargando registros:', error);
   }
 }
 ```
+</div>
 
 ### c) Agrega el método para eliminar registros
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
+
 async eliminarRegistro(id: string) {
   try {
     await this.storageService.deleteRecord(id);
@@ -572,37 +705,49 @@ async eliminarRegistro(id: string) {
   }
 }
 ```
+</div>
 
 ### d) Agrega el método privado para limpiar formulario
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
+
 private limpiarFormulario() {
   this.foto = '';
   this.descripcion = '';
   this.coordenadas = null;
 }
 ```
+</div>
 
 ---
 
 ## 12. Agrega métodos utilitarios al HomePage
 
 ### a) Agrega getter para verificar si hay ubicación
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
+
 get tieneUbicacion(): boolean {
   return this.coordenadas !== null;
 }
 ```
+</div>
 
 ### b) Agrega getter para validar formulario
 
-```typescript
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 get formularioValido(): boolean {
   return !!(this.foto && this.descripcion);
 }
 ```
 ```
+</div>
 
 ---
 
@@ -612,6 +757,9 @@ get formularioValido(): boolean {
 
 Abre `src/app/home/home.page.html` y cambia el título en el header:
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```html
 <ion-header [translucent]="true">
   <ion-toolbar>
@@ -619,10 +767,14 @@ Abre `src/app/home/home.page.html` y cambia el título en el header:
   </ion-toolbar>
 </ion-header>
 ```
+</div>
 
 ### b) Reemplaza el contenido del container por una estructura de cards
 
 Encuentra el `<div id="container">` y reemplaza todo su contenido por:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```html
 <div id="container">
@@ -642,10 +794,14 @@ Encuentra el `<div id="container">` y reemplaza todo su contenido por:
   
 </div>
 ```
+</div>
 
 ### c) Agrega el formulario dentro del primer card
 
 Dentro de `<ion-card-content>` del primer card, agrega el formulario existente con algunos cambios:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```html
 <!-- Botón para tomar foto -->
@@ -671,10 +827,14 @@ Dentro de `<ion-card-content>` del primer card, agrega el formulario existente c
   Eliminar Foto
 </ion-button>
 ```
+</div>
 
 ### d) Agrega la información de ubicación después del botón eliminar
 
 Después del botón "Eliminar Foto", agrega:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```html
 <!-- Información de ubicación -->
@@ -691,10 +851,14 @@ Después del botón "Eliminar Foto", agrega:
   </ion-text>
 </div>
 ```
+</div>
 
 ### e) Agrega el botón para obtener ubicación manualmente
 
 Después de la información de ubicación:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```html
 <!-- Botón para obtener ubicación manualmente -->
@@ -707,10 +871,14 @@ Después de la información de ubicación:
   {{cargandoUbicacion ? 'Obteniendo ubicación...' : 'Obtener Ubicación GPS'}}
 </ion-button>
 ```
+</div>
 
 ### f) Actualiza el botón guardar con la nueva validación
 
 Reemplaza el botón "Guardar Registro" existente por:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```html
 <!-- Botón guardar -->
@@ -722,6 +890,7 @@ Reemplaza el botón "Guardar Registro" existente por:
   Guardar Registro
 </ion-button>
 ```
+</div>
 
 ---
 
@@ -730,6 +899,9 @@ Reemplaza el botón "Guardar Registro" existente por:
 ### a) Agrega el card para mostrar registros guardados
 
 Después del primer card (Nuevo Registro), pero antes del cierre de `</div>`, agrega:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```html
 <!-- Sección: Lista de Registros -->
@@ -744,10 +916,14 @@ Después del primer card (Nuevo Registro), pero antes del cierre de `</div>`, ag
   </ion-card-content>
 </ion-card>
 ```
+</div>
 
 ### b) Agrega la lista de registros dentro del segundo card
 
 Dentro de `<ion-card-content>` del segundo card, agrega:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```html
 <ion-list>
@@ -757,7 +933,7 @@ Dentro de `<ion-card-content>` del segundo card, agrega:
         <!-- Columna de imagen -->
         <ion-col size="4">
           <ion-img 
-            [src]="registro.foto" 
+            [src]="registro.photo" 
             class="registro-imagen">
           </ion-img>
         </ion-col>
@@ -765,9 +941,9 @@ Dentro de `<ion-card-content>` del segundo card, agrega:
         <!-- Columna de información -->
         <ion-col size="6">
           <div class="registro-info">
-            <h3>{{registro.descripcion}}</h3>
-            <p class="fecha">📅 {{registro.fecha}}</p>
-            <p class="coordenadas">📍 {{registro.direccion}}</p>
+            <h3>{{registro.description}}</h3>
+            <p class="date">📅 {{registro.date}}</p>
+            <p class="coordenadas">📍 {{registro.coordinates?.latitude.toFixed(6)}}, {{registro.coordinates?.longitude.toFixed(6)}}</p>
           </div>
         </ion-col>
         
@@ -787,10 +963,14 @@ Dentro de `<ion-card-content>` del segundo card, agrega:
   </ion-item>
 </ion-list>
 ```
+</div>
 
 ### c) Agrega el mensaje cuando no hay registros
 
 Después del segundo card, agrega:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```html
 <!-- Mensaje cuando no hay registros -->
@@ -803,6 +983,7 @@ Después del segundo card, agrega:
   </ion-card-content>
 </ion-card>
 ```
+</div>
 
 ---
 
@@ -812,15 +993,22 @@ Después del segundo card, agrega:
 
 Abre `src/app/home/home.page.scss` y reemplaza el estilo del container:
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```scss
 #container {
   padding: 16px;
 }
 ```
+</div>
 
 ### b) Mejora los estilos de vista previa de foto
 
 Encuentra la clase `.foto-preview` y reemplaza por:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```scss
 .foto-preview {
@@ -832,10 +1020,14 @@ Encuentra la clase `.foto-preview` y reemplaza por:
   margin: 16px 0;
 }
 ```
+</div>
 
 ### c) Agrega estilos para las imágenes de registros
 
 Después de los estilos existentes, agrega:
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```scss
 .registro-imagen {
@@ -846,8 +1038,12 @@ Después de los estilos existentes, agrega:
   border: 1px solid #ddd;
 }
 ```
+</div>
 
 ### d) Agrega estilos para la información de registros
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```scss
 .registro-info {
@@ -874,8 +1070,12 @@ Después de los estilos existentes, agrega:
   }
 }
 ```
+</div>
 
 ### e) Agrega estilos para la información de ubicación
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```scss
 .ubicacion-info {
@@ -897,8 +1097,12 @@ Después de los estilos existentes, agrega:
   }
 }
 ```
+</div>
 
 ### f) Mejora los estilos de cards y botones
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```scss
 // Estilos para cards
@@ -920,8 +1124,12 @@ ion-button {
   }
 }
 ```
+</div>
 
 ### g) Agrega estilos responsive
+
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
 
 ```scss
 // Responsive adjustments
@@ -935,6 +1143,7 @@ ion-button {
   }
 }
 ```
+</div>
 
 ---
 
@@ -948,11 +1157,15 @@ Navega hasta `android/app/src/main/AndroidManifest.xml` en tu proyecto.
 
 Dentro del tag `<manifest>` y antes del tag `<application>`, agrega estos permisos:
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```xml
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 ```
+</div>
 
 **Explicación de cada permiso:**
 - `ACCESS_COARSE_LOCATION`: Ubicación aproximada basada en torres de telefonía
@@ -967,9 +1180,13 @@ Dentro del tag `<manifest>` y antes del tag `<application>`, agrega estos permis
 
 Ejecuta el comando:
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```bash
 ionic serve
 ```
+</div>
 
 **Verifica estas funcionalidades:**
 1. El botón "Tomar Foto" funciona y solicita ubicación automáticamente
@@ -983,10 +1200,14 @@ ionic serve
 
 Ejecuta los comandos:
 
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+
 ```bash
 npx cap sync android
 npx cap open android
 ```
+</div>
 
 **Verifica en el dispositivo móvil:**
 1. Solicita permisos de ubicación al usar GPS por primera vez
@@ -1026,53 +1247,14 @@ npx cap open android
 Al completar este tutorial, habrás trabajado con estos archivos:
 
 - `src/app/models/geo-photo.model.ts`: Modelos de datos y interfaces
-- `src/app/services/geolocation.service.ts`: Servicio de geolocalización
-- `src/app/services/storage.service.ts`: Servicio de almacenamiento
+ - `src/app/service/geolocation.service.ts`: Servicio de geolocalización
+ - `src/app/service/storage.service.ts`: Servicio de almacenamiento
+ - `src/app/service/geolocation.service.ts`: Servicio de geolocalización
+ - `src/app/service/storage.service.ts`: Servicio de almacenamiento
 - `src/app/home/home.page.ts`: Lógica completa del componente
 - `src/app/home/home.page.html`: Interfaz con lista de registros
 - `src/app/home/home.page.scss`: Estilos mejorados
 - `android/app/src/main/AndroidManifest.xml`: Permisos de ubicación
-
----
-
-## 20. Checklist final
-
-### Servicios y modelos
-- [ ] Modelo `GeoPhotoRecord` creado con todos los campos
-- [ ] Servicio `GeolocationService` implementado con gestión de permisos
-- [ ] Servicio `StorageService` implementado con CRUD completo
-- [ ] Plugins de geolocalización y almacenamiento instalados
-
-### Componente HomePage
-- [ ] Nuevas importaciones agregadas correctamente
-- [ ] Variables del estado actualizadas
-- [ ] Servicios inyectados usando `inject()`
-- [ ] Método `ngOnInit` implementado
-- [ ] Métodos existentes actualizados (tomarFoto, guardarRegistro, eliminarFoto)
-- [ ] Nuevos métodos agregados (obtenerUbicacion, cargarRegistros, eliminarRegistro)
-- [ ] Getters utilitarios implementados
-
-### Interfaz HTML
-- [ ] Título actualizado a "Foto-Geo App"
-- [ ] Estructura de cards implementada
-- [ ] Formulario movido al primer card
-- [ ] Información de ubicación agregada
-- [ ] Botón manual de ubicación agregado
-- [ ] Lista de registros implementada
-- [ ] Mensaje para lista vacía agregado
-
-### Estilos
-- [ ] Estilos base actualizados
-- [ ] Estilos de vista previa mejorados
-- [ ] Estilos para registros agregados
-- [ ] Estilos de ubicación agregados
-- [ ] Estilos responsive implementados
-
-### Android
-- [ ] Permisos de ubicación configurados
-- [ ] App funciona en navegador y móvil
-- [ ] Geolocalización funciona correctamente
-- [ ] Persistencia de datos funciona correctamente
 
 
 ---
