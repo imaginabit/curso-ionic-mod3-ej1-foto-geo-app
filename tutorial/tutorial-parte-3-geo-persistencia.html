@@ -366,16 +366,241 @@ code {
     });
   </script>
 <script>
+// Mejora del botón copiar: añade aria-labels a los botones y usa fallback si navigator.clipboard no está disponible
 function copyCode(btn) {
   const codeBlock = btn.nextElementSibling;
-  navigator.clipboard.writeText(codeBlock.innerText);
-  btn.textContent = 'Copiado!';
-  setTimeout(() => btn.textContent = 'Copiar', 2000);
+  const text = codeBlock ? codeBlock.innerText : '';
+
+  // Intentar usar la API moderna
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text)
+      .then(() => {
+        btn.textContent = 'Copiado!';
+        setTimeout(() => btn.textContent = 'Copiar', 2000);
+      })
+      .catch(() => fallbackCopy(text, btn));
+  } else {
+    fallbackCopy(text, btn);
+  }
 }
+
+function fallbackCopy(text, btn) {
+  try {
+    const el = document.createElement('textarea');
+    el.value = text;
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    btn.textContent = 'Copiado!';
+    setTimeout(() => btn.textContent = 'Copiar', 2000);
+  } catch (err) {
+    // último recurso: seleccionar texto para que el usuario lo copie manualmente
+    if (btn && btn.nextElementSibling) {
+      const cb = btn.nextElementSibling;
+      const range = document.createRange();
+      range.selectNodeContents(cb);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      btn.textContent = 'Selecciona y copia (Ctrl+C)';
+    }
+  }
+}
+
+// Añadir aria-labels a botones existentes para accesibilidad
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('button[onclick^="copyCode"]').forEach(btn => {
+    if (!btn.getAttribute('aria-label')) btn.setAttribute('aria-label', 'Copiar código');
+    btn.setAttribute('type', 'button');
+  });
+  // Inicializar progreso del índice (checkboxes interactivos)
+  if (typeof initIndexProgress === 'function') initIndexProgress();
+  if (typeof normalizeTerminalWrappers === 'function') normalizeTerminalWrappers();
+});
+
+/* Persistencia de progreso del índice: guarda/recupera en localStorage */
+const INDEX_STORAGE_KEY = 'tutorial-parte-3-geo-persistencia-progress';
+
+function initIndexProgress() {
+  const stored = localStorage.getItem(INDEX_STORAGE_KEY);
+  let state = {};
+  try { state = stored ? JSON.parse(stored) : {}; } catch (e) { state = {}; }
+
+  document.querySelectorAll('.tutorial-index input[type="checkbox"][data-step]').forEach(cb => {
+    const id = cb.getAttribute('data-step');
+    cb.checked = !!state[id];
+    updateLabelCompleted(cb);
+    cb.addEventListener('change', () => {
+      saveCheckboxState(cb);
+      updateLabelCompleted(cb);
+    });
+  });
+}
+
+function saveCheckboxState(cb) {
+  const id = cb.getAttribute('data-step');
+  if (!id) return;
+  let state = {};
+  try { state = JSON.parse(localStorage.getItem(INDEX_STORAGE_KEY) || '{}'); } catch (e) { state = {}; }
+  state[id] = !!cb.checked;
+  try { localStorage.setItem(INDEX_STORAGE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+}
+
+function updateLabelCompleted(cb) {
+  const label = cb.closest('label');
+  if (!label) return;
+  if (cb.checked) label.classList.add('completed'); else label.classList.remove('completed');
+}
+
+
 </script>
+<style>
+.mini-reto {
+  border-left: 4px solid #2b8aef;
+  background: #f0f8ff;
+  padding: 12px 16px;
+  margin: 12px 0 18px 0;
+  border-radius: 6px;
+}
+.mini-reto h2, .mini-reto h3 {
+  margin-top: 0;
+}
+.mini-reto .reto-meta {
+  font-size: 0.95em;
+  color: #254e7b;
+}
+
+/* Estilos para índice, admoniciones y bloques de terminal/comandos */
+.tutorial-index {
+  background: #ffffff;
+  border: 1px solid #e6eef6;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 12px 0 18px 0;
+}
+.tutorial-index .index-item {
+  display: block;
+  padding: 6px 0;
+}
+.admonition {
+  border-left: 4px solid #6c757d;
+  background: #f8f9fa;
+  padding: 12px 16px;
+  margin: 12px 0;
+  border-radius: 6px;
+}
+.admonition--note {
+  border-left-color: #2b8aef;
+}
+.admonition p { margin: 0; }
+
+/* Bloques de comandos / terminal */
+/* Nota: aplicamos el fondo oscuro sólo al <pre> / <code> dentro del wrapper
+   .code-toolbar.terminal para evitar que otros elementos fuera de <pre>
+   (por ejemplo etiquetas, botones o texto adicional) queden con fondo negro. */
+.code-toolbar.terminal {
+  position: relative;
+  margin: 12px 0;
+}
+.code-toolbar.terminal pre,
+.code-toolbar.terminal code {
+  background: #0f1720; /* fondo oscuro para terminal */
+  color: #e6eef6;
+  border-radius: 6px;
+  padding: 8px;
+  margin: 0;
+  overflow: auto;
+}
+.code-toolbar.terminal pre { /* mantener posibilidad de ajustes específicos */ }
+.code-toolbar.terminal .copy-btn { position: absolute; top: 8px; right: 8px; }
+</style>
 <h1 id="tutorial-paso-a-paso-foto-geo-app-parte-3">Tutorial Paso a Paso: Foto-Geo App (Parte 3)</h1>
 <h2 id="objetivo">Objetivo</h2>
 <p>Agregar geolocalización para capturar coordenadas GPS y persistencia de datos para guardar y mostrar una lista de registros, completando la funcionalidad de la aplicación Foto-Geo.</p>
+<aside class="admonition admonition--note" role="note">
+<p>En esta parte añadiremos geolocalización para capturar coordenadas al tomar fotos y un servicio de persistencia para guardar registros (foto, descripción, coordenadas, fecha). Al final tendrás una lista de registros guardados y la posibilidad de eliminarlos.</p>
+</aside>
+<h2 id="prerrequisitos">Prerrequisitos</h2>
+<p>Qué vas a construir / Aprenderás:</p>
+<ul>
+<li>Añadir geolocalización (obtener lat/lng y manejar permisos)</li>
+<li>Guardar y recuperar registros usando <code>@capacitor/preferences</code></li>
+<li>Integrar geolocalización y persistencia en <code>HomePage</code> y mostrar la lista</li>
+</ul>
+<hr>
+<h2 id="%C3%ADndice">Índice</h2>
+<p>Marca los pasos a medida que los completes:</p>
+<nav class="tutorial-index" role="navigation" aria-label="Índice del tutorial">
+<ul class="index-list">
+  <li>
+  <label><input type="checkbox" aria-hidden="true" data-step="step-1"> <a href="#1-instala-los-plugins-necesarios">1. Instala los plugins necesarios</a></label>
+  </li>
+  <li>
+  <label><input type="checkbox" aria-hidden="true" data-step="step-2"> <a href="#2-crea-el-modelo-de-datos">2. Crea el modelo de datos</a></label>
+  </li>
+  <li class="index-group-heading">Geolocalización
+    <ul>
+      <li>
+          <label><input type="checkbox" aria-hidden="true" data-step="step-3"> <a href="#3-crea-el-servicio-de-geolocalizacion">3. Crea el servicio de geolocalización</a></label>
+      </li>
+      <li>
+          <label><input type="checkbox" aria-hidden="true" data-step="step-4"> <a href="#4-implementa-la-logica-de-geolocalizacion">4. Implementa la lógica de geolocalización</a></label>
+      </li>
+      <li>
+          <label><input type="checkbox" aria-hidden="true" data-step="step-5"> <a href="#5-completa-la-implementacion-de-los-metodos-de-geolocalizacion">5. Completa la implementación de los métodos de geolocalización</a></label>
+      </li>
+    </ul>
+  </li>
+  <li class="index-group-heading">Persistencia / Storage
+    <ul>
+      <li>
+          <label><input type="checkbox" aria-hidden="true" data-step="step-6"> <a href="#6-crea-el-servicio-de-almacenamiento">6. Crea el servicio de almacenamiento</a></label>
+      </li>
+      <li>
+          <label><input type="checkbox" aria-hidden="true" data-step="step-7"> <a href="#7-implementa-los-metodos-del-servicio-de-almacenamiento">7. Implementa los métodos del servicio de almacenamiento</a></label>
+      </li>
+    </ul>
+  </li>
+  <li class="index-group-heading">Actualizar HomePage
+    <ul>
+      <li>
+          <label><input type="checkbox" aria-hidden="true" data-step="step-8"> <a href="#8-actualiza-el-componente-homepage">8. Actualiza el componente HomePage</a></label>
+      </li>
+      <li>
+          <label><input type="checkbox" aria-hidden="true" data-step="step-9"> <a href="#9-actualiza-las-variables-del-componente-homepage">9. Actualiza las variables del componente HomePage</a></label>
+      </li>
+      <li>
+          <label><input type="checkbox" aria-hidden="true" data-step="step-10"> <a href="#10-actualiza-los-metodos-existentes-del-homepage">10. Actualiza los métodos existentes del HomePage</a></label>
+      </li>
+      <li>
+          <label><input type="checkbox" aria-hidden="true" data-step="step-11"> <a href="#11-agrega-los-nuevos-metodos-al-homepage">11. Agrega los nuevos métodos al HomePage</a></label>
+      </li>
+      <li>
+          <label><input type="checkbox" aria-hidden="true" data-step="step-12"> <a href="#12-agrega-metodos-utilitarios-al-homepage">12. Agrega métodos utilitarios al HomePage</a></label>
+      </li>
+    </ul>
+  </li>
+  <li>
+  <label><input type="checkbox" aria-hidden="true" data-step="step-13"> <a href="#13-actualiza-la-interfaz-html">13. Actualiza la interfaz HTML</a></label>
+  </li>
+  <li>
+  <label><input type="checkbox" aria-hidden="true" data-step="step-14"> <a href="#14-agrega-la-seccion-de-lista-de-registros-al-html">14. Agrega la sección de lista de registros al HTML</a></label>
+  </li>
+  <li>
+  <label><input type="checkbox" aria-hidden="true" data-step="step-15"> <a href="#15-actualiza-los-estilos">15. Actualiza los estilos</a></label>
+  </li>
+  <li>
+  <label><input type="checkbox" aria-hidden="true" data-step="step-16"> <a href="#16-configura-permisos-para-android">16. Configura permisos para Android</a></label>
+  </li>
+  <li>
+  <label><input type="checkbox" aria-hidden="true" data-step="step-17"> <a href="#17-prueba-la-aplicacion">17. Prueba la aplicación</a></label>
+  </li>
+</ul>
+</nav>
 <hr>
 <h2 id="prerrequisitos">Prerrequisitos</h2>
 <ul>
@@ -389,9 +614,10 @@ function copyCode(btn) {
 </li>
 </ul>
 <hr>
+<p><a id="1-instala-los-plugins-necesarios"></a></p>
 <h2 id="1-instala-los-plugins-necesarios">1. Instala los plugins necesarios</h2>
 <p>Abre una terminal y ejecuta:</p>
-<div class="code-toolbar">
+<div class="code-toolbar terminal">
   <button onclick="copyCode(this)">Copiar</button>
 <pre class="hljs"><code><div>npm install @capacitor/geolocation @capacitor/preferences
 npx <span class="hljs-built_in">cap</span> sync
@@ -403,22 +629,23 @@ npx <span class="hljs-built_in">cap</span> sync
 <li><code>@capacitor/preferences</code>: Para guardar datos localmente de forma persistente</li>
 </ul>
 <hr>
-<h2 id="2-crea-el-modelo-de-datos-paso-a-paso">2. Crea el modelo de datos paso a paso</h2>
+<p><a id="2-crea-el-modelo-de-datos"></a></p>
+<h2 id="2-crea-el-modelo-de-datos">2. Crea el modelo de datos</h2>
 <h3 id="a-genera-el-archivo-del-modelo-usando-ionic-cli">a) Genera el archivo del modelo usando Ionic CLI</h3>
 <p>Abre la terminal y ejecuta:</p>
-<div class="code-toolbar">
+<div class="code-toolbar terminal">
   <button onclick="copyCode(this)">Copiar</button>
 <pre class="hljs"><code><div>npx ionic generate interface models/geo-photo.model
 </div></code></pre>
 </div>
 <p>Esto creará el archivo <code>src/app/models/geo-photo.model.ts</code> directamente con el nombre correcto.</p>
 <h3 id="b-agrega-la-interfaz-para-el-registro-completo">b) Agrega la interfaz para el registro completo</h3>
-<p>Abre el archivo <code>src/app/models/geo-photo.model.ts</code> y reemplaza el contenido generado por:</p>
-<h3 id="c-agrega-la-interfaz-para-el-registro-completo">c) Agrega la interfaz para el registro completo</h3>
-<p>Abre el archivo <code>src/app/models/geo-photo.model.ts</code> y reemplaza el contenido generado por:</p>
+<p>Abre el archivo <code>src/app/models/geo-photo.model.ts</code> y reemplaza el contenido generado por (importando <code>Coordinates</code> desde su archivo):</p>
 <div class="code-toolbar">
   <button onclick="copyCode(this)">Copiar</button>
-<pre class="hljs"><code><div><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> GeoPhotoRecord {
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> { Coordinates } <span class="hljs-keyword">from</span> <span class="hljs-string">'./coordinates.model'</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> GeoPhotoRecord {
   id: <span class="hljs-built_in">string</span>;
   photo: <span class="hljs-built_in">string</span>;           <span class="hljs-comment">// Base64 o ruta de la imagen</span>
   description: <span class="hljs-built_in">string</span>;     <span class="hljs-comment">// Descripción del usuario</span>
@@ -427,8 +654,14 @@ npx <span class="hljs-built_in">cap</span> sync
 }
 </div></code></pre>
 </div>
-<h3 id="c-agrega-la-interfaz-para-coordenadas">c) Agrega la interfaz para coordenadas</h3>
-<p>En el mismo archivo <code>src/app/models/geo-photo.model.ts</code>, agrega debajo de la interfaz anterior:</p>
+<h3 id="c-crea-la-interfaz-para-coordenadas-en-su-propio-archivo">c) Crea la interfaz para coordenadas en su propio archivo</h3>
+<p>Es preferible mantener <code>Coordinates</code> en un archivo separado. Genera un nuevo archivo de interfaz y agrégalo en <code>src/app/models/coordinates.model.ts</code>:</p>
+<div class="code-toolbar terminal">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div>npx ionic generate interface models/coordinates.model
+</div></code></pre>
+</div>
+<p>Y reemplaza su contenido por:</p>
 <div class="code-toolbar">
   <button onclick="copyCode(this)">Copiar</button>
 <pre class="hljs"><code><div><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> Coordinates {
@@ -440,12 +673,13 @@ npx <span class="hljs-built_in">cap</span> sync
 <p><strong>Explicación:</strong>
 Un modelo define la estructura de datos que usará tu aplicación. Es como un &quot;contrato&quot; que especifica qué campos debe tener cada registro. Ionic CLI nos ayuda a mantener la estructura organizada del proyecto.</p>
 <hr>
-<h2 id="3-crea-el-servicio-de-geolocalizaci%C3%B3n-paso-a-paso">3. Crea el servicio de geolocalización paso a paso</h2>
+<p><a id="3-crea-el-servicio-de-geolocalizacion"></a></p>
+<h2 id="3-crea-el-servicio-de-geolocalizaci%C3%B3n">3. Crea el servicio de geolocalización</h2>
 <h3 id="a-genera-el-servicio-usando-ionic-cli">a) Genera el servicio usando Ionic CLI</h3>
 <p>Abre la terminal y ejecuta:</p>
-<div class="code-toolbar">
+<div class="code-toolbar terminal">
   <button onclick="copyCode(this)">Copiar</button>
-<pre class="hljs"><code><div>npx ionic generate service services/geolocation.service
+<pre class="hljs"><code><div>npx ionic generate service service/geolocation.service
 </div></code></pre>
 </div>
 <p>Esto creará el archivo <code>src/app/service/geolocation.service.ts</code> directamente con el nombre correcto.</p>
@@ -457,6 +691,29 @@ Un modelo define la estructura de datos que usará tu aplicación. Es como un &q
 <span class="hljs-keyword">import</span> { Geolocation } <span class="hljs-keyword">from</span> <span class="hljs-string">'@capacitor/geolocation'</span>;
 <span class="hljs-keyword">import</span> { Coordinates } <span class="hljs-keyword">from</span> <span class="hljs-string">'../models/coordinates.model'</span>;
 </div></code></pre>
+</div>
+<div class="mini-reto">
+<h2 id="mini-reto-geolocalizaci%C3%B3n">Mini Reto: Geolocalización</h2>
+<div class="reto-meta">
+El servicio <code>GeolocationService</code> debe exponer <code>getCurrentPosition(): Promise&lt;Coordinates | null&gt;</code> y manejo de permisos.</div>
+<ul>
+<li>Comprueba:
+<ul>
+<li><input type="checkbox" id="checkbox0"><label for="checkbox0">Archivo </label><code>src/app/service/geolocation.service.ts</code> creado</li>
+<li><input type="checkbox" id="checkbox1"><label for="checkbox1"></label><code>getCurrentPosition()</code> devuelve <code>{ latitude, longitude }</code> o <code>null</code> en fallos</li>
+</ul>
+</li>
+</ul>
+<p>Reto: Implementa <code>getCurrentPosition()</code> y <code>checkPermissions()</code> con manejo de errores y timeout.</p>
+<h3 id="comprueba-r%C3%A1pido-geolocalizaci%C3%B3n">Comprueba rápido: Geolocalización</h3>
+<ul>
+<li>Abre la consola con F12 (devtools) y ejecuta (si estás en web):
+<ul>
+<li><code>await Geolocation.getCurrentPosition()</code> — espera recibir un objeto con <code>coords.latitude</code> y <code>coords.longitude</code> o un error si los permisos no están concedidos.</li>
+<li>En Android, comprueba que al primer uso se solicita permiso; si no, revisa <code>AndroidManifest.xml</code>.</li>
+</ul>
+</li>
+</ul>
 </div>
 <h3 id="c-declara-la-clase-del-servicio">c) Declara la clase del servicio</h3>
 <p>Asegúrate de que la clase tenga esta estructura básica:</p>
@@ -473,7 +730,8 @@ Un modelo define la estructura de datos que usará tu aplicación. Es como un &q
 </div></code></pre>
 </div>
 <hr>
-<h2 id="4-implementa-la-l%C3%B3gica-de-geolocalizaci%C3%B3n-paso-a-paso">4. Implementa la lógica de geolocalización paso a paso</h2>
+<p><a id="4-implementa-la-logica-de-geolocalizacion"></a></p>
+<h2 id="4-implementa-la-l%C3%B3gica-de-geolocalizaci%C3%B3n">4. Implementa la lógica de geolocalización</h2>
 <h3 id="a-crea-el-m%C3%A9todo-principal-para-obtener-posici%C3%B3n">a) Crea el método principal para obtener posición</h3>
 <p>Agrega el método principal en <code>GeolocationService</code>:</p>
 <div class="code-toolbar">
@@ -483,6 +741,16 @@ Un modelo define la estructura de datos que usará tu aplicación. Es como un &q
 }
 </div></code></pre>
 </div>
+<p>Pequeño paso (micro-snippet): crea solo la firma y un return temporal para compilar y probar.</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">async</span> getCurrentPosition(): <span class="hljs-built_in">Promise</span>&lt;Coordinates | <span class="hljs-literal">null</span>&gt; {
+  <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> implementar; por ahora devuelve null para evitar errores en compilación</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+}
+</div></code></pre>
+<p>Comprueba rápido:</p>
+<ul>
+<li>Compila el proyecto (<code>npm run build</code> o <code>ionic build</code>) y verifica que no hay errores de tipo por la firma del método.</li>
+</ul>
 <h3 id="b-implementa-la-verificaci%C3%B3n-de-permisos">b) Implementa la verificación de permisos</h3>
 <p>Agrega este método privado en <code>GeolocationService</code>:</p>
 <div class="code-toolbar">
@@ -492,6 +760,21 @@ Un modelo define la estructura de datos que usará tu aplicación. Es como un &q
 }
 </div></code></pre>
 </div>
+<p>Micro-paso: añade una versión mínima que siempre solicite permisos (útil para depurar):</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">private</span> <span class="hljs-keyword">async</span> checkPermissions(): <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">boolean</span>&gt; {
+  <span class="hljs-comment">// Versión simplificada para pruebas: siempre solicita permisos</span>
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">const</span> req = <span class="hljs-keyword">await</span> Geolocation.requestPermissions();
+    <span class="hljs-keyword">return</span> req.location === <span class="hljs-string">'granted'</span>;
+  } <span class="hljs-keyword">catch</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+  }
+}
+</div></code></pre>
+<p>Comprueba rápido:</p>
+<ul>
+<li>Llama a <code>await this.checkPermissions()</code> desde un componente o la consola y comprueba que devuelve <code>true</code> o <code>false</code> según el permiso.</li>
+</ul>
 <h3 id="c-agrega-m%C3%A9todo-utilitario-para-formatear-coordenadas">c) Agrega método utilitario para formatear coordenadas</h3>
 <p>Agrega este método público en <code>GeolocationService</code>:</p>
 <div class="code-toolbar">
@@ -502,6 +785,7 @@ Un modelo define la estructura de datos que usará tu aplicación. Es como un &q
 </div></code></pre>
 </div>
 <hr>
+<p><a id="5-completa-la-implementacion-de-los-metodos-de-geolocalizacion"></a></p>
 <h2 id="5-completa-la-implementaci%C3%B3n-de-los-m%C3%A9todos-de-geolocalizaci%C3%B3n">5. Completa la implementación de los métodos de geolocalización</h2>
 <h3 id="a-implementa-getcurrentposition">a) Implementa <code>getCurrentPosition</code></h3>
 <p>Reemplaza el método vacío por esta implementación completa:</p>
@@ -559,12 +843,25 @@ Un modelo define la estructura de datos que usará tu aplicación. Es como un &q
 }
 </div></code></pre>
 </div>
+<p>Micro-checks para storage (antes de crear todos los métodos):</p>
+<ul>
+<li>Crea y prueba <code>generateId()</code> simple:</li>
+</ul>
+<pre class="hljs"><code><div>generateId(): <span class="hljs-built_in">string</span> {
+  <span class="hljs-keyword">return</span> <span class="hljs-string">'r_'</span> + <span class="hljs-built_in">Date</span>.now();
+}
+</div></code></pre>
+<p>Comprueba rápido:</p>
+<ul>
+<li>En consola, ejecuta <code>new StorageService().generateId()</code> (o añade un console.log) para comprobar el formato.</li>
+</ul>
 <hr>
-<h2 id="6-crea-el-servicio-de-almacenamiento-paso-a-paso">6. Crea el servicio de almacenamiento paso a paso</h2>
+<p><a id="6-crea-el-servicio-de-almacenamiento"></a></p>
+<h2 id="6-crea-el-servicio-de-almacenamiento">6. Crea el servicio de almacenamiento</h2>
 <h3 id="a-genera-el-servicio-de-almacenamiento">a) Genera el servicio de almacenamiento</h3>
 <div class="code-toolbar">
   <button onclick="copyCode(this)">Copiar</button>
-<pre class="hljs"><code><div>npx ionic generate service services/storage.service
+<pre class="hljs"><code><div>npx ionic generate service service/storage.service
 </div></code></pre>
 </div>
 <p>Esto creará el archivo <code>src/app/service/storage.service.ts</code> directamente con el nombre correcto.</p>
@@ -576,6 +873,28 @@ Un modelo define la estructura de datos que usará tu aplicación. Es como un &q
 <span class="hljs-keyword">import</span> { Preferences } <span class="hljs-keyword">from</span> <span class="hljs-string">'@capacitor/preferences'</span>;
 <span class="hljs-keyword">import</span> { GeoPhotoRecord } <span class="hljs-keyword">from</span> <span class="hljs-string">'../models/geo-photo.model'</span>;
 </div></code></pre>
+</div>
+<div class="mini-reto">
+<h2 id="mini-reto-persistencia-y-almacenamiento">Mini reto: Persistencia y almacenamiento</h2>
+<div class="reto-meta">El servicio <code>StorageService</code> debe exponer <code>saveRecord(record: GeoPhotoRecord): Promise&lt;void&gt;</code>, <code>getAllRecords(): Promise&lt;GeoPhotoRecord[]&gt;</code>, <code>deleteRecord(id: string): Promise&lt;void&gt;</code> y <code>generateId(): string</code>.</div>
+<ul>
+<li>Comprueba:
+<ul>
+<li><input type="checkbox" id="checkbox2"><label for="checkbox2"></label><code>StorageService.generateId()</code> existe y devuelve un string</li>
+<li><input type="checkbox" id="checkbox3"><label for="checkbox3"></label><code>saveRecord</code> persiste un array JSON en <code>@capacitor/preferences</code></li>
+</ul>
+</li>
+</ul>
+<p>Reto: Implementa <code>saveRecord</code>, <code>getAllRecords</code> y <code>deleteRecord</code> con manejo de JSON corrupto y fallback.</p>
+<h3 id="comprueba-r%C3%A1pido-persistencia">Comprueba rápido: Persistencia</h3>
+<ul>
+<li>En la consola de devtools (web) ejecuta:
+<ul>
+<li><code>await Preferences.get({ key: 'geo-photo-records' })</code> — deberías obtener <code>{ value: '[]' }</code> inicialmente o el JSON almacenado.</li>
+<li>Alternativa: en la app, guarda un registro y luego llama a <code>this.storageService.getAllRecords()</code> desde la consola (o añade un console.log) para comprobar que aparece el registro.</li>
+</ul>
+</li>
+</ul>
 </div>
 <h3 id="c-declara-la-constante-para-la-clave-de-almacenamiento">c) Declara la constante para la clave de almacenamiento</h3>
 <p>En la clase <code>StorageService</code>, agrega justo después de la declaración de clase:</p>
@@ -594,7 +913,8 @@ Un modelo define la estructura de datos que usará tu aplicación. Es como un &q
 </div></code></pre>
 </div>
 <hr>
-<h2 id="7-implementa-los-m%C3%A9todos-del-servicio-de-almacenamiento-paso-a-paso">7. Implementa los métodos del servicio de almacenamiento paso a paso</h2>
+<p><a id="7-implementa-los-metodos-del-servicio-de-almacenamiento"></a></p>
+<h2 id="7-implementa-los-m%C3%A9todos-del-servicio-de-almacenamiento">7. Implementa los métodos del servicio de almacenamiento</h2>
 <h3 id="a-crea-los-m%C3%A9todos-esqueleto">a) Crea los métodos esqueleto</h3>
 <p>Agrega estos métodos vacíos en <code>StorageService</code>:</p>
 <div class="code-toolbar">
@@ -616,6 +936,15 @@ generateId(): <span class="hljs-built_in">string</span> {
 }
 </div></code></pre>
 </div>
+<p>Micro-paso: implementa <code>getAllRecords()</code> básica que retorna array vacío para pruebas iniciales:</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">async</span> getAllRecords(): <span class="hljs-built_in">Promise</span>&lt;GeoPhotoRecord[]&gt; {
+  <span class="hljs-keyword">return</span> [];
+}
+</div></code></pre>
+<p>Comprueba rápido:</p>
+<ul>
+<li>Llama a <code>await storageService.getAllRecords()</code> desde la consola o añade un console.log en <code>ngOnInit</code> de <code>HomePage</code> para confirmar que retorna un array.</li>
+</ul>
 <h3 id="b-implementa-generateid">b) Implementa <code>generateId</code></h3>
 <p>Reemplaza el método vacío por:</p>
 <div class="code-toolbar">
@@ -625,6 +954,10 @@ generateId(): <span class="hljs-built_in">string</span> {
 }
 </div></code></pre>
 </div>
+<p>Mini-check:</p>
+<ul>
+<li>Llama a <code>storageService.generateId()</code> y confirma que devuelve una cadena con <code>record_</code> y un sufijo único.</li>
+</ul>
 <h3 id="c-implementa-getallrecords">c) Implementa <code>getAllRecords</code></h3>
 <p>Reemplaza el método vacío por:</p>
 <div class="code-toolbar">
@@ -681,7 +1014,8 @@ generateId(): <span class="hljs-built_in">string</span> {
 </div></code></pre>
 </div>
 <hr>
-<h2 id="8-actualiza-el-componente-homepage-paso-a-paso">8. Actualiza el componente HomePage paso a paso</h2>
+<p><a id="8-actualiza-el-componente-homepage"></a></p>
+<h2 id="8-actualiza-el-componente-homepage">8. Actualiza el componente HomePage</h2>
 <h3 id="a-agrega-las-nuevas-importaciones-al-inicio-del-archivo">a) Agrega las nuevas importaciones al inicio del archivo</h3>
 <p>Abre <code>src/app/home/home.page.ts</code> y agrega estas importaciones después de las existentes:</p>
 <div class="code-toolbar">
@@ -692,6 +1026,12 @@ generateId(): <span class="hljs-built_in">string</span> {
 <span class="hljs-keyword">import</span> { Coordinates } <span class="hljs-keyword">from</span> <span class="hljs-string">'../models/coordinates.model'</span>;
 </div></code></pre>
 </div>
+<p>Micro-paso HomePage: prueba <code>tomarFoto()</code> y <code>guardarRegistro()</code> por separado.</p>
+<p>Comprueba rápido:</p>
+<ul>
+<li>Llama manualmente a <code>await homePage.tomarFoto()</code> desde la consola y comprueba que <code>this.foto</code> se actualiza cuando se toma la foto.</li>
+<li>Llama a <code>await homePage.guardarRegistro()</code> tras rellenar <code>descripcion</code> y una <code>foto</code> de prueba; comprueba que <code>storageService.saveRecord</code> es llamado (usa console.log temporal).</li>
+</ul>
 <h3 id="b-agrega-los-nuevos-componentes-de-ionic-a-las-importaciones">b) Agrega los nuevos componentes de Ionic a las importaciones</h3>
 <p>En el mismo archivo, encuentra la sección de importaciones de componentes y agrega estos nuevos:</p>
 <div class="code-toolbar">
@@ -746,19 +1086,10 @@ generateId(): <span class="hljs-built_in">string</span> {
 </div></code></pre>
 </div>
 <hr>
+<p><a id="9-actualiza-las-variables-del-componente-homepage"></a></p>
 <h2 id="9-actualiza-las-variables-del-componente-homepage">9. Actualiza las variables del componente HomePage</h2>
 <h3 id="a-agrega-nuevas-variables-despu%C3%A9s-de-las-existentes">a) Agrega nuevas variables después de las existentes</h3>
-<p>En la clase <code>HomePage</code>, después de las variables existentes <code>foto</code> y <code>descripcion</code>, agrega:</p>
-<div class="code-toolbar">
-  <button onclick="copyCode(this)">Copiar</button>
-<pre class="hljs"><code><div><span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> HomePage <span class="hljs-keyword">implements</span> OnInit {
-  foto: <span class="hljs-built_in">string</span> = <span class="hljs-string">""</span>;
-  descripcion: <span class="hljs-built_in">string</span> = <span class="hljs-string">""</span>;
-  coordenadas: Coordinates | <span class="hljs-literal">null</span> = <span class="hljs-literal">null</span>;
-  registros: GeoPhotoRecord[] = [];
-  cargandoUbicacion: <span class="hljs-built_in">boolean</span> = <span class="hljs-literal">false</span>;
-</div></code></pre>
-</div>
+<p>En la clase <code>HomePage</code>, declara las variables justo después de inyectar los servicios para mantener el código organizado y fácil de leer. Más abajo hay un ejemplo de las variables que necesitarás; ubícalas junto a la inyección de servicios.</p>
 <h3 id="b-inyecta-los-nuevos-servicios">b) Inyecta los nuevos servicios</h3>
 <p>Después de la inyección existente del <code>PhotoService</code>, agrega:</p>
 <div class="code-toolbar">
@@ -766,6 +1097,17 @@ generateId(): <span class="hljs-built_in">string</span> {
 <pre class="hljs"><code><div><span class="hljs-keyword">private</span> photoService = inject(PhotoService);
 <span class="hljs-keyword">private</span> geoService = inject(GeolocationService);
 <span class="hljs-keyword">private</span> storageService = inject(StorageService);
+</div></code></pre>
+</div>
+<!-- Variables del componente: agrégalas aquí, justo después de inyectar los servicios, cerca de su primer uso -->
+<div class="code-toolbar">
+  <button onclick="copyCode(this)">Copiar</button>
+<pre class="hljs"><code><div><span class="hljs-comment">// ...en la clase HomePage (dentro del scope de la clase)</span>
+foto: <span class="hljs-built_in">string</span> = <span class="hljs-string">""</span>;
+descripcion: <span class="hljs-built_in">string</span> = <span class="hljs-string">""</span>;
+coordenadas: Coordinates | <span class="hljs-literal">null</span> = <span class="hljs-literal">null</span>;
+registros: GeoPhotoRecord[] = [];
+cargandoUbicacion: <span class="hljs-built_in">boolean</span> = <span class="hljs-literal">false</span>;
 </div></code></pre>
 </div>
 <h3 id="c-implementa-oninit">c) Implementa OnInit</h3>
@@ -786,6 +1128,7 @@ generateId(): <span class="hljs-built_in">string</span> {
 </div></code></pre>
 </div>
 <hr>
+<p><a id="10-actualiza-los-metodos-existentes-del-homepage"></a></p>
 <h2 id="10-actualiza-los-m%C3%A9todos-existentes-del-homepage">10. Actualiza los métodos existentes del HomePage</h2>
 <h3 id="a-modifica-el-m%C3%A9todo-tomarfoto-existente">a) Modifica el método <code>tomarFoto</code> existente</h3>
 <p>Encuentra el método existente <code>tomarFoto</code> y reemplázalo por esta versión que incluye geolocalización automática:</p>
@@ -844,6 +1187,7 @@ generateId(): <span class="hljs-built_in">string</span> {
 </div></code></pre>
 </div>
 <hr>
+<p><a id="11-agrega-los-nuevos-metodos-al-homepage"></a></p>
 <h2 id="11-agrega-los-nuevos-m%C3%A9todos-al-homepage">11. Agrega los nuevos métodos al HomePage</h2>
 <h3 id="a-agrega-el-m%C3%A9todo-para-obtener-ubicaci%C3%B3n">a) Agrega el método para obtener ubicación</h3>
 <p>Después de los métodos existentes, agrega:</p>
@@ -904,6 +1248,7 @@ generateId(): <span class="hljs-built_in">string</span> {
 </div></code></pre>
 </div>
 <hr>
+<p><a id="12-agrega-metodos-utilitarios-al-homepage"></a></p>
 <h2 id="12-agrega-m%C3%A9todos-utilitarios-al-homepage">12. Agrega métodos utilitarios al HomePage</h2>
 <h3 id="a-agrega-getter-para-verificar-si-hay-ubicaci%C3%B3n">a) Agrega getter para verificar si hay ubicación</h3>
 <div class="code-toolbar">
@@ -917,13 +1262,15 @@ generateId(): <span class="hljs-built_in">string</span> {
 <h3 id="b-agrega-getter-para-validar-formulario">b) Agrega getter para validar formulario</h3>
 <div class="code-toolbar">
   <button onclick="copyCode(this)">Copiar</button>
-<p>get formularioValido(): boolean {
-return !!(this.foto &amp;&amp; this.descripcion);
-}</p>
-<pre class="hljs"><code><div></div></code></pre>
+<pre class="hljs"><code><div>
+<span class="hljs-keyword">get</span> formularioValido(): <span class="hljs-built_in">boolean</span> {
+  <span class="hljs-keyword">return</span> !!(<span class="hljs-keyword">this</span>.foto &amp;&amp; <span class="hljs-keyword">this</span>.descripcion);
+}
+</div></code></pre>
 </div>
 <hr>
-<h2 id="13-actualiza-la-interfaz-html-paso-a-paso">13. Actualiza la interfaz HTML paso a paso</h2>
+<p><a id="13-actualiza-la-interfaz-html"></a></p>
+<h2 id="13-actualiza-la-interfaz-html">13. Actualiza la interfaz HTML</h2>
 <h3 id="a-cambia-el-t%C3%ADtulo-de-la-aplicaci%C3%B3n">a) Cambia el título de la aplicación</h3>
 <p>Abre <code>src/app/home/home.page.html</code> y cambia el título en el header:</p>
 <div class="code-toolbar">
@@ -1034,6 +1381,7 @@ return !!(this.foto &amp;&amp; this.descripcion);
 </div></code></pre>
 </div>
 <hr>
+<p><a id="14-agrega-la-seccion-de-lista-de-registros-al-html"></a></p>
 <h2 id="14-agrega-la-secci%C3%B3n-de-lista-de-registros-al-html">14. Agrega la sección de lista de registros al HTML</h2>
 <h3 id="a-agrega-el-card-para-mostrar-registros-guardados">a) Agrega el card para mostrar registros guardados</h3>
 <p>Después del primer card (Nuevo Registro), pero antes del cierre de <code>&lt;/div&gt;</code>, agrega:</p>
@@ -1110,7 +1458,8 @@ return !!(this.foto &amp;&amp; this.descripcion);
 </div></code></pre>
 </div>
 <hr>
-<h2 id="15-actualiza-los-estilos-paso-a-paso">15. Actualiza los estilos paso a paso</h2>
+<p><a id="15-actualiza-los-estilos"></a></p>
+<h2 id="15-actualiza-los-estilos">15. Actualiza los estilos</h2>
 <h3 id="a-actualiza-los-estilos-base-del-container">a) Actualiza los estilos base del container</h3>
 <p>Abre <code>src/app/home/home.page.scss</code> y reemplaza el estilo del container:</p>
 <div class="code-toolbar">
@@ -1237,6 +1586,7 @@ ion-<span class="hljs-selector-tag">button</span> {
 </div></code></pre>
 </div>
 <hr>
+<p><a id="16-configura-permisos-para-android"></a></p>
 <h2 id="16-configura-permisos-para-android">16. Configura permisos para Android</h2>
 <h3 id="a-localiza-el-archivo-androidmanifestxml">a) Localiza el archivo AndroidManifest.xml</h3>
 <p>Navega hasta <code>android/app/src/main/AndroidManifest.xml</code> en tu proyecto.</p>
@@ -1256,10 +1606,11 @@ ion-<span class="hljs-selector-tag">button</span> {
 <li><code>ACCESS_BACKGROUND_LOCATION</code>: Para ubicación cuando la app está en segundo plano</li>
 </ul>
 <hr>
-<h2 id="17-prueba-la-aplicaci%C3%B3n-paso-a-paso">17. Prueba la aplicación paso a paso</h2>
+<p><a id="17-prueba-la-aplicacion"></a></p>
+<h2 id="17-prueba-la-aplicaci%C3%B3n">17. Prueba la aplicación</h2>
 <h3 id="a-prueba-en-el-navegador">a) Prueba en el navegador</h3>
 <p>Ejecuta el comando:</p>
-<div class="code-toolbar">
+<div class="code-toolbar terminal">
   <button onclick="copyCode(this)">Copiar</button>
 <pre class="hljs"><code><div>ionic serve
 </div></code></pre>
@@ -1275,7 +1626,7 @@ ion-<span class="hljs-selector-tag">button</span> {
 </ol>
 <h3 id="b-prueba-en-android">b) Prueba en Android</h3>
 <p>Ejecuta los comandos:</p>
-<div class="code-toolbar">
+<div class="code-toolbar terminal">
   <button onclick="copyCode(this)">Copiar</button>
 <pre class="hljs"><code><div>npx <span class="hljs-built_in">cap</span> sync android
 npx <span class="hljs-built_in">cap</span> open android
@@ -1289,38 +1640,10 @@ npx <span class="hljs-built_in">cap</span> open android
 <li>Todas las funcionalidades web también funcionan en móvil</li>
 </ol>
 <hr>
-<h2 id="18-resumen-de-funcionalidades-implementadas">18. Resumen de funcionalidades implementadas</h2>
-<h3 id="a-geolocalizaci%C3%B3n-completada">a) Geolocalización completada</h3>
-<ul>
-<li>✅ Obtener coordenadas GPS automáticamente al tomar foto</li>
-<li>✅ Botón manual para obtener ubicación</li>
-<li>✅ Gestión de permisos de ubicación</li>
-<li>✅ Formato legible de coordenadas</li>
-<li>✅ Manejo de errores de geolocalización</li>
-</ul>
-<h3 id="b-persistencia-de-datos-completada">b) Persistencia de datos completada</h3>
-<ul>
-<li>✅ Guardar registros localmente</li>
-<li>✅ Cargar registros al iniciar la app</li>
-<li>✅ Eliminar registros individuales</li>
-<li>✅ Generación de IDs únicos</li>
-<li>✅ Ordenamiento por fecha</li>
-</ul>
-<h3 id="c-interfaz-mejorada-completada">c) Interfaz mejorada completada</h3>
-<ul>
-<li>✅ Cards organizadas por secciones</li>
-<li>✅ Lista visual de registros guardados</li>
-<li>✅ Indicadores de estado de ubicación</li>
-<li>✅ Validación de formularios</li>
-<li>✅ Diseño responsive</li>
-</ul>
-<hr>
-<h2 id="19-archivos-relacionados">19. Archivos relacionados</h2>
+<h2 id="archivos-relacionados">Archivos relacionados</h2>
 <p>Al completar este tutorial, habrás trabajado con estos archivos:</p>
 <ul>
 <li><code>src/app/models/geo-photo.model.ts</code>: Modelos de datos y interfaces</li>
-<li><code>src/app/service/geolocation.service.ts</code>: Servicio de geolocalización</li>
-<li><code>src/app/service/storage.service.ts</code>: Servicio de almacenamiento</li>
 <li><code>src/app/service/geolocation.service.ts</code>: Servicio de geolocalización</li>
 <li><code>src/app/service/storage.service.ts</code>: Servicio de almacenamiento</li>
 <li><code>src/app/home/home.page.ts</code>: Lógica completa del componente</li>
