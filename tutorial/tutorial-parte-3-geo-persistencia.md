@@ -162,91 +162,78 @@ Agregar geolocalización para capturar coordenadas GPS y persistencia de datos p
 <p>En esta parte añadiremos geolocalización para capturar coordenadas al tomar fotos y un servicio de persistencia para guardar registros (foto, descripción, coordenadas, fecha). Al final tendrás una lista de registros guardados y la posibilidad de eliminarlos.</p>
 </aside>
 
-## Prerrequisitos
-Qué vas a construir / Aprenderás:
-- Añadir geolocalización (obtener lat/lng y manejar permisos)
-- Guardar y recuperar registros usando `@capacitor/preferences`
-- Integrar geolocalización y persistencia en `HomePage` y mostrar la lista
-
-
----
 
 ## Índice
 
 Marca los pasos a medida que los completes:
 
 <nav class="tutorial-index" role="navigation" aria-label="Índice del tutorial">
-<ul class="index-list">
-  <li>
-  <label><input type="checkbox" aria-hidden="true" data-step="step-1"> <a href="#1-instala-los-plugins-necesarios">1. Instala los plugins necesarios</a></label>
-  </li>
-  <li>
-  <label><input type="checkbox" aria-hidden="true" data-step="step-2"> <a href="#2-crea-el-modelo-de-datos">2. Crea el modelo de datos</a></label>
-  </li>
-
-  <li class="index-group-heading">Geolocalización
-    <ul>
-      <li>
-          <label><input type="checkbox" aria-hidden="true" data-step="step-3"> <a href="#3-crea-el-servicio-de-geolocalizacion">3. Crea el servicio de geolocalización</a></label>
-      </li>
-      <li>
-          <label><input type="checkbox" aria-hidden="true" data-step="step-4"> <a href="#4-implementa-la-logica-de-geolocalizacion">4. Implementa la lógica de geolocalización</a></label>
-      </li>
-      <li>
-          <label><input type="checkbox" aria-hidden="true" data-step="step-5"> <a href="#5-completa-la-implementacion-de-los-metodos-de-geolocalizacion">5. Completa la implementación de los métodos de geolocalización</a></label>
-      </li>
-    </ul>
-  </li>
-
-  <li class="index-group-heading">Persistencia / Storage
-    <ul>
-      <li>
-          <label><input type="checkbox" aria-hidden="true" data-step="step-6"> <a href="#6-crea-el-servicio-de-almacenamiento">6. Crea el servicio de almacenamiento</a></label>
-      </li>
-      <li>
-          <label><input type="checkbox" aria-hidden="true" data-step="step-7"> <a href="#7-implementa-los-metodos-del-servicio-de-almacenamiento">7. Implementa los métodos del servicio de almacenamiento</a></label>
-      </li>
-    </ul>
-  </li>
-
-  <li class="index-group-heading">Actualizar HomePage
-    <ul>
-      <li>
-          <label><input type="checkbox" aria-hidden="true" data-step="step-8"> <a href="#8-actualiza-el-componente-homepage">8. Actualiza el componente HomePage</a></label>
-      </li>
-      <li>
-          <label><input type="checkbox" aria-hidden="true" data-step="step-9"> <a href="#9-actualiza-las-variables-del-componente-homepage">9. Actualiza las variables del componente HomePage</a></label>
-      </li>
-      <li>
-          <label><input type="checkbox" aria-hidden="true" data-step="step-10"> <a href="#10-actualiza-los-metodos-existentes-del-homepage">10. Actualiza los métodos existentes del HomePage</a></label>
-      </li>
-      <li>
-          <label><input type="checkbox" aria-hidden="true" data-step="step-11"> <a href="#11-agrega-los-nuevos-metodos-al-homepage">11. Agrega los nuevos métodos al HomePage</a></label>
-      </li>
-      <li>
-          <label><input type="checkbox" aria-hidden="true" data-step="step-12"> <a href="#12-agrega-metodos-utilitarios-al-homepage">12. Agrega métodos utilitarios al HomePage</a></label>
-      </li>
-    </ul>
-  </li>
-
-  <li>
-  <label><input type="checkbox" aria-hidden="true" data-step="step-13"> <a href="#13-actualiza-la-interfaz-html">13. Actualiza la interfaz HTML</a></label>
-  </li>
-  <li>
-  <label><input type="checkbox" aria-hidden="true" data-step="step-14"> <a href="#14-agrega-la-seccion-de-lista-de-registros-al-html">14. Agrega la sección de lista de registros al HTML</a></label>
-  </li>
-  <li>
-  <label><input type="checkbox" aria-hidden="true" data-step="step-15"> <a href="#15-actualiza-los-estilos">15. Actualiza los estilos</a></label>
-  </li>
-  <li>
-  <label><input type="checkbox" aria-hidden="true" data-step="step-16"> <a href="#16-configura-permisos-para-android">16. Configura permisos para Android</a></label>
-  </li>
-  <li>
-  <label><input type="checkbox" aria-hidden="true" data-step="step-17"> <a href="#17-prueba-la-aplicacion">17. Prueba la aplicación</a></label>
-  </li>
-</ul>
+  <ul class="index-list">
+    <li>
+    <label><input type="checkbox" aria-hidden="true" data-step="step-1"> <a href="#1-instala-los-plugins-necesarios">1. Instala los plugins necesarios</a></label>
+    </li>
+    <li>
+    <label><input type="checkbox" aria-hidden="true" data-step="step-2"> <a href="#2-crea-el-modelo-de-datos">2. Crea el modelo de datos</a></label>
+    </li>
+    <li class="index-group-heading">Geolocalización
+      <ul>
+        <li>
+            <label><input type="checkbox" aria-hidden="true" data-step="step-3"> <a href="#3-crea-el-servicio-de-geolocalizacion">3. Crea el servicio de geolocalización</a></label>
+        </li>
+        <li>
+            <label><input type="checkbox" aria-hidden="true" data-step="step-4"> <a href="#4-implementa-la-logica-de-geolocalizacion">4. Implementa la lógica de geolocalización</a></label>
+        </li>
+        <li>
+            <label><input type="checkbox" aria-hidden="true" data-step="step-5"> <a href="#5-completa-la-implementacion-de-los-metodos-de-geolocalizacion">5. Completa la implementación de los métodos de geolocalización</a></label>
+        </li>
+      </ul>
+    </li>
+    <li class="index-group-heading">Persistencia / Storage
+      <ul>
+        <li>
+            <label><input type="checkbox" aria-hidden="true" data-step="step-6"> <a href="#6-crea-el-servicio-de-almacenamiento">6. Crea el servicio de almacenamiento</a></label>
+        </li>
+        <li>
+            <label><input type="checkbox" aria-hidden="true" data-step="step-7"> <a href="#7-implementa-los-metodos-del-servicio-de-almacenamiento">7. Implementa los métodos del servicio de almacenamiento</a></label>
+        </li>
+      </ul>
+    </li>
+    <li class="index-group-heading">Actualizar HomePage
+      <ul>
+        <li>
+            <label><input type="checkbox" aria-hidden="true" data-step="step-8"> <a href="#8-actualiza-el-componente-homepage">8. Actualiza el componente HomePage</a></label>
+        </li>
+        <li>
+            <label><input type="checkbox" aria-hidden="true" data-step="step-9"> <a href="#9-actualiza-las-variables-del-componente-homepage">9. Actualiza las variables del componente HomePage</a></label>
+        </li>
+        <li>
+            <label><input type="checkbox" aria-hidden="true" data-step="step-10"> <a href="#10-actualiza-los-metodos-existentes-del-homepage">10. Actualiza los métodos existentes del HomePage</a></label>
+        </li>
+        <li>
+            <label><input type="checkbox" aria-hidden="true" data-step="step-11"> <a href="#11-agrega-los-nuevos-metodos-al-homepage">11. Agrega los nuevos métodos al HomePage</a></label>
+        </li>
+        <li>
+            <label><input type="checkbox" aria-hidden="true" data-step="step-12"> <a href="#12-agrega-metodos-utilitarios-al-homepage">12. Agrega métodos utilitarios al HomePage</a></label>
+        </li>
+      </ul>
+    </li>
+    <li>
+    <label><input type="checkbox" aria-hidden="true" data-step="step-13"> <a href="#13-actualiza-la-interfaz-html">13. Actualiza la interfaz HTML</a></label>
+    </li>
+    <li>
+    <label><input type="checkbox" aria-hidden="true" data-step="step-14"> <a href="#14-agrega-la-seccion-de-lista-de-registros-al-html">14. Agrega la sección de lista de registros al HTML</a></label>
+    </li>
+    <li>
+    <label><input type="checkbox" aria-hidden="true" data-step="step-15"> <a href="#15-actualiza-los-estilos">15. Actualiza los estilos</a></label>
+    </li>
+    <li>
+    <label><input type="checkbox" aria-hidden="true" data-step="step-16"> <a href="#16-configura-permisos-para-android">16. Configura permisos para Android</a></label>
+    </li>
+    <li>
+    <label><input type="checkbox" aria-hidden="true" data-step="step-17"> <a href="#17-prueba-la-aplicacion">17. Prueba la aplicación</a></label>
+    </li>
+  </ul>
 </nav>
-
 
 ---
 
@@ -399,27 +386,6 @@ import { Coordinates } from '../models/coordinates.model';
 ```
 </div>
 
-
-<div class="mini-reto">
-
-## Mini Reto: Geolocalización
-
-<div class="reto-meta">
-El servicio <code>GeolocationService</code> debe exponer <code>getCurrentPosition(): Promise&lt;Coordinates | null&gt;</code> y manejo de permisos.</div>
-
-- Comprueba:
-  - [ ] Archivo `src/app/service/geolocation.service.ts` creado
-  - [ ] `getCurrentPosition()` devuelve `{ latitude, longitude }` o `null` en fallos
-
-Reto: Implementa <code>getCurrentPosition()</code> y <code>checkPermissions()</code> con manejo de errores y timeout.
-
-### Comprueba rápido: Geolocalización
-
-- Abre la consola con F12 (devtools) y ejecuta (si estás en web):
-  - `await Geolocation.getCurrentPosition()` — espera recibir un objeto con `coords.latitude` y `coords.longitude` o un error si los permisos no están concedidos.
-  - En Android, comprueba que al primer uso se solicita permiso; si no, revisa `AndroidManifest.xml`.
-
-</div>
 
 ### c) Declara la clase del servicio
 
@@ -621,26 +587,6 @@ import { GeoPhotoRecord } from '../models/geo-photo.model';
 ```
 </div>
 
-
-<div class="mini-reto">
-
-## Mini reto: Persistencia y almacenamiento
-
-<div class="reto-meta">El servicio <code>StorageService</code> debe exponer <code>saveRecord(record: GeoPhotoRecord): Promise&lt;void&gt;</code>, <code>getAllRecords(): Promise&lt;GeoPhotoRecord[]&gt;</code>, <code>deleteRecord(id: string): Promise&lt;void&gt;</code> y <code>generateId(): string</code>.</div>
-
-- Comprueba:
-  - [ ] `StorageService.generateId()` existe y devuelve un string
-  - [ ] `saveRecord` persiste un array JSON en `@capacitor/preferences`
-
-Reto: Implementa `saveRecord`, `getAllRecords` y `deleteRecord` con manejo de JSON corrupto y fallback.
-
-### Comprueba rápido: Persistencia
-
-- En la consola de devtools (web) ejecuta:
-  - `await Preferences.get({ key: 'geo-photo-records' })` — deberías obtener `{ value: '[]' }` inicialmente o el JSON almacenado.
-  - Alternativa: en la app, guarda un registro y luego llama a `this.storageService.getAllRecords()` desde la consola (o añade un console.log) para comprobar que aparece el registro.
-
-</div>
 
 ### c) Declara la constante para la clave de almacenamiento
 
