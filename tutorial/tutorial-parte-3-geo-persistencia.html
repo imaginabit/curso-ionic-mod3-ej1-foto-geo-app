@@ -679,12 +679,12 @@ Un modelo define la estructura de datos que usará tu aplicación. Es como un &q
 <p>Abre la terminal y ejecuta:</p>
 <div class="code-toolbar terminal">
   <button onclick="copyCode(this)">Copiar</button>
-<pre class="hljs"><code><div>npx ionic generate service service/geolocation.service
+<pre class="hljs"><code><div>npx ionic generate service services/geolocation.service
 </div></code></pre>
 </div>
-<p>Esto creará el archivo <code>src/app/service/geolocation.service.ts</code> directamente con el nombre correcto.</p>
+<p>Esto creará el archivo <code>src/app/services/geolocation.service.ts</code> directamente con el nombre correcto.</p>
 <h3 id="b-agrega-las-importaciones-necesarias">b) Agrega las importaciones necesarias</h3>
-<p>Abre <code>src/app/service/geolocation.service.ts</code> y reemplaza las importaciones por:</p>
+<p>Abre <code>src/app/services/geolocation.service.ts</code> y reemplaza las importaciones por:</p>
 <div class="code-toolbar">
   <button onclick="copyCode(this)">Copiar</button>
 <pre class="hljs"><code><div><span class="hljs-keyword">import</span> { Injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">'@angular/core'</span>;
@@ -699,7 +699,7 @@ El servicio <code>GeolocationService</code> debe exponer <code>getCurrentPositio
 <ul>
 <li>Comprueba:
 <ul>
-<li><input type="checkbox" id="checkbox0"><label for="checkbox0">Archivo </label><code>src/app/service/geolocation.service.ts</code> creado</li>
+<li><input type="checkbox" id="checkbox0"><label for="checkbox0">Archivo </label><code>src/app/services/geolocation.service.ts</code> creado</li>
 <li><input type="checkbox" id="checkbox1"><label for="checkbox1"></label><code>getCurrentPosition()</code> devuelve <code>{ latitude, longitude }</code> o <code>null</code> en fallos</li>
 </ul>
 </li>
@@ -861,12 +861,12 @@ El servicio <code>GeolocationService</code> debe exponer <code>getCurrentPositio
 <h3 id="a-genera-el-servicio-de-almacenamiento">a) Genera el servicio de almacenamiento</h3>
 <div class="code-toolbar">
   <button onclick="copyCode(this)">Copiar</button>
-<pre class="hljs"><code><div>npx ionic generate service service/storage.service
+<pre class="hljs"><code><div>npx ionic generate service services/storage.service
 </div></code></pre>
 </div>
-<p>Esto creará el archivo <code>src/app/service/storage.service.ts</code> directamente con el nombre correcto.</p>
+<p>Esto creará el archivo <code>src/app/services/storage.service.ts</code> directamente con el nombre correcto.</p>
 <h3 id="b-agrega-las-importaciones-necesarias">b) Agrega las importaciones necesarias</h3>
-<p>Abre <code>src/app/service/storage.service.ts</code> y reemplaza las importaciones por:</p>
+<p>Abre <code>src/app/services/storage.service.ts</code> y reemplaza las importaciones por:</p>
 <div class="code-toolbar">
   <button onclick="copyCode(this)">Copiar</button>
 <pre class="hljs"><code><div><span class="hljs-keyword">import</span> { Injectable } <span class="hljs-keyword">from</span> <span class="hljs-string">'@angular/core'</span>;
@@ -1020,8 +1020,8 @@ generateId(): <span class="hljs-built_in">string</span> {
 <p>Abre <code>src/app/home/home.page.ts</code> y agrega estas importaciones después de las existentes:</p>
 <div class="code-toolbar">
   <button onclick="copyCode(this)">Copiar</button>
-<pre class="hljs"><code><div><span class="hljs-keyword">import</span> { GeolocationService } <span class="hljs-keyword">from</span> <span class="hljs-string">'../service/geolocation.service'</span>;
-<span class="hljs-keyword">import</span> { StorageService } <span class="hljs-keyword">from</span> <span class="hljs-string">'../service/storage.service'</span>;
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> { GeolocationService } <span class="hljs-keyword">from</span> <span class="hljs-string">'../services/geolocation.service'</span>;
+<span class="hljs-keyword">import</span> { StorageService } <span class="hljs-keyword">from</span> <span class="hljs-string">'../services/storage.service'</span>;
 <span class="hljs-keyword">import</span> { GeoPhotoRecord } <span class="hljs-keyword">from</span> <span class="hljs-string">'../models/geo-photo.model'</span>;
 <span class="hljs-keyword">import</span> { Coordinates } <span class="hljs-keyword">from</span> <span class="hljs-string">'../models/coordinates.model'</span>;
 </div></code></pre>
@@ -1644,8 +1644,8 @@ npx <span class="hljs-built_in">cap</span> open android
 <p>Al completar este tutorial, habrás trabajado con estos archivos:</p>
 <ul>
 <li><code>src/app/models/geo-photo.model.ts</code>: Modelos de datos y interfaces</li>
-<li><code>src/app/service/geolocation.service.ts</code>: Servicio de geolocalización</li>
-<li><code>src/app/service/storage.service.ts</code>: Servicio de almacenamiento</li>
+<li><code>src/app/services/geolocation.service.ts</code>: Servicio de geolocalización</li>
+<li><code>src/app/services/storage.service.ts</code>: Servicio de almacenamiento</li>
 <li><code>src/app/home/home.page.ts</code>: Lógica completa del componente</li>
 <li><code>src/app/home/home.page.html</code>: Interfaz con lista de registros</li>
 <li><code>src/app/home/home.page.scss</code>: Estilos mejorados</li>

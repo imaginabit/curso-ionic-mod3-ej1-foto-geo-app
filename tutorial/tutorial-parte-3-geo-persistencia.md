@@ -156,10 +156,10 @@ function updateLabelCompleted(cb) {
 # Tutorial Paso a Paso: Foto-Geo App (Parte 3)
 
 ## Objetivo
-Agregar geolocalización para capturar coordenadas GPS y persistencia de datos para guardar y mostrar una lista de registros, completando la funcionalidad de la aplicación Foto-Geo.
+Agregar geolocalización para capturar coordenadas GPS al tomar fotos y mostrar la información de ubicación en la UI.
 
 <aside class="admonition admonition--note" role="note">
-<p>En esta parte añadiremos geolocalización para capturar coordenadas al tomar fotos y un servicio de persistencia para guardar registros (foto, descripción, coordenadas, fecha). Al final tendrás una lista de registros guardados y la posibilidad de eliminarlos.</p>
+<p>En esta parte añadiremos geolocalización para capturar coordenadas al tomar fotos y mostrarlas junto a la foto y la descripción.</p>
 </aside>
 
 
@@ -185,35 +185,6 @@ Marca los pasos a medida que los completes:
         </li>
         <li>
             <label><input type="checkbox" aria-hidden="true" data-step="step-5"> <a href="#5-completa-la-implementacion-de-los-metodos-de-geolocalizacion">5. Completa la implementación de los métodos de geolocalización</a></label>
-        </li>
-      </ul>
-    </li>
-    <li class="index-group-heading">Persistencia / Storage
-      <ul>
-        <li>
-            <label><input type="checkbox" aria-hidden="true" data-step="step-6"> <a href="#6-crea-el-servicio-de-almacenamiento">6. Crea el servicio de almacenamiento</a></label>
-        </li>
-        <li>
-            <label><input type="checkbox" aria-hidden="true" data-step="step-7"> <a href="#7-implementa-los-metodos-del-servicio-de-almacenamiento">7. Implementa los métodos del servicio de almacenamiento</a></label>
-        </li>
-      </ul>
-    </li>
-    <li class="index-group-heading">Actualizar HomePage
-      <ul>
-        <li>
-            <label><input type="checkbox" aria-hidden="true" data-step="step-8"> <a href="#8-actualiza-el-componente-homepage">8. Actualiza el componente HomePage</a></label>
-        </li>
-        <li>
-            <label><input type="checkbox" aria-hidden="true" data-step="step-9"> <a href="#9-actualiza-las-variables-del-componente-homepage">9. Actualiza las variables del componente HomePage</a></label>
-        </li>
-        <li>
-            <label><input type="checkbox" aria-hidden="true" data-step="step-10"> <a href="#10-actualiza-los-metodos-existentes-del-homepage">10. Actualiza los métodos existentes del HomePage</a></label>
-        </li>
-        <li>
-            <label><input type="checkbox" aria-hidden="true" data-step="step-11"> <a href="#11-agrega-los-nuevos-metodos-al-homepage">11. Agrega los nuevos métodos al HomePage</a></label>
-        </li>
-        <li>
-            <label><input type="checkbox" aria-hidden="true" data-step="step-12"> <a href="#12-agrega-metodos-utilitarios-al-homepage">12. Agrega métodos utilitarios al HomePage</a></label>
         </li>
       </ul>
     </li>
@@ -255,7 +226,7 @@ Abre una terminal y ejecuta:
   <button onclick="copyCode(this)">Copiar</button>
 
 ```bash
-npm install @capacitor/geolocation @capacitor/preferences
+npm install @capacitor/geolocation
 npx cap sync
 ```
 </div>
@@ -263,7 +234,6 @@ npx cap sync
 
 **Explicación:**
 - `@capacitor/geolocation`: Para obtener la ubicación GPS del dispositivo
-- `@capacitor/preferences`: Para guardar datos localmente de forma persistente
 
 ---
 
@@ -274,7 +244,7 @@ npx cap sync
 Entender y definir el modelo de datos antes de implementar servicios y UI evita errores de integración. Al tener una interfaz clara (GeoPhotoRecord y Coordinates) sabes qué guardar, cómo formatearlo y qué mostrar en la lista.
 
 ### Ejemplo de JSON de un registro
-Para que veas un ejemplo realista del objeto que guardaremos en `@capacitor/preferences`:
+Para que veas un ejemplo realista del objeto que guardaremos
 
 ```json
 {
@@ -362,19 +332,19 @@ Abre la terminal y ejecuta:
   <button onclick="copyCode(this)">Copiar</button>
 
 ```bash
-npx ionic generate service service/geolocation.service
+npx ionic generate service services/geolocation.service
 ```
 </div>
 
-Esto creará el archivo `src/app/service/geolocation.service.ts` directamente con el nombre correcto.
+Esto creará el archivo `src/app/services/geolocation.service.ts` directamente con el nombre correcto.
 
 ### Comprobaciones rápidas / debugging
-- Si el `npx ionic generate service` no crea el archivo en `src/app/service`, revisa que estés en la carpeta raíz del proyecto y repite el comando.
-- Si durante importaciones recibes "module not found", verifica la ruta exacta (usamos `src/app/service/` en este tutorial) y que el archivo `.ts` existe.
+- Si el `npx ionic generate service` no crea el archivo en `src/app/services`, revisa que estés en la carpeta raíz del proyecto y repite el comando.
+- Si durante importaciones recibes "module not found", verifica la ruta exacta (usamos `src/app/services/` en este tutorial) y que el archivo `.ts` existe.
 
 ### b) Agrega las importaciones necesarias
 
-Abre `src/app/service/geolocation.service.ts` y reemplaza las importaciones por:
+Abre `src/app/services/geolocation.service.ts` y reemplaza las importaciones por:
 
 <div class="code-toolbar">
   <button onclick="copyCode(this)">Copiar</button>
@@ -413,8 +383,7 @@ export class GeolocationService {
 
 ### a) Crea el método principal para obtener posición
 
-Agrega el método principal en `GeolocationService` 
- y un return temporal para probar.
+Agrega el método principal en `GeolocationService` y un return temporal para probar.
 
 
 <div class="code-toolbar">
@@ -423,12 +392,10 @@ Agrega el método principal en `GeolocationService`
 ```typescript
 async getCurrentPosition(): Promise<Coordinates | null> {
   // Implementación en el siguiente paso
-    // TODO: implementar; por ahora devuelve null para evitar errores en compilación
   return null;
 }
 ```
 </div>
-
 
 
 Comprueba rápido:
@@ -554,196 +521,9 @@ private async checkPermissions(): Promise<boolean> {
 
 ---
 
-<a id="6-crea-el-servicio-de-almacenamiento"></a>
-## 6. Crea el servicio de almacenamiento
-
-### a) Genera el servicio de almacenamiento
-
-<div class="code-toolbar">
-  <button onclick="copyCode(this)">Copiar</button>
-
-```bash
-npx ionic generate service service/storage.service
-```
-</div>
-
-Esto creará el archivo `src/app/service/storage.service.ts` directamente con el nombre correcto.
-### Comprobaciones rápidas / debugging (Storage)
-- Si `Preferences.get` retorna un valor no JSON o lanza un error, asegúrate de manejar JSON.parse dentro de un try/catch (el tutorial ya incluye este manejo).
-- Para comprobar que los registros se guardan: en la consola (web) ejecuta `await Preferences.get({ key: 'geo-photo-records' })` y valida que `result.value` sea un JSON parseable (o `null`/`[]`).
-
-
-### b) Agrega las importaciones necesarias
-
-Abre `src/app/service/storage.service.ts` y reemplaza las importaciones por:
-
-<div class="code-toolbar">
-  <button onclick="copyCode(this)">Copiar</button>
-
-```typescript
-import { Injectable } from '@angular/core';
-import { Preferences } from '@capacitor/preferences';
-import { GeoPhotoRecord } from '../models/geo-photo.model';
-```
-</div>
-
-
-### c) Declara la constante para la clave de almacenamiento
-
-En la clase `StorageService`, agrega justo después de la declaración de clase:
-
-<div class="code-toolbar">
-  <button onclick="copyCode(this)">Copiar</button>
-
-```typescript
-@Injectable({
-  providedIn: 'root'
-})
-export class StorageService {
-  private readonly RECORDS_KEY = 'geo-photo-records';
-
-  constructor() {}
-  
-  // Métodos se implementarán en los siguientes pasos
-}
-```
-</div>
-
----
-
-<a id="7-implementa-los-metodos-del-servicio-de-almacenamiento"></a>
-## 7. Implementa los métodos del servicio de almacenamiento
-
-### a) Crea los métodos esqueleto
-
-Agrega estos métodos vacíos en `StorageService`:
-
-<div class="code-toolbar">
-  <button onclick="copyCode(this)">Copiar</button>
-
-```typescript
-async saveRecord(record: GeoPhotoRecord): Promise<void> {
-  // Implementación en el siguiente paso
-}
-
-async getAllRecords(): Promise<GeoPhotoRecord[]> {
-  // Implementación en el siguiente paso
-}
-
-async deleteRecord(id: string): Promise<void> {
-  // Implementación en el siguiente paso
-}
-
-generateId(): string {
-  // Implementación en el siguiente paso
-}
-```
-</div>
-
-Micro-paso: implementa `getAllRecords()` básica que retorna array vacío para pruebas iniciales:
-
-```typescript
-async getAllRecords(): Promise<GeoPhotoRecord[]> {
-  return [];
-}
-```
-
-Comprueba rápido:
-
-- Llama a `await storageService.getAllRecords()` desde la consola o añade un console.log en `ngOnInit` de `HomePage` para confirmar que retorna un array.
-
-### b) Implementa `generateId`
-
-Reemplaza el método vacío por:
-
-<div class="code-toolbar">
-  <button onclick="copyCode(this)">Copiar</button>
-
-```typescript
-generateId(): string {
-  return 'record_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-}
-```
-</div>
-
-Mini-check:
-
-- Llama a `storageService.generateId()` y confirma que devuelve una cadena con `record_` y un sufijo único.
-
-### c) Implementa `getAllRecords`
-
-Reemplaza el método vacío por:
-
-<div class="code-toolbar">
-  <button onclick="copyCode(this)">Copiar</button>
-
-```typescript
-async getAllRecords(): Promise<GeoPhotoRecord[]> {
-  try {
-    const result = await Preferences.get({ key: this.RECORDS_KEY });
-    return result.value ? JSON.parse(result.value) : [];
-  } catch (error) {
-    console.error('Error obteniendo registros:', error);
-    return [];
-  }
-}
-```
-</div>
-
-### d) Implementa `saveRecord`
-
-Reemplaza el método vacío por:
-
-<div class="code-toolbar">
-  <button onclick="copyCode(this)">Copiar</button>
-
-```typescript
-async saveRecord(record: GeoPhotoRecord): Promise<void> {
-  try {
-    const records = await this.getAllRecords();
-    records.push(record);
-    
-    await Preferences.set({
-      key: this.RECORDS_KEY,
-      value: JSON.stringify(records)
-    });
-  } catch (error) {
-    console.error('Error guardando registro:', error);
-    throw error;
-  }
-}
-```
-</div>
-
-### e) Implementa `deleteRecord`
-
-Reemplaza el método vacío por:
-
-<div class="code-toolbar">
-  <button onclick="copyCode(this)">Copiar</button>
-
-```typescript
-async deleteRecord(id: string): Promise<void> {
-  try {
-    const records = await this.getAllRecords();
-    const filteredRecords = records.filter(record => record.id !== id);
-    
-    await Preferences.set({
-      key: this.RECORDS_KEY,
-      value: JSON.stringify(filteredRecords)
-    });
-  } catch (error) {
-    console.error('Error eliminando registro:', error);
-    throw error;
-  }
-}
-```
-</div>
-
----
-
 <a id="8-actualiza-el-componente-homepage"></a>
-## 8. Actualiza el componente HomePage
+## 6. Actualiza el componente HomePage
+
 
 ### a) Agrega las nuevas importaciones al inicio del archivo
 
@@ -753,8 +533,10 @@ Abre `src/app/home/home.page.ts` y agrega estas importaciones después de las ex
   <button onclick="copyCode(this)">Copiar</button>
 
 ```typescript
-import { GeolocationService } from '../service/geolocation.service';
-import { StorageService } from '../service/storage.service';
+import { GeolocationService } from '../services/geolocation.service';
+import { StorageService } from '../services/storage.service';
+import { GeoPhotoRecord } from '../models/geo-photo.model';
+import { StorageService } from '../services/storage.service';
 import { GeoPhotoRecord } from '../models/geo-photo.model';
 import { Coordinates } from '../models/coordinates.model';
 ```
@@ -777,6 +559,24 @@ En el mismo archivo, encuentra la sección de importaciones de componentes y agr
 ```typescript
 import {
   // ...importaciones existentes...
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
+  IonList,
+  IonIcon,
+  IonText,
+  IonGrid,
+  IonRow,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonCardTitle,
+  IonList,
+  IonIcon,
+  IonText,
+  IonGrid,
+  IonRow,
   IonCard,
   IonCardContent,
   IonCardHeader,
@@ -833,7 +633,7 @@ Encuentra el decorador `@Component` y agrega los nuevos componentes al array `im
 ---
 
 <a id="9-actualiza-las-variables-del-componente-homepage"></a>
-## 9. Actualiza las variables del componente HomePage
+## 7. Actualiza las variables del componente HomePage
 
 ### a) Agrega nuevas variables después de las existentes
 
@@ -917,42 +717,7 @@ async tomarFoto() {
 ```
 </div>
 
-### b) Modifica el método `guardarRegistro` existente
-
-Encuentra el método existente `guardarRegistro` y reemplázalo por esta versión completa:
-<div class="code-toolbar">
-  <button onclick="copyCode(this)">Copiar</button>
-
-```typescript
-async guardarRegistro() {
-  if (!this.foto || !this.descripcion) {
-    console.warn('Faltan datos para guardar');
-    return;
-  }
-
-  try {
-    const registro: GeoPhotoRecord = {
-      id: this.storageService.generateId(),
-      photo: this.foto,
-      description: this.descripcion,
-      coordinates: this.coordenadas ?? undefined,
-      date: new Date().toLocaleString(),
-    };
-
-    await this.storageService.saveRecord(registro);
-    console.log('Registro guardado:', registro);
-    
-    // Limpiar formulario y recargar lista
-    this.limpiarFormulario();
-    await this.cargarRegistros();
-  } catch (error) {
-    console.error('Error guardando registro:', error);
-  }
-}
-```
-</div>
-
-### c) Modifica el método `eliminarFoto` existente
+### b) Modifica el método `eliminarFoto` existente
 
 Encuentra el método existente `eliminarFoto` y reemplázalo por:
 <div class="code-toolbar">
@@ -969,7 +734,7 @@ eliminarFoto() {
 ---
 
 <a id="11-agrega-los-nuevos-metodos-al-homepage"></a>
-## 11. Agrega los nuevos métodos al HomePage
+## 9. Agrega los nuevos métodos al HomePage
 
 ### a) Agrega el método para obtener ubicación
 
@@ -993,7 +758,7 @@ async obtenerUbicacion() {
 ```
 </div>
 
-### b) Agrega el método para cargar registros
+### b) Agrega el método privado para limpiar formulario
 <div class="code-toolbar">
   <button onclick="copyCode(this)">Copiar</button>
 
@@ -1045,7 +810,7 @@ private limpiarFormulario() {
 ---
 
 <a id="12-agrega-metodos-utilitarios-al-homepage"></a>
-## 12. Agrega métodos utilitarios al HomePage
+## 10. Agrega métodos utilitarios al HomePage
 
 ### a) Agrega getter para verificar si hay ubicación
 <div class="code-toolbar">
@@ -1075,7 +840,7 @@ get formularioValido(): boolean {
 ---
 
 <a id="13-actualiza-la-interfaz-html"></a>
-## 13. Actualiza la interfaz HTML
+## 11. Actualiza la interfaz HTML
 
 ### a) Cambia el título de la aplicación
 
@@ -1087,6 +852,7 @@ Abre `src/app/home/home.page.html` y cambia el título en el header:
 ```html
 <ion-header [translucent]="true">
   <ion-toolbar>
+    <ion-title>Foto-Geo App</ion-title>
     <ion-title>Foto-Geo App</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -1102,19 +868,8 @@ Encuentra el `<div id="container">` y reemplaza todo su contenido por:
 
 ```html
 <div id="container">
-  <!-- Sección: Nuevo Registro -->
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Nuevo Registro</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      
-      <!-- Contenido del formulario se agregará en los siguientes pasos -->
-      
-    </ion-card-content>
-  </ion-card>
-  
-  <!-- Otras secciones se agregarán en los siguientes pasos -->
+  <!-- Sección: Nuevo Registro (foto + descripción + ubicación) -->
+  <!-- Otras secciones relacionadas con persistencia han sido eliminadas -->
   
 </div>
 ```
@@ -1553,8 +1308,8 @@ npx cap open android
 Al completar este tutorial, habrás trabajado con estos archivos:
 
 - `src/app/models/geo-photo.model.ts`: Modelos de datos y interfaces
-- `src/app/service/geolocation.service.ts`: Servicio de geolocalización
-- `src/app/service/storage.service.ts`: Servicio de almacenamiento
+- `src/app/services/geolocation.service.ts`: Servicio de geolocalización
+- `src/app/services/storage.service.ts`: Servicio de almacenamiento
 - `src/app/home/home.page.ts`: Lógica completa del componente
 - `src/app/home/home.page.html`: Interfaz con lista de registros
 - `src/app/home/home.page.scss`: Estilos mejorados

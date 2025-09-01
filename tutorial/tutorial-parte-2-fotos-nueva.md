@@ -59,15 +59,16 @@ Agregar funcionalidad real de cámara y gestión de fotos usando un servicio en 
 # Tutorial Paso a Paso: Foto-Geo App (Parte 2)
 
 ## Objetivo
-  - [ ] `src/app/service/photo.service.ts` existe
-src/app/service/photo.service.ts
+  - [ ] `src/app/services/photo.service.ts` existe
+src/app/services/photo.service.ts
 
 ## 2. Crea el servicio de fotos paso a paso
-Abre `src/app/service/photo.service.ts` y agrega al inicio:
+Abre `src/app/services/photo.service.ts` y agrega al inicio:
 
 -- `src/app/services/photo.service.ts`: Servicio de fotos
-- `src/app/service/photo.service.ts`: Servicio de fotos
+-- `src/app/services/photo.service.ts`: Servicio de fotos
   - [ ] `takePicture()` compila y maneja cancelación (retorna null)
+src/app/services/photo.service.ts
 - Reto: Añade un método `getLastPhoto()` que retorne la última foto tomada o null.
 
 
@@ -95,7 +96,7 @@ npx cap sync
 
 ---
 
-src/app/service/photo.service.ts
+src/app/services/photo.service.ts
 
 ## 2. Crea el servicio de fotos paso a paso
 
@@ -107,7 +108,7 @@ Abre la terminal y ejecuta:
   <button onclick="copyCode(this)">Copiar</button>
 
 ```bash
-npx ionic generate service service/photo.service
+  npx ionic generate service services/photo.service
 ```
 </div>
 
