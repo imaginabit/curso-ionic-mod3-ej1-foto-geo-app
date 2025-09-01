@@ -7,19 +7,17 @@ import { PlatformService } from './platform.service';
   providedIn: 'root',
 })
 export class GeolocationService {
-    private platform = inject(PlatformService);
-
+  private platform = inject(PlatformService);
 
   async getCurrentPosition(): Promise<Coordinates | null> {
     try {
-      if (this.platform.isNativePlatform()){
-      // Verificar permisos
-      const hasPermission = await this.checkPermissions();
-      if (!hasPermission) {
-        return null;
+      if (this.platform.isNativePlatform()) {
+        // Verificar permisos
+        const hasPermission = await this.checkPermissions();
+        if (!hasPermission) {
+          return null;
+        }
       }
-      }
-
 
       // Obtener posición actual
       const position = await Geolocation.getCurrentPosition({

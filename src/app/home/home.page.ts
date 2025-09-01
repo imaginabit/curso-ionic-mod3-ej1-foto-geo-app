@@ -2,9 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { PhotoService } from '../service/photo.service';
-import { GeolocationService } from '../service/geolocation.service';
-import { StorageService } from '../service/storage.service';
+import { PhotoService } from '../services/photo.service';
+import { GeolocationService } from '../services/geolocation.service';
+import { StorageService } from '../services/storage.service';
 
 import {
   IonContent,
